@@ -1,121 +1,97 @@
 const presence = new Presence({
-	clientId: "934701636251680768",
-});
+		clientId: "1264754447276310599",
+	}),
+	browsingTimestamp = Math.floor(Date.now() / 1000);
 
-let video = {
-	duration: 0,
-	currentTime: 0,
-	paused: true,
-};
-
-presence.on(
-	"iFrameData",
-	(data: { duration: number; currentTime: number; paused: boolean }) => {
-		video = data;
-	}
-);
-
+const enum Assets {
+	Logo = "https://cdn.rcd.gg/PreMiD/websites/0-9/9anime/assets/logo.png",
+}
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-			largeImageKey: "9anime",
+			largeImageKey: Assets.Logo,
+			startTimestamp: browsingTimestamp,
+			type: ActivityType.Watching,
 		},
-		[showCover, timestamps, joinButton] = await Promise.all([
-			presence.getSetting<boolean>("cover"),
-			presence.getSetting<boolean>("timestamps"),
-			presence.getSetting<boolean>("watch2getherJoinRoomButton"),
-		]);
+		{ href, pathname, search } = document.location;
+	switch (true) {
+		case pathname === "/":
+		case pathname === "/home":
+			presenceData.details = "Viewing Homepage";
+			break;
+		case pathname === "/search":
+			presenceData.details = `Viewing results: ${search
+				.split("=")[1]
+				.replace(/\+/g, " ")}`;
+			presenceData.smallImageKey = Assets.Search;
+			break;
+		case pathname.includes("/genre/"):
+			presenceData.details = `Viewing genre: ${pathname.split("/")[2]}`;
+			break;
+		case pathname.includes("/watch/"): {
+			presenceData.details = document.title
+				.replace(/^Watch /, "")
+				.replace(/ online free on 9anime$/, "");
+			const coverArt = document
+					.querySelector<HTMLImageElement>('[class="anime-poster"]')
+					?.querySelector("img")?.src,
+				episodeNumber = document
+					.querySelector('[class="item ep-item active"]')
+					?.textContent?.match(/[1-9]{1}[0-9]{0,}/)?.[0];
 
-	if (
-		video &&
-		!isNaN(video.duration) &&
-		document.location.pathname.includes("/watch/")
-	) {
-		const [startTimestamp, endTimestamp] = presence.getTimestamps(
-				Math.floor(video.currentTime),
-				Math.floor(video.duration)
-			),
-			coverArt = document.querySelector<HTMLImageElement>("#w-info img")?.src,
-			seasonNumber = document.querySelector(".seasons.swiper-wrapper")
-				? String(
-						Array.from(
-							document.querySelector(".seasons.swiper-wrapper").children
-						).findIndex(x => x.className.includes(" active")) + 1
-				  )
-				: "",
-			episodeNumber = document.querySelector(
-				"#w-servers .tip > div > b"
-			).textContent,
-			episodeName = document.querySelector(
-				"li > a.active > .d-title"
-			)?.textContent;
-
-		presenceData.details = document.querySelector("#w-info .title").textContent;
-		presenceData.state = document
-			.querySelector<HTMLAnchorElement>(".bmeta > .meta a")
-			.href.endsWith("movie")
-			? "Movie"
-			: seasonNumber
-			? `S${seasonNumber}:E${episodeNumber.match(/[1-9]{1}[0-9]{0,}/)[0]} ${
-					episodeName ?? episodeNumber
-			  }`
-			: `${episodeNumber}${
-					!episodeName || episodeName === episodeNumber
-						? ""
-						: ` • ${episodeName}`
-			  }`;
-
-		if (coverArt && showCover) presenceData.largeImageKey = coverArt;
-
-		presenceData.smallImageKey = video.paused ? "pause" : "play";
-		presenceData.smallImageText = video.paused ? "Paused" : "Playing";
-		if (timestamps) {
-			presenceData.startTimestamp = startTimestamp;
-			presenceData.endTimestamp = endTimestamp;
-		}
-
-		if (video.paused) {
-			delete presenceData.startTimestamp;
-			delete presenceData.endTimestamp;
-		}
-	} else if (document.location.pathname.includes("/watch2gether/room/")) {
-		const [startTimestamp, endTimestamp] = presence.getTimestamps(
-				Math.floor(video.currentTime),
-				Math.floor(video.duration)
-			),
-			coverArt =
-				document.querySelector<HTMLImageElement>(".anime-info img")?.src;
-
-		presenceData.details = "In a watch2gether room, watching";
-		presenceData.state = `${
-			document.querySelector(".name.d-title").textContent
-		} • ${document.querySelector(".dot.ep").textContent}`;
-
-		if (coverArt && showCover) presenceData.largeImageKey = coverArt;
-
-		presenceData.smallImageKey = video.paused ? "pause" : "play";
-		presenceData.smallImageText = video.paused ? "Paused" : "Playing";
-		if (timestamps) {
-			presenceData.startTimestamp = startTimestamp;
-			presenceData.endTimestamp = endTimestamp;
-		}
-
-		if (video.paused) {
-			delete presenceData.startTimestamp;
-			delete presenceData.endTimestamp;
-		}
-
-		if (joinButton) {
+			presenceData.state = `Episode ${episodeNumber}`;
+			presenceData.largeImageKey = coverArt ?? Assets.Logo;
 			presenceData.buttons = [
 				{
-					label: "Join Room",
-					url: location.href,
+					label: "View Anime",
+					url: href,
 				},
 			];
+			presenceData.smallImageKey = coverArt ? Assets.Logo : "";
+			break;
 		}
-	} else {
-		presenceData.details = "Browsing...";
-		presenceData.smallImageKey = "search";
+		case pathname.includes("/az-list"):
+			presenceData.details = `Viewing AZ List: ${pathname.split("/")[2]}`;
+			presenceData.smallImageKey = Assets.Search;
+			break;
+		case pathname === "/movie":
+			presenceData.details = "Browsing movies...";
+			presenceData.smallImageKey = Assets.Search;
+			break;
+		case pathname === "/tv":
+			presenceData.details = "Browsing TV series...";
+			presenceData.smallImageKey = Assets.Search;
+			break;
+		case pathname === "/ova":
+			presenceData.details = "Browsing OVAs...";
+			presenceData.smallImageKey = Assets.Search;
+			break;
+		case pathname === "/ona":
+			presenceData.details = "Browsing ONAs...";
+			presenceData.smallImageKey = Assets.Search;
+			break;
+		case pathname === "/special":
+			presenceData.details = "Browsing specials...";
+			presenceData.smallImageKey = Assets.Search;
+			break;
+		case pathname === "/recently-updated":
+			presenceData.details = "Browsing recently updated anime...";
+			presenceData.smallImageKey = Assets.Search;
+			break;
+		case pathname === "/recently-added":
+			presenceData.details = "Browsing recently added anime...";
+			presenceData.smallImageKey = Assets.Search;
+			break;
+		case pathname === "/ongoing":
+			presenceData.details = "Browsing ongoing anime...";
+			presenceData.smallImageKey = Assets.Search;
+			break;
+		case pathname === "/upcoming":
+			presenceData.details = "Viewing upcoming anime...";
+			presenceData.smallImageKey = Assets.Search;
+			break;
+		default:
+			presenceData.details = "Browsing 9anime...";
+			break;
 	}
-
 	presence.setActivity(presenceData);
 });

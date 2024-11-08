@@ -17,7 +17,10 @@ function capitalize(str: string): string {
 }
 
 presence.on("UpdateData", async () => {
-	const presenceData: PresenceData = { largeImageKey: "wakanim" },
+	const presenceData: PresenceData = {
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/W/Wakanim/assets/0.png",
+		},
 		video = document.querySelector<HTMLVideoElement>("video"),
 		title = document.querySelector<HTMLSpanElement>(".episode_title"),
 		subtitle = document.querySelector<HTMLSpanElement>(".episode_subtitle");
@@ -33,21 +36,21 @@ presence.on("UpdateData", async () => {
 			presenceData.largeImageKey =
 				document.querySelector<HTMLMetaElement>(
 					".episode > .container > [itemprop=thumbnailUrl]"
-				).content ?? "wakanim";
+				).content ??
+				"https://cdn.rcd.gg/PreMiD/websites/W/Wakanim/assets/0.png";
 		}
 
 		if (subtitle && subtitle.textContent)
 			presenceData.state = capitalize(subtitle.textContent);
 
 		if (video.paused) {
-			presenceData.smallImageKey = "paused";
+			presenceData.smallImageKey = Assets.Pause;
 			presenceData.smallImageText = (await strings).paused;
 		} else {
 			presenceData.startTimestamp = Math.floor(Date.now() / 1000);
-			presenceData.endTimestamp = Math.floor(
-				presenceData.startTimestamp + (video.duration - video.currentTime)
-			);
-			presenceData.smallImageKey = "playing";
+			[presenceData.startTimestamp, presenceData.endTimestamp] =
+				presence.getTimestampsfromMedia(video);
+			presenceData.smallImageKey = Assets.Play;
 			presenceData.smallImageText = (await strings).playing;
 		}
 	} else {

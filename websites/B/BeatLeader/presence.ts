@@ -1,63 +1,88 @@
+import { logoArr, leaderboardImages, contexts, replayIcon } from "./assets";
+
 const presence = new Presence({
 		clientId: "939893188448104468",
 	}),
-	browsingTimestamp = Math.floor(Date.now() / 1000);
+	browsingTimestamp = Math.floor(Date.now() / 1000),
+	date = new Date(),
+	random = Math.floor(Math.random() * 100);
 
-enum Assets {
-	Logo = "https://i.imgur.com/TWPjaYR.png",
-	Playing = "https://i.imgur.com/xiZprpt.png",
-	Paused = "https://i.imgur.com/w1jwJTh.png",
-	Replay = "https://i.imgur.com/UxmT8G2.png",
-	"360DegreeEasy" = "https://i.imgur.com/DVJ8DrX.png",
-	"360DegreeExpert" = "https://i.imgur.com/TfqWdfp.png",
-	"360DegreeExpert+" = "https://i.imgur.com/NA06k7F.png",
-	"360DegreeHard" = "https://i.imgur.com/YPJtpLN.png",
-	"360DegreeNormal" = "https://i.imgur.com/yQJMy15.png",
-	"90DegreeEasy" = "https://i.imgur.com/Fo03ZyU.png",
-	"90DegreeExpert" = "https://i.imgur.com/pQel27h.png",
-	"90DegreeExpert+" = "https://i.imgur.com/VKgWOzs.png",
-	"90DegreeHard" = "https://i.imgur.com/QG5xcsL.png",
-	"90DegreeNormal" = "https://i.imgur.com/v6JkOai.png",
-	LawlessEasy = "https://i.imgur.com/VkQqgWI.png",
-	LawlessExpert = "https://i.imgur.com/Nc3MWRg.png",
-	"LawlessExpert+" = "https://i.imgur.com/6Vkd5bU.png",
-	LawlessHard = "https://i.imgur.com/ndA08Dj.png",
-	LawlessNormal = "https://i.imgur.com/rMaDUFX.png",
-	LightShowEasy = "https://i.imgur.com/xc1Topa.png",
-	LightShowExpert = "https://i.imgur.com/cJKkojn.png",
-	"LightShowExpert+" = "https://i.imgur.com/rF4tn28.png",
-	LightShowHard = "https://i.imgur.com/awviQ8Y.png",
-	LightShowNormal = "https://i.imgur.com/J5qLp9b.png",
-	NoArrowsEasy = "https://i.imgur.com/7fM9HNb.png",
-	NoArrowsExpert = "https://i.imgur.com/aLfl2ix.png",
-	"NoArrowsExpert+" = "https://i.imgur.com/WR2pnWY.png",
-	NoArrowsHard = "https://i.imgur.com/tiIyXay.png",
-	NoArrowsNormal = "https://i.imgur.com/k2t9Lac.png",
-	OneSaberEasy = "https://i.imgur.com/BpKnvbM.png",
-	OneSaberExpert = "https://i.imgur.com/aWrR0ln.png",
-	"OneSaberExpert+" = "https://i.imgur.com/SEdFi3h.png",
-	OneSaberHard = "https://i.imgur.com/ZfZATnl.png",
-	OneSaberNormal = "https://i.imgur.com/qcILmPs.png",
-	StandardEasy = "https://i.imgur.com/2J4LtXj.png",
-	StandardExpert = "https://i.imgur.com/HVzq27X.png",
-	"StandardExpert+" = "https://i.imgur.com/wcL9Uar.png",
-	StandardHard = "https://i.imgur.com/dxfOJXE.png",
-	StandardNormal = "https://i.imgur.com/KOgMFdx.png",
+function simplifyKey(key: string): string {
+	let result = key.replaceAll(" ", "");
+	if (
+		(result.includes("-PinkPlay_Controllable") &&
+			!result.match(/(?:Standard|OneSaber|Lawless)-PinkPlay_Controllable/)) ||
+		result.match(/(Horizontal|Vertical|Inverted|Inverse)/)
+	)
+		result = result.replace("-PinkPlay_Controllable", "");
+	if (result.match(/(Horizontal|Vertical|Inverted|Inverse)/))
+		result = result.replace(/Lawless|OneSaber|NoArrows|Standard|Legacy/, "");
+	if (result.match(/ReBeat_/)) {
+		result = result.replace(
+			/(Lawless|OneSaber|NoArrows|Standard|Legacy|90Degree|360Degree)/,
+			""
+		);
+		result = result.replaceAll("_", "");
+	}
+	return result;
 }
 
-presence.info("Presence loaded");
+let replay = {
+		name: "",
+		subName: "",
+		currentTime: "",
+		playing: false,
+		duration: "",
+		playerName: "",
+		cover: "",
+	},
+	dynamicLogo = "";
 
-let preview = {
-	name: "",
-	subName: "",
-	currentTime: "",
-	difficulty: "",
-	customDifficulty: "",
-	playing: false,
-	duration: "",
-	gameMode: "",
-	playerName: "",
-};
+function doDefaultDynamic() {
+	if (random < 98) dynamicLogo = logoArr[1];
+	else if (random >= 98) {
+		if (random <= 98) dynamicLogo = logoArr[4];
+		else dynamicLogo = logoArr[5];
+	}
+}
+
+switch (date.getMonth()) {
+	case 3: {
+		if (date.getDate() === 22) dynamicLogo = logoArr[6];
+		else doDefaultDynamic();
+		break;
+	}
+	case 9: {
+		switch (random % 2) {
+			case 0: {
+				dynamicLogo = logoArr[2];
+				break;
+			}
+			case 1: {
+				dynamicLogo = logoArr[3];
+				break;
+			}
+		}
+		break;
+	}
+	case 11: {
+		switch (random % 2) {
+			case 0: {
+				dynamicLogo = logoArr[7];
+				break;
+			}
+			case 1: {
+				dynamicLogo = logoArr[8];
+				break;
+			}
+		}
+		break;
+	}
+	default: {
+		doDefaultDynamic();
+		break;
+	}
+}
 
 presence.on(
 	"iFrameData",
@@ -65,132 +90,223 @@ presence.on(
 		name: string;
 		subName: string;
 		currentTime: string;
-		difficulty: string;
-		customDifficulty: string;
-		gameMode: string;
 		playing: boolean;
 		duration: string;
 		playerName: string;
+		cover: string;
 	}) => {
-		preview = data;
+		replay = data;
 	}
 );
 
 presence.on("UpdateData", async () => {
-	const [time, buttons, cover] = await Promise.all([
-			presence.getSetting<boolean>("time"),
-			presence.getSetting<boolean>("buttons"),
-			presence.getSetting<boolean>("cover"),
-		]),
+	const [time, buttons, cover, context, logo, mapSmallImages] =
+			await Promise.all([
+				presence.getSetting<boolean>("time"),
+				presence.getSetting<boolean>("buttons"),
+				presence.getSetting<boolean>("cover"),
+				presence.getSetting<boolean>("context"),
+				presence.getSetting<number>("logo"),
+				presence.getSetting<number>("mapSmallImages"),
+			]),
 		presenceData: PresenceData = {
 			startTimestamp: browsingTimestamp,
 		},
-		{ pathname, href, hostname } = document.location;
+		{ pathname, href, hostname } = document.location,
+		button = {
+			label: "View Page",
+			url: href,
+		};
 
-	if (hostname.split(".")[0] === "www") {
-		presenceData.largeImageKey = Assets.Logo;
+	if (hostname.split(".")[0] === "replay") {
+		presenceData.largeImageKey = cover
+			? document.querySelector<HTMLImageElement>("#songImage")
+			: replayIcon;
+		presenceData.details = document.querySelector("#songName").textContent;
+		presenceData.state = document.querySelector("#playerName").textContent;
+		presenceData.smallImageKey = document.querySelector("div.btn.play")
+			? Assets.Pause
+			: Assets.Play;
+		presenceData.smallImageText = document.querySelector("div.btn.play")
+			? "Paused"
+			: "Playing";
+		if (document.querySelector("div.btn.pause")) {
+			[presenceData.startTimestamp, presenceData.endTimestamp] =
+				presence.getTimestamps(
+					presence.timestampFromFormat(
+						document.querySelector("#songProgress").textContent
+					),
+					presence.timestampFromFormat(
+						document.querySelector("#songDuration").textContent
+					)
+				);
+		}
+		presenceData.buttons = [
+			{
+				label: "View Replay",
+				url: href,
+			},
+		];
+	} else if (hostname.split(".")[0] === "royale") {
+		presenceData.largeImageKey = cover
+			? document.querySelector<HTMLImageElement>("#songImage")
+			: replayIcon;
+		presenceData.details = document.querySelector("#songName").textContent;
+		presenceData.state = `${
+			document.querySelectorAll(".playerTableRow")?.length
+		} player royale`;
+		presenceData.smallImageKey = document.querySelector("div.btn.play")
+			? Assets.Pause
+			: Assets.Play;
+		presenceData.smallImageText = document.querySelector("div.btn.play")
+			? "Paused"
+			: "Playing";
+		if (document.querySelector("div.btn.pause")) {
+			[presenceData.startTimestamp, presenceData.endTimestamp] =
+				presence.getTimestamps(
+					presence.timestampFromFormat(
+						document.querySelector("#songProgress").textContent
+					),
+					presence.timestampFromFormat(
+						document.querySelector("#songDuration").textContent
+					)
+				);
+		}
+		presenceData.buttons = [
+			{
+				label: "View Royale",
+				url: href,
+			},
+		];
+	} else {
+		presenceData.largeImageKey = logo === 0 ? dynamicLogo : logoArr[logo];
 		switch (pathname.split("/")[1]) {
 			case "u": {
 				presenceData.details = "Viewing profile";
-				presenceData.state =
-					document.querySelector(".player-nickname a")?.textContent;
+				presenceData.state = document.querySelector(
+					".player-nickname .nickname"
+				)?.textContent;
 				presenceData.smallImageKey =
-					document.querySelector<HTMLImageElement>(".countryIcon")?.src;
+					document.querySelector<HTMLImageElement>(".countryIcon");
 				if (cover) {
 					presenceData.largeImageKey =
-						document.querySelector<HTMLImageElement>(".avatar")?.src;
+						document.querySelector<HTMLImageElement>(".avatar");
 				}
-				presenceData.buttons = [
-					{
-						label: "View Page",
-						url: href,
-					},
-				];
+				presenceData.buttons = [button];
 				break;
 			}
 			case "leaderboard": {
+				const previewURL = new URL(
+						document.querySelector<HTMLAnchorElement>(
+							'a[href^="https://allpoland.github.io"]'
+						)?.href ?? "https://allpoland.github.io"
+					),
+					difficulty =
+						previewURL.searchParams.get("difficulty") ??
+						document
+							.querySelector(".diff-tab-button.primary > span")
+							?.textContent?.split(" ")[0],
+					mode =
+						previewURL.searchParams.get("mode") ??
+						document.querySelector<HTMLDivElement>(
+							".primary.mode-tab-button > span > div"
+						)?.title;
+
+				let mappers = "";
+
+				for (const mapper of document.querySelectorAll(".mappers-list span"))
+					mappers += `${mapper.textContent}, `;
+				mappers = mappers.slice(0, -2);
+
 				presenceData.details =
 					document.querySelector(".title .name")?.textContent;
-				presenceData.state =
-					document.querySelector(".level-author")?.textContent;
-				presenceData.smallImageText = `${
-					document.querySelector<HTMLAnchorElement>(
-						".diff-switch .primary > .icon > div"
-					)?.title
-				} ${
-					document.querySelector(".diff-switch .primary > span:nth-of-type(2)")
-						?.textContent
-				}`;
-				presenceData.smallImageKey =
-					Assets[
-						`${
-							document
-								.querySelector(".diff > .diff")
-								.textContent.replaceAll(" ", "")
-								.split("/")[1] ?? "Standard"
-						}${
-							document
-								.querySelector(".diff > .diff")
-								.textContent.replaceAll(" ", "")
-								.split("/")[0]
-						}` as keyof typeof Assets
-					];
+				presenceData.state = mappers;
+				if (presenceData.smallImageText === "")
+					delete presenceData.smallImageText;
+				if (mapSmallImages !== 3) {
+					presenceData.smallImageText = `${
+						mapSmallImages === 0 || mapSmallImages === 1
+							? mode?.replaceAll("_", " ")
+							: ""
+					} ${
+						mapSmallImages === 0 || mapSmallImages === 2
+							? difficulty?.replace("Plus", "+")
+							: ""
+					}`;
+					presenceData.smallImageKey =
+						leaderboardImages[
+							simplifyKey(
+								`${mapSmallImages === 0 || mapSmallImages === 1 ? mode : ""}${
+									mapSmallImages === 0 || mapSmallImages === 2
+										? difficulty?.replace("+", "Plus")
+										: ""
+								}`
+							)
+						] ??
+						leaderboardImages[
+							`Unknown${
+								mapSmallImages === 0 || mapSmallImages === 2
+									? difficulty?.replace("+", "Plus")
+									: ""
+							}`
+						];
+				}
 				if (cover) {
 					presenceData.largeImageKey = document
-						.querySelector<HTMLDivElement>(".leaderboard.content-box")
-						?.style?.backgroundImage?.match(/url\(["']?([^"']*)["']?\)/)[1];
+						.querySelector<HTMLDivElement>(".map-cover")
+						?.style.backgroundImage.match(
+							/(https:\/\/.+\.((png)|(jpg)|(jpeg)|(webp)))/g
+						)
+						?.toString();
 				}
-				presenceData.buttons = [
-					{
-						label: "View Page",
-						url: href,
-					},
-				];
+				presenceData.buttons = [button];
 				break;
 			}
 			case "event": {
 				presenceData.details = "Viewing event";
 				presenceData.state = document.querySelector("h2")?.textContent;
-				presenceData.buttons = [
-					{
-						label: "View Page",
-						url: href,
-					},
-				];
+				presenceData.buttons = [button];
 				if (cover) {
 					presenceData.largeImageKey =
-						document.querySelector<HTMLImageElement>("section > img")?.src;
+						document.querySelector<HTMLImageElement>(".event > img");
 				}
 				break;
 			}
 			case "clan": {
 				presenceData.details = "Viewing clan";
 				presenceData.state = document.querySelector(".title")?.textContent;
-				presenceData.buttons = [
-					{
-						label: "View Page",
-						url: href,
-					},
-				];
+				presenceData.buttons = [button];
 				if (cover) {
 					presenceData.largeImageKey =
-						document.querySelector<HTMLImageElement>(".clanImage").src;
+						document.querySelector<HTMLImageElement>(".clanImage");
 				}
 				break;
 			}
 			case "playlist": {
 				presenceData.details = "Viewing playlist";
-				presenceData.state =
-					document.querySelector(".playlistTitle")?.textContent;
-				presenceData.buttons = [
-					{
-						label: "View Page",
-						url: href,
-					},
-				];
+				presenceData.state = document.querySelector(
+					".content-box .playlistTitle"
+				)?.textContent;
+				if (cover) {
+					presenceData.largeImageKey = document.querySelector<HTMLImageElement>(
+						".content-box .playlistImage"
+					);
+				}
+				presenceData.buttons = [button];
+				break;
+			}
+			case "settings": {
+				presenceData.details = "Viewing settings";
+				presenceData.state = document.querySelector(
+					".navigation-item.selected"
+				).textContent;
 				break;
 			}
 			case "dashboard": {
+				presenceData.details = "Viewing dashboard";
+				break;
+			}
+			case "": {
 				presenceData.details = "Viewing dashboard";
 				break;
 			}
@@ -218,119 +334,58 @@ presence.on("UpdateData", async () => {
 				presenceData.details = "Searching users";
 				break;
 			}
+			case "followed": {
+				presenceData.details = "Viewing their follows";
+				break;
+			}
+			case "clansmap": {
+				presenceData.details = "Viewing clans map";
+				break;
+			}
+			case "maps": {
+				presenceData.details = "Browsing maps";
+				break;
+			}
 		}
 		if (
-			(document
+			document
 				.querySelector<HTMLIFrameElement>("iframe")
-				?.src.includes("replay.beatleader.xyz") &&
-				preview.name) ||
-			(document
-				.querySelector<HTMLIFrameElement>("iframe")
-				?.src.includes("skystudioapps.com") &&
-				preview.name)
+				?.src.includes("replay.beatleader.") &&
+			replay.name
 		) {
-			if (
-				document
-					.querySelector<HTMLIFrameElement>("iframe")
-					?.src.includes("replay.beatleader.xyz")
-			)
-				presenceData.largeImageKey = Assets.Replay;
-
-			if (
-				document
-					.querySelector<HTMLIFrameElement>("iframe")
-					?.src.includes("skystudioapps.com")
-			)
-				delete preview.playerName;
-			presenceData.details = `${preview.name} ${preview.subName}`;
-			presenceData.state =
-				preview.playerName ??
-				(preview.difficulty === preview.customDifficulty
-					? `${preview.gameMode} ${preview.difficulty}`
-					: `${preview.customDifficulty}`);
-			presenceData.smallImageKey = preview.playing
-				? Assets.Playing
-				: Assets.Paused;
-			presenceData.smallImageText = preview.playing ? "Playing" : "Paused";
-			if (preview.playing) {
-				const timestamps = presence.getTimestamps(
-					presence.timestampFromFormat(preview.currentTime),
-					presence.timestampFromFormat(preview.duration)
-				);
-				presenceData.endTimestamp = timestamps[1];
+			presenceData.largeImageKey = cover ? replay.cover : replayIcon;
+			presenceData.details = replay.name;
+			presenceData.state = replay.playerName;
+			presenceData.smallImageKey = replay.playing ? Assets.Play : Assets.Pause;
+			presenceData.smallImageText = replay.playing ? "Playing" : "Paused";
+			if (replay.playing) {
+				[presenceData.startTimestamp, presenceData.endTimestamp] =
+					presence.getTimestamps(
+						presence.timestampFromFormat(replay.currentTime),
+						presence.timestampFromFormat(replay.duration)
+					);
 			}
 			presenceData.buttons = [
 				{
-					label: `View ${preview.playerName ? "Replay" : "Preview"}`,
+					label: "View Replay",
 					url: document.querySelector<HTMLIFrameElement>("iframe").src,
 				},
 			];
 		}
-	} else if (hostname.split(".")[0] === "replay") {
-		presenceData.largeImageKey = cover
-			? document.querySelector<HTMLImageElement>("#songImage").src
-			: Assets.Replay;
-		presenceData.details = document.querySelector("#songName").textContent;
-		presenceData.state = document.querySelector("#playerName").textContent;
-		presenceData.smallImageKey = document.querySelector("div.btn.play")
-			? Assets.Paused
-			: Assets.Playing;
-		presenceData.smallImageText = document.querySelector("div.btn.play")
-			? "Paused"
-			: "Playing";
-		if (document.querySelector("div.btn.pause")) {
-			const timestamps = presence.getTimestamps(
-				presence.timestampFromFormat(
-					document.querySelector("#songProgress").textContent
-				),
-				presence.timestampFromFormat(
-					document.querySelector("#songDuration").textContent
-				)
-			);
-			presenceData.endTimestamp = timestamps[1];
-		}
-		presenceData.buttons = [
-			{
-				label: "View Replay",
-				url: href,
-			},
-		];
-	} else if (hostname.split(".")[0] === "royale") {
-		presenceData.largeImageKey = cover
-			? document.querySelector<HTMLImageElement>("#songImage").src
-			: Assets.Replay;
-		presenceData.details = document.querySelector("#songName").textContent;
-		presenceData.state = `${
-			document.querySelectorAll(".playerTableRow")?.length
-		} player royale`;
-		presenceData.smallImageKey = document.querySelector("div.btn.play")
-			? Assets.Paused
-			: Assets.Playing;
-		presenceData.smallImageText = document.querySelector("div.btn.play")
-			? "Paused"
-			: "Playing";
-		if (document.querySelector("div.btn.pause")) {
-			const timestamps = presence.getTimestamps(
-				presence.timestampFromFormat(
-					document.querySelector("#songProgress").textContent
-				),
-				presence.timestampFromFormat(
-					document.querySelector("#songDuration").textContent
-				)
-			);
-			presenceData.endTimestamp = timestamps[1];
-		}
-		presenceData.buttons = [
-			{
-				label: "View Royale",
-				url: href,
-			},
-		];
 	}
+
+	if (context && presenceData.largeImageKey && !presenceData.smallImageKey) {
+		presenceData.smallImageKey = contexts[hostname.split(".")[0]];
+		presenceData.smallImageText =
+			document.querySelector(".leaderboard-type")?.textContent;
+	}
+
 	if (!time) {
 		delete presenceData.startTimestamp;
 		delete presenceData.endTimestamp;
 	}
 	if (!buttons && presenceData.buttons) delete presenceData.buttons;
-	presence.setActivity(presenceData);
+
+	if (presenceData.details && presenceData.largeImageKey)
+		presence.setActivity(presenceData);
 });

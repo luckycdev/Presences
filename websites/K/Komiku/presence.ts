@@ -9,7 +9,8 @@ presence.on("UpdateData", async () => {
 		time = await presence.getSetting<boolean>("timestamps"),
 		presenceData: PresenceData = {
 			details: "Page not Supported",
-			largeImageKey: "logo",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/K/Komiku/assets/logo.png",
 			startTimestamp: browsingTimestamp,
 		};
 

@@ -5,7 +5,8 @@ const presence = new Presence({
 
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-			largeImageKey: "logo",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/P/PodcastAddict/assets/logo.png",
 			startTimestamp: browsingTimestamp,
 		},
 		{ pathname, search } = document.location;
@@ -13,7 +14,7 @@ presence.on("UpdateData", async () => {
 	if (pathname === "/" && search.substr(0, 2) === "?q") {
 		presenceData.details = "Searching:";
 		presenceData.state = document.querySelector(".caption").textContent;
-		presenceData.smallImageKey = "search";
+		presenceData.smallImageKey = Assets.Search;
 	} else if (pathname === "/") presenceData.details = "Viewing the homepage";
 	else if (pathname.startsWith("/app"))
 		presenceData.details = "Reading the app page";
@@ -36,7 +37,7 @@ presence.on("UpdateData", async () => {
 	else if (pathname.startsWith("/podcast")) {
 		presenceData.details = "Viewing:";
 		presenceData.state = document.querySelector(".caption").textContent;
-		presenceData.smallImageKey = "view";
+		presenceData.smallImageKey = Assets.Viewing;
 		presenceData.buttons = [
 			{ label: "View Podcast", url: window.location.href },
 		];
@@ -55,14 +56,15 @@ presence.on("UpdateData", async () => {
 				.querySelector("#play-pause-button")
 				.classList.contains("fa-play-circle")
 		) {
-			[, presenceData.endTimestamp] = presence.getTimestamps(
-				elapsedTime,
-				presence.timestampFromFormat(
-					document.querySelector("#remainingTime").textContent.substr(1)
-				) + elapsedTime
-			);
-			presenceData.smallImageKey = "play";
-		} else presenceData.smallImageKey = "pause";
+			[presenceData.startTimestamp, presenceData.endTimestamp] =
+				presence.getTimestamps(
+					elapsedTime,
+					presence.timestampFromFormat(
+						document.querySelector("#remainingTime").textContent.substr(1)
+					) + elapsedTime
+				);
+			presenceData.smallImageKey = Assets.Play;
+		} else presenceData.smallImageKey = Assets.Pause;
 	}
 	presence.setActivity(presenceData);
 });

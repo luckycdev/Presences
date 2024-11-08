@@ -4,16 +4,9 @@ class WeTV extends Presence {
 	}
 
 	getTitle() {
-		// eslint-disable-next-line no-one-time-vars/no-one-time-vars
-		const JSONData: {
-			"@graph": {
-				name: string;
-			}[];
-		} = JSON.parse(
+		return JSON.parse(
 			document.querySelector('[type="application/ld+json"]').textContent
-		);
-
-		return JSONData["@graph"][0].name;
+		)["@graph"][0].name;
 	}
 
 	getMovieTitle() {
@@ -50,8 +43,8 @@ const presence = new WeTV({
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
 		details: "Browsing...",
-		largeImageKey: "wetv",
-		smallImageKey: "browse",
+		largeImageKey: "https://cdn.rcd.gg/PreMiD/websites/W/WeTV/assets/logo.png",
+		smallImageKey: Assets.Search,
 	};
 
 	if (document.location.pathname.includes("/play/")) {
@@ -59,9 +52,10 @@ presence.on("UpdateData", async () => {
 
 		if (video) {
 			presenceData.details = presence.getTitle();
-			presenceData.endTimestamp = presence.getTimestampsfromMedia(video).pop();
+			[presenceData.startTimestamp, presenceData.endTimestamp] =
+				presence.getTimestampsfromMedia(video);
 
-			presenceData.smallImageKey = video.paused ? "pause" : "play";
+			presenceData.smallImageKey = video.paused ? Assets.Pause : Assets.Play;
 			presenceData.smallImageText = video.paused ? "Paused" : "Playing";
 
 			if (video.paused) delete presenceData.endTimestamp;

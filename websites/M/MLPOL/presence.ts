@@ -5,7 +5,7 @@ const browsingTimestamp = Math.floor(Date.now() / 1000),
 
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-		largeImageKey: "logo",
+		largeImageKey: "https://cdn.rcd.gg/PreMiD/websites/M/MLPOL/assets/logo.png",
 		startTimestamp: browsingTimestamp,
 	};
 

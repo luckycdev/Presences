@@ -32,6 +32,11 @@ const require = createRequire(import.meta.url),
 		presence: string;
 		message: string | Error;
 		properties?: actions.AnnotationProperties | undefined;
+	}[] = [],
+	warnings: {
+		presence: string;
+		message: string | Error;
+		properties?: actions.AnnotationProperties | undefined;
 	}[] = [];
 
 for (const presence of changedPresences) {
@@ -41,7 +46,7 @@ for (const presence of changedPresences) {
 	if (!existsSync(resolve(presencePath, "metadata.json"))) {
 		errors.push({
 			presence,
-			message: "Presence is missing metadata.json",
+			message: `Presence (${presence}) is missing metadata.json`,
 			properties: {
 				file: resolve(presencePath, "metadata.json"),
 			},
@@ -56,7 +61,7 @@ for (const presence of changedPresences) {
 	} catch {
 		errors.push({
 			presence,
-			message: "Presence metadata.json is not a valid JSON file",
+			message: `Presence (${presence}) metadata.json is not a valid JSON file`,
 			properties: {
 				file: resolve(presencePath, "metadata.json"),
 			},
@@ -92,7 +97,7 @@ for (const presence of changedPresences) {
 	if (metadata.$schema !== schema.url) {
 		errors.push({
 			presence,
-			message: `Schema version is not up to date - expected: ${schema.url}, got: ${metadata.$schema}`,
+			message: `Schema version is not up to date (Presence: ${presence}) - expected: ${schema.url}, got: ${metadata.$schema}`,
 			properties: {
 				file: resolve(presencePath, "metadata.json"),
 				startLine: getLine("$schema"),
@@ -108,7 +113,7 @@ for (const presence of changedPresences) {
 		if (compare(metadata.version, storePresence.metadata.version) <= 0) {
 			errors.push({
 				presence,
-				message: "Version has not been bumped",
+				message: `Version has not been bumped (Presence: ${presence})`,
 				properties: {
 					file: resolve(presencePath, "metadata.json"),
 					startLine: getLine("version"),
@@ -118,7 +123,7 @@ for (const presence of changedPresences) {
 	} else if (metadata.version !== "1.0.0") {
 		errors.push({
 			presence,
-			message: "Initial version must be 1.0.0",
+			message: `Initial version must be 1.0.0 (Presence: ${presence})`,
 			properties: {
 				file: resolve(presencePath, "metadata.json"),
 				startLine: getLine("version"),
@@ -134,7 +139,7 @@ for (const presence of changedPresences) {
 	if (!existsSync(iframePath) && metadata.iframe) {
 		errors.push({
 			presence,
-			message: "Presence is missing iframe.ts",
+			message: `Presence (${presence}) is missing iframe.ts`,
 			properties: {
 				file: iframePath,
 			},
@@ -144,13 +149,45 @@ for (const presence of changedPresences) {
 	if (!metadata.iframe && existsSync(iframePath)) {
 		errors.push({
 			presence,
-			message: "Presence has iframe.ts but metadata.iframe is set to false",
+			message: `Presence (${presence}) has iframe.ts but metadata.iframe is set to false`,
 			properties: {
 				file: iframePath,
 			},
 		});
 	}
 
+	if (metadata.iFrameRegExp === ".*") {
+		warnings.push({
+			presence,
+			message: `Presence (${presence}) has metadata.iFrameRegExp set to '.*', please change this if possible`,
+			properties: {
+				file: resolve(presencePath, "metadata.json"),
+				startLine: getLine("iFrameRegExp"),
+			},
+		});
+	}
+
+	if (metadata.iFrameRegExp && !metadata.iframe) {
+		errors.push({
+			presence,
+			message: `Presence (${presence}) has metadata.iFrameRegExp set but metadata.iframe is set to false`,
+			properties: {
+				file: resolve(presencePath, "metadata.json"),
+				startLine: getLine("iFrameRegExp"),
+			},
+		});
+	}
+
+	if (!metadata.iFrameRegExp && metadata.iframe) {
+		warnings.push({
+			presence,
+			message: `Presence (${presence}) has metadata.iframe set to true but metadata.iFrameRegExp is not set, you may want to set it`,
+			properties: {
+				file: resolve(presencePath, "metadata.json"),
+				startLine: getLine("iFrameRegExp"),
+			},
+		});
+	}
 	//#endregion
 
 	//#region Presence language Check
@@ -216,6 +253,9 @@ for (const presence of changedPresences) {
 	actions.info(chalk.green(`${metadata.service} validated successfully`));
 }
 
+if (warnings.length)
+	for (const warning of warnings)
+		actions.warning(warning.message, warning.properties);
 if (errors.length) {
 	for (const error of errors) actions.error(error.message, error.properties);
 	actions.setFailed("Some Presences failed to validate.");

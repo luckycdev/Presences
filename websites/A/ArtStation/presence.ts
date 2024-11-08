@@ -3,9 +3,19 @@ const presence = new Presence({
 	}),
 	browsingTimestamp = Math.floor(Date.now() / 1000);
 
+const enum Assets {
+	Logo = "https://cdn.rcd.gg/PreMiD/websites/A/ArtStation/assets/logo.png",
+	Inbox = "https://cdn.rcd.gg/PreMiD/websites/A/ArtStation/assets/0.png",
+	User = "https://cdn.rcd.gg/PreMiD/websites/A/ArtStation/assets/1.png",
+	Artwork = "https://cdn.rcd.gg/PreMiD/websites/A/ArtStation/assets/2.png",
+	Searchjob = "https://cdn.rcd.gg/PreMiD/websites/A/ArtStation/assets/3.png",
+	Editprofile = "https://cdn.rcd.gg/PreMiD/websites/A/ArtStation/assets/4.png",
+	Portfolio = "https://cdn.rcd.gg/PreMiD/websites/A/ArtStation/assets/5.png",
+}
+
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-			largeImageKey: "artstation",
+			largeImageKey: Assets.Logo,
 			startTimestamp: browsingTimestamp,
 		},
 		shortTitle = document.title.split(/-(.+)/)[1],
@@ -18,7 +28,7 @@ presence.on("UpdateData", async () => {
 
 	if (document.location.pathname.startsWith("/messages")) {
 		presenceData.details = "Checking inbox";
-		presenceData.smallImageKey = "inbox";
+		presenceData.smallImageKey = Assets.Inbox;
 		presenceData.smallImageText = "Checking inbox";
 	} else if (
 		document.querySelector<HTMLDivElement>(
@@ -30,7 +40,7 @@ presence.on("UpdateData", async () => {
 		presenceData.largeImageKey = document.querySelector<HTMLImageElement>(
 			"div.user-profile > user-header > div > div > div.avatar > img"
 		).src;
-		presenceData.smallImageKey = "user";
+		presenceData.smallImageKey = Assets.User;
 		presenceData.smallImageText = "Viewing profile";
 		presenceData.buttons = [{ label: "View Artist", url: document.URL }];
 	} else if (document.location.pathname.startsWith("/artwork")) {
@@ -48,7 +58,7 @@ presence.on("UpdateData", async () => {
 				"div.asset-image > picture > img"
 			).src;
 		} else {
-			presenceData.smallImageKey = "artwork";
+			presenceData.smallImageKey = Assets.Artwork;
 			presenceData.smallImageText = "Viewing artwork";
 		}
 		presenceData.buttons = [
@@ -69,7 +79,7 @@ presence.on("UpdateData", async () => {
 		presenceData.state = document
 			.querySelector('meta[property="og:title"]')
 			.getAttribute("content");
-		presenceData.smallImageKey = "searchjob";
+		presenceData.smallImageKey = Assets.Searchjob;
 		presenceData.smallImageText = "Viewing jobs";
 	} else if (document.location.pathname.startsWith("/blogs")) {
 		if (document.location.pathname === "/blogs")
@@ -91,7 +101,7 @@ presence.on("UpdateData", async () => {
 		presenceData.details = "Looking for guides";
 	else if (document.location.pathname.startsWith("/learning")) {
 		presenceData.details = "Learning";
-		presenceData.smallImageKey = "learning";
+		presenceData.smallImageKey = Assets.Reading;
 		presenceData.smallImageText = "Learning";
 		if (
 			document.location.href.includes("/courses") ||
@@ -110,20 +120,21 @@ presence.on("UpdateData", async () => {
 				"button.vjs-play-control.vjs-control.vjs-button.vjs-paused"
 			);
 			if (!paused) {
-				presenceData.endTimestamp =
-					Date.now() / 1000 +
-					presence.timestampFromFormat(
-						document
-							.querySelector("div.vjs-duration-display")
-							.textContent.slice(14)
-					) -
-					presence.timestampFromFormat(
-						document
-							.querySelector("div.vjs-current-time-display")
-							.textContent.slice(13)
+				[presenceData.startTimestamp, presenceData.endTimestamp] =
+					presence.getTimestamps(
+						presence.timestampFromFormat(
+							document
+								.querySelector("div.vjs-duration-display")
+								.textContent.slice(14)
+						),
+						presence.timestampFromFormat(
+							document
+								.querySelector("div.vjs-current-time-display")
+								.textContent.slice(13)
+						)
 					);
 			}
-			presenceData.smallImageKey = paused ? "pause" : "play";
+			presenceData.smallImageKey = paused ? Assets.Pause : Assets.Play;
 			presenceData.smallImageText = paused ? "Paused" : "Playing";
 			presenceData.buttons = [{ label: "View Course", url: document.URL }];
 		} else if (document.location.href.includes("/series")) {
@@ -147,18 +158,18 @@ presence.on("UpdateData", async () => {
 		presenceData.details = "Changing settings";
 	else if (document.location.href.includes("profile/edit")) {
 		presenceData.details = "Editing profile";
-		presenceData.smallImageKey = "editprofile";
+		presenceData.smallImageKey = Assets.Editprofile;
 		presenceData.smallImageText = "Editing profile";
 	} else if (document.location.href.includes("project/new")) {
 		presenceData.details = "Uploading an artwork";
-		presenceData.smallImageKey = "upload";
+		presenceData.smallImageKey = Assets.Uploading;
 		presenceData.smallImageText = "Uploading artwork";
 	} else if (document.location.hostname === "magazine.artstation.com") {
 		presenceData.details = "Reading magazines";
 		presenceData.state = shortTitle;
 	} else if (document.location.hostname === "www.artstation.com") {
 		presenceData.details = "Exploring artworks";
-		presenceData.smallImageKey = "artwork";
+		presenceData.smallImageKey = Assets.Artwork;
 		presenceData.smallImageText = "Exploring artworks";
 	} else {
 		presenceData.details = "Viewing a portfolio";
@@ -168,10 +179,13 @@ presence.on("UpdateData", async () => {
 		presenceData.largeImageKey = document
 			.querySelector("head > meta[name=image]")
 			.getAttribute("content");
-		presenceData.smallImageKey = "portfolio";
+		presenceData.smallImageKey = Assets.Portfolio;
 		presenceData.smallImageText = "Viewing portfolio";
 	}
-	if (!image) presenceData.largeImageKey = "logo";
+	if (!image) {
+		presenceData.largeImageKey =
+			"https://cdn.rcd.gg/PreMiD/websites/A/ArtStation/assets/logo.png";
+	}
 	if (!button) delete presenceData.buttons;
 	if (!time) {
 		delete presenceData.startTimestamp;

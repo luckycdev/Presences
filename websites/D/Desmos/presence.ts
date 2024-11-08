@@ -9,7 +9,8 @@ const startTime: number = Date.now();
 
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-		largeImageKey: "logo",
+		largeImageKey:
+			"https://cdn.rcd.gg/PreMiD/websites/D/Desmos/assets/logo.jpg",
 		startTimestamp: startTime,
 	};
 	// Getting Data
@@ -48,7 +49,8 @@ presence.on("UpdateData", async () => {
 	} else graphing = 0;
 	// Setting Presence
 	if (graphing === 2) {
-		presenceData.smallImageKey = "logo";
+		presenceData.smallImageKey =
+			"https://cdn.rcd.gg/PreMiD/websites/D/Desmos/assets/logo.jpg";
 		presenceData.smallImageText = "Desmos Graphing Calculator";
 		presenceData.details = "Plotting a Graph: ".concat(title);
 		presenceData.state = numEquations.toString().concat(" Equation");

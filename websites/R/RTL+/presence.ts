@@ -12,15 +12,13 @@ const presence = new Presence({
 	},
 	browsingTimestamp = Math.floor(Date.now() / 1000);
 
+const enum Assets {
+	Logo = "https://cdn.rcd.gg/PreMiD/websites/R/RTL+/assets/0.jpg",
+}
+
 let video: HTMLVideoElement,
 	vidTitle: string,
 	strings: Awaited<ReturnType<typeof getStrings>> = null;
-
-enum Assets {
-	Logo = "https://i.imgur.com/fMMsZfV.jpg",
-	Pause = "https://i.imgur.com/C6mbMYz.png",
-	Play = "https://i.imgur.com/crCKEaC.png",
-}
 
 presence.on("UpdateData", async () => {
 	const [startTimestamp, endTimestamp] = presence.getTimestamps(
@@ -45,8 +43,10 @@ presence.on("UpdateData", async () => {
 
 			presenceData.smallImageKey = video.paused ? Assets.Pause : Assets.Play;
 			presenceData.smallImageText = video.paused ? strings.pause : strings.play;
-			presenceData.startTimestamp = startTimestamp;
-			presenceData.endTimestamp = endTimestamp;
+			[presenceData.startTimestamp, presenceData.endTimestamp] = [
+				startTimestamp,
+				endTimestamp,
+			];
 			presenceData.buttons = [
 				{
 					label: "View",

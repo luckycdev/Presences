@@ -5,7 +5,8 @@ const presence = new Presence({
 
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-			largeImageKey: "logo",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/W/Watch2Gether/assets/logo.png",
 			startTimestamp: browsingTimestamp,
 		},
 		{ hostname, pathname } = document.location;
@@ -49,10 +50,11 @@ presence.on("UpdateData", async () => {
 					"div.w2g-player-menu.w2g-player > div.ui.inverted.tiny.menu > a > i.play"
 				)
 			) {
-				[, presenceData.endTimestamp] = presence.getTimestamps(
-					presence.timestampFromFormat(playerTime[0].textContent),
-					presence.timestampFromFormat(playerTime[1].textContent)
-				);
+				[presenceData.startTimestamp, presenceData.endTimestamp] =
+					presence.getTimestamps(
+						presence.timestampFromFormat(playerTime[0].textContent),
+						presence.timestampFromFormat(playerTime[1].textContent)
+					);
 			}
 			if (invite) {
 				presenceData.buttons = [

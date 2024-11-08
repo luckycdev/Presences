@@ -6,10 +6,12 @@ const presence = new Presence({
 
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-			largeImageKey: "clouds",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/S/Sitting%20on%20Clouds%20Radio/assets/logo.png",
 		},
 		presenceDataSlide: PresenceData = {
-			largeImageKey: "clouds",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/S/Sitting%20on%20Clouds%20Radio/assets/logo.png",
 		};
 
 	if (document.querySelector(".player_playing__N2IaC")) {
@@ -18,14 +20,14 @@ presence.on("UpdateData", async () => {
 			songInfoArray[1].textContent;
 		presenceData.state = `By ${songInfoArray[0].textContent}`;
 		presenceDataSlide.state = `From ${songInfoArray[2].textContent}`;
-		presenceData.smallImageKey = presenceDataSlide.smallImageKey = "live";
+		presenceData.smallImageKey = presenceDataSlide.smallImageKey = Assets.Live;
 		presenceData.startTimestamp = presenceDataSlide.startTimestamp =
 			timeElapsed;
 		slideshow.addSlide("slideArtist", presenceData, 5000);
 		slideshow.addSlide("slideAlbum", presenceDataSlide, 5000);
 	} else {
 		presenceData.details = "Not tuned in.";
-		presenceData.smallImageKey = "pause";
+		presenceData.smallImageKey = Assets.Pause;
 	}
 	if (slideshow.getSlides().length > 0) presence.setActivity(slideshow);
 	else presence.setActivity(presenceData);

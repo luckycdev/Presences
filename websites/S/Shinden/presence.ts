@@ -33,7 +33,8 @@ presence.on("iFrameData", (data: IFrameData) => {
 
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-		largeImageKey: "shinden",
+		largeImageKey:
+			"https://cdn.rcd.gg/PreMiD/websites/S/Shinden/assets/logo.png",
 	};
 
 	presenceData.startTimestamp = browsingTimestamp;
@@ -63,7 +64,7 @@ presence.on("UpdateData", async () => {
 							.textContent,
 						""
 					);
-				presenceData.smallImageKey = "reading";
+				presenceData.smallImageKey = Assets.Reading;
 			} else presenceData.details = "Viewing recent articles";
 		} else if (document.location.pathname.includes("/series")) {
 			if (document.querySelector(".page-title")) {
@@ -107,12 +108,14 @@ presence.on("UpdateData", async () => {
 					Math.floor(duration)
 				);
 
-				presenceData.smallImageKey = paused ? "pause" : "play";
+				presenceData.smallImageKey = paused ? Assets.Pause : Assets.Play;
 				presenceData.smallImageText = paused
 					? (await strings).pause
 					: (await strings).play;
-				presenceData.startTimestamp = startTimestamp;
-				presenceData.endTimestamp = endTimestamp;
+				[presenceData.startTimestamp, presenceData.endTimestamp] = [
+					startTimestamp,
+					endTimestamp,
+				];
 
 				if (paused) {
 					delete presenceData.startTimestamp;

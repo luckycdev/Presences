@@ -13,10 +13,11 @@ presence.on("UpdateData", async () => {
 	const details = document.querySelector("#trackInfo > a"),
 		state = document.querySelector("#trackInfo > span > a"),
 		presenceData = {
-			largeImageKey: "mini_logo",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/S/Sua%20M%C3%BAsica/assets/logo.png",
 			smallImageKey: document.querySelector("a.btnPlayer.playPause.pause")
-				? "play"
-				: "pause",
+				? Assets.Play
+				: Assets.Pause,
 			smallImageText: "suamusica.com.br",
 			details:
 				details && details.textContent.length

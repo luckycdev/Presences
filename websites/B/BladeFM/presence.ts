@@ -40,7 +40,8 @@ presence.on("UpdateData", async () => {
 			timestamp: await presence.getSetting<boolean>("timestamp"),
 		},
 		presenceData: PresenceData = {
-			largeImageKey: "logo",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/B/BladeFM/assets/logo.png",
 			details: settings.details,
 			state: settings.state,
 			smallImageText: `${
@@ -56,7 +57,7 @@ presence.on("UpdateData", async () => {
 
 	if (settings.timestamp) presenceData.startTimestamp = timestamp;
 	if (data.live.is_live && data.live.streamer_name !== "Admin")
-		presenceData.smallImageKey = "live";
+		presenceData.smallImageKey = Assets.Live;
 	else delete presenceData.smallImageText;
 
 	presence.setActivity(presenceData);

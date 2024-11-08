@@ -1,84 +1,70 @@
 const presence = new Presence({
 		clientId: "844108776793178122",
 	}),
-	strings = presence.getStrings({
+	startTimestamp = Math.floor(Date.now() / 1000);
+
+async function getStrings() {
+	return presence.getStrings({
 		play: "general.playing",
 		pause: "general.paused",
+		browse: "general.browsing",
 		live: "general.live",
+		listening: "general.listeningMusic",
 	});
+}
 
-let title, author;
+let strings: Awaited<ReturnType<typeof getStrings>>,
+	oldLang: string = null;
 
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-		largeImageKey: "logo",
-		startTimestamp: Math.floor(Date.now() / 1000),
-	};
-	if (
-		document
-			.querySelector("#innerAppContent")
-			.querySelectorAll('[data-testid="player"]')
-	) {
-		const liveCheck = document.querySelector("#scrubberElapsed");
-		presenceData.largeImageKey =
-			document.querySelector("#playerArtwork").getAttribute("src") ?? "logo";
-		if (!liveCheck) return presence.setActivity();
-		if (liveCheck.textContent === "LIVE") {
-			const pauseCheck = document
-				.querySelector("#innerAppContent")
-				.querySelectorAll('[data-testid="player-status-stopped"]');
-			title = document.querySelector("#playerTitle").textContent;
-			author = document.querySelector("#playerSubtitle").textContent;
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/T/TuneIn/assets/logo.png",
+			type: ActivityType.Listening,
+			startTimestamp,
+		},
+		[newLang, timestamps, cover, privacy] = await Promise.all([
+			presence.getSetting<string>("lang").catch(() => "en"),
+			presence.getSetting<boolean>("timestamps"),
+			presence.getSetting<boolean>("cover"),
+			presence.getSetting<boolean>("privacy"),
+		]),
+		isLive = document.querySelector("[data-icon='stop']"),
+		isPlaying = document.querySelector("[data-testid='player-status-playing']");
 
-			presenceData.details = title;
-			if (title.length > 128)
-				presenceData.details = `${title.substring(0, 125)}...`;
+	if (oldLang !== newLang) {
+		oldLang = newLang;
+		strings = await getStrings();
+	}
 
-			presenceData.state = author;
-			if (author.length > 128)
-				presenceData.state = `${author.substring(0, 125)}...`;
-			if (pauseCheck[0]) {
-				presenceData.smallImageKey = "pause";
-				presenceData.smallImageText = (await strings).pause;
-			} else {
-				presenceData.smallImageKey = "live";
-				presenceData.smallImageText = (await strings).live;
-			}
-		} else {
-			title = document.querySelector("#playerTitle").textContent;
-			author = document.querySelector("#playerSubtitle").textContent;
-			const timestamps = presence.getTimestamps(
-					presence.timestampFromFormat(
-						document.querySelector("#scrubberElapsed").textContent
-					),
-					presence.timestampFromFormat(
-						document.querySelector("#scrubberDuration").textContent
-					)
-				),
-				paused = document
-					.querySelector("#innerAppContent")
-					.querySelectorAll('[data-testid="player-status-paused"]');
+	if (isLive || isPlaying) {
+		if (privacy) presenceData.details = strings.listening;
+		else {
+			const title = document.querySelector("#playerTitle").textContent,
+				author = document.querySelector("#playerSubtitle").textContent,
+				artwork = document.querySelector("#playerArtwork").getAttribute("src");
 
-			presenceData.details = title;
-			if (title.length > 128)
-				presenceData.details = `${title.substring(0, 125)}...`;
-
-			presenceData.state = author;
-			if (author.length > 128)
-				presenceData.state = `${author.substring(0, 125)}...`;
-
-			if (paused[0]) {
-				delete presenceData.startTimestamp;
-				delete presenceData.endTimestamp;
-				presenceData.smallImageKey = "pause";
-				presenceData.smallImageText = (await strings).pause;
-			} else {
-				presenceData.smallImageKey = "play";
-				presenceData.smallImageText = (await strings).play;
-			}
-			presenceData.endTimestamp = timestamps.pop();
+			if (title) presenceData.details = title;
+			if (author) presenceData.state = author;
+			if (artwork && cover) presenceData.largeImageKey = artwork;
 		}
-		if (!presenceData.details) presence.setActivity();
-		else presence.setActivity(presenceData);
-	} else presence.setActivity();
+
+		presenceData.smallImageKey = isLive ? Assets.Live : Assets.Play;
+		presenceData.smallImageText = isLive ? strings.live : strings.play;
+
+		if (!privacy && timestamps && !isLive && isPlaying) {
+			const elapsed = document.querySelector("#scrubberElapsed").textContent,
+				duration = document.querySelector("#scrubberDuration").textContent;
+
+			if (elapsed !== "00:00" || duration !== "") {
+				[presenceData.startTimestamp, presenceData.endTimestamp] =
+					presence.getTimestamps(
+						presence.timestampFromFormat(elapsed),
+						presence.timestampFromFormat(duration)
+					);
+			}
+		}
+	} else presenceData.details = strings.browse;
+
+	presence.setActivity(presenceData);
 });

@@ -20,7 +20,8 @@ presenceSet();
 
 presence.on("UpdateData", () => {
 	const presenceData: PresenceData = {
-		largeImageKey: "dashnet",
+		largeImageKey:
+			"https://cdn.rcd.gg/PreMiD/websites/D/DashNet/assets/logo.png",
 		startTimestamp: browsingTimestamp,
 	};
 
@@ -39,14 +40,15 @@ presence.on("UpdateData", () => {
 		presenceData.state = document
 			.querySelector("#cookies div")
 			.textContent.replace("per second :", "Per second:");
-		presenceData.smallImageKey = "legacyy";
+		presenceData.smallImageKey =
+			"https://cdn.rcd.gg/PreMiD/websites/D/DashNet/assets/0.png";
 		presenceData.smallImageText = `Legacy level: ${
 			document.querySelector("#ascendNumber").textContent
 		}`;
 	} else if (document.location.pathname === "/") {
 		presenceData.details = "Browsing DashNet's";
 		presenceData.state = "video games and other fun things";
-		presenceData.smallImageKey = "reading";
+		presenceData.smallImageKey = Assets.Reading;
 	} else if (document.location.pathname.includes("/legacy/"))
 		presenceData.details = "Playing Legacy";
 	else if (document.location.pathname.includes("/igm/"))

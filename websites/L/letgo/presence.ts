@@ -31,24 +31,25 @@ presence.on("UpdateData", async () => {
 			);
 	if (page.includes("/c/") && category && category.textContent !== "") {
 		presence.setActivity({
-			largeImageKey: "letgo-logob",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/L/letgo/assets/logo.png",
 			details: "Bir kategoriyi inceliyor:",
 			state: category.textContent.trim() || "Belirsiz",
 			startTimestamp: Math.floor(Date.now() / 1000),
 		});
-		//console.log('asd')
 	} else if (
 		page.includes("?searchTerm") ||
 		(searchingFor && searchingFor.textContent !== "")
 	) {
 		presence.setActivity({
-			largeImageKey: "letgo-logob",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/L/letgo/assets/logo.png",
 			details: "Bir şey arıyor:",
 			state:
 				searchingFor && searchingFor.textContent
 					? searchingFor.textContent
 					: "Belirsiz",
-			smallImageKey: "letgo-ara",
+			smallImageKey: Assets.Search,
 			startTimestamp: Math.floor(Date.now() / 1000),
 		});
 	} else if (page.includes("/i/")) {
@@ -64,7 +65,8 @@ presence.on("UpdateData", async () => {
 			);
 
 		presence.setActivity({
-			largeImageKey: "letgo-logob",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/L/letgo/assets/logo.png",
 			details: "Bir ilanı inceliyor:",
 			state:
 				stuff && stuff.textContent !== ""
@@ -90,21 +92,24 @@ presence.on("UpdateData", async () => {
 		let username;
 		if (user && user.textContent !== "") username = user.textContent.trim();
 		presence.setActivity({
-			largeImageKey: "letgo-logob",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/L/letgo/assets/logo.png",
 			details: "Bir kullanıcı profili inceliyor:",
 			state: username || "Belirsiz",
 			startTimestamp: Math.floor(Date.now() / 1000),
 		});
 	} else if (pages[page] || pages[page.slice(0, -1)]) {
 		presence.setActivity({
-			largeImageKey: "letgo-logob",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/L/letgo/assets/logo.png",
 			details: "Bir sayfaya göz atıyor:",
 			state: pages[page] || pages[page.slice(0, -1)],
 			startTimestamp: Math.floor(Date.now() / 1000),
 		});
 	} else {
 		presence.setActivity({
-			largeImageKey: "letgo-logob",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/L/letgo/assets/logo.png",
 			details: "Bir sayfaya göz atıyor:",
 			state: "Ana Sayfa",
 			startTimestamp: Math.floor(Date.now() / 1000),

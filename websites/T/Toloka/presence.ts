@@ -5,9 +5,25 @@ const presence = new Presence({
 
 let title: HTMLElement, search: HTMLInputElement;
 
+const enum Assets {
+	Toloka = "https://cdn.rcd.gg/PreMiD/websites/T/Toloka/assets/0.png",
+	Film = "https://cdn.rcd.gg/PreMiD/websites/T/Toloka/assets/1.png",
+	Video = "https://cdn.rcd.gg/PreMiD/websites/T/Toloka/assets/2.png",
+	Home = "https://cdn.rcd.gg/PreMiD/websites/T/Toloka/assets/3.png",
+	Music = "https://cdn.rcd.gg/PreMiD/websites/T/Toloka/assets/4.png",
+	Reply = "https://cdn.rcd.gg/PreMiD/websites/T/Toloka/assets/5.png",
+	Archive = "https://cdn.rcd.gg/PreMiD/websites/T/Toloka/assets/6.png",
+	User = "https://cdn.rcd.gg/PreMiD/websites/T/Toloka/assets/7.png",
+	Book = "https://cdn.rcd.gg/PreMiD/websites/T/Toloka/assets/8.png",
+	Gamepad = "https://cdn.rcd.gg/PreMiD/websites/T/Toloka/assets/9.png",
+	Desktop = "https://cdn.rcd.gg/PreMiD/websites/T/Toloka/assets/10.png",
+	Sms = "https://cdn.rcd.gg/PreMiD/websites/T/Toloka/assets/11.png",
+}
+
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-			largeImageKey: "toloka",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/T/Toloka/assets/logo.png",
 		},
 		showUseramePM = await presence.getSetting<boolean>("name"),
 		showSearchQuery = await presence.getSetting<boolean>("search");
@@ -17,7 +33,7 @@ presence.on("UpdateData", async () => {
 			presenceData.startTimestamp = browsingTimestamp;
 			presenceData.details = "Переглядаю головну";
 			presenceData.state = "сторінку";
-			presenceData.smallImageKey = "home";
+			presenceData.smallImageKey = Assets.Home;
 			presenceData.smallImageText = "Головна";
 
 			break;
@@ -26,7 +42,7 @@ presence.on("UpdateData", async () => {
 			presenceData.startTimestamp = browsingTimestamp;
 			presenceData.details = "Переглядаю розділ:";
 			presenceData.state = "Загальне";
-			presenceData.smallImageKey = "home";
+			presenceData.smallImageKey = Assets.Home;
 			presenceData.smallImageText = "Загальне";
 
 			break;
@@ -35,7 +51,7 @@ presence.on("UpdateData", async () => {
 			presenceData.startTimestamp = browsingTimestamp;
 			presenceData.details = "Переглядаю розділ:";
 			presenceData.state = "Проект Відео Гуртом";
-			presenceData.smallImageKey = "video";
+			presenceData.smallImageKey = Assets.Video;
 			presenceData.smallImageText = "Відео Гуртом";
 
 			break;
@@ -44,7 +60,7 @@ presence.on("UpdateData", async () => {
 			presenceData.startTimestamp = browsingTimestamp;
 			presenceData.details = "Переглядаю розділ:";
 			presenceData.state = "Фільми українською";
-			presenceData.smallImageKey = "film";
+			presenceData.smallImageKey = Assets.Film;
 			presenceData.smallImageText = "Фільми";
 
 			break;
@@ -53,7 +69,7 @@ presence.on("UpdateData", async () => {
 			presenceData.startTimestamp = browsingTimestamp;
 			presenceData.details = "Переглядаю розділ:";
 			presenceData.state = "Українська музика";
-			presenceData.smallImageKey = "music";
+			presenceData.smallImageKey = Assets.Music;
 			presenceData.smallImageText = "Музика";
 
 			break;
@@ -62,7 +78,7 @@ presence.on("UpdateData", async () => {
 			presenceData.startTimestamp = browsingTimestamp;
 			presenceData.details = "Переглядаю розділ:";
 			presenceData.state = "Література українською";
-			presenceData.smallImageKey = "book";
+			presenceData.smallImageKey = Assets.Book;
 			presenceData.smallImageText = "Література";
 
 			break;
@@ -71,7 +87,7 @@ presence.on("UpdateData", async () => {
 			presenceData.startTimestamp = browsingTimestamp;
 			presenceData.details = "Переглядаю розділ:";
 			presenceData.state = "Програми українською";
-			presenceData.smallImageKey = "desktop";
+			presenceData.smallImageKey = Assets.Desktop;
 			presenceData.smallImageText = "Програми";
 
 			break;
@@ -80,7 +96,7 @@ presence.on("UpdateData", async () => {
 			presenceData.startTimestamp = browsingTimestamp;
 			presenceData.details = "Переглядаю розділ:";
 			presenceData.state = "Ігри українською";
-			presenceData.smallImageKey = "gamepad";
+			presenceData.smallImageKey = Assets.Gamepad;
 			presenceData.smallImageText = "Ігри";
 
 			break;
@@ -89,7 +105,7 @@ presence.on("UpdateData", async () => {
 			presenceData.startTimestamp = browsingTimestamp;
 			presenceData.details = "Переглядаю розділ:";
 			presenceData.state = "Архів та смітник";
-			presenceData.smallImageKey = "archive";
+			presenceData.smallImageKey = Assets.Archive;
 			presenceData.smallImageText = "Архів";
 
 			break;
@@ -109,7 +125,7 @@ presence.on("UpdateData", async () => {
 				presenceData.startTimestamp = browsingTimestamp;
 				presenceData.details = "Переглядаю профіль:";
 				presenceData.state = title.textContent;
-				presenceData.smallImageKey = "user";
+				presenceData.smallImageKey = Assets.User;
 				presenceData.smallImageText = "Профіль";
 			} else if (RegExp("\\/t\\d+", "g").test(document.location.pathname)) {
 				title = document.querySelector(
@@ -125,7 +141,7 @@ presence.on("UpdateData", async () => {
 			} else if (document.location.pathname.includes("/faq.php")) {
 				presenceData.startTimestamp = browsingTimestamp;
 				presenceData.details = "Читаю FAQ";
-				presenceData.smallImageKey = "question";
+				presenceData.smallImageKey = Assets.Question;
 				presenceData.smallImageText = "FAQ";
 			} else if (document.location.pathname.includes("/tracker.php")) {
 				search = document.querySelector(
@@ -138,7 +154,7 @@ presence.on("UpdateData", async () => {
 					presenceData.details = "Шукаю:";
 					presenceData.state = search.value;
 				}
-				presenceData.smallImageKey = "search";
+				presenceData.smallImageKey = Assets.Search;
 				presenceData.smallImageText = "Пошук";
 			} else if (document.location.pathname.includes("/featured")) {
 				presenceData.startTimestamp = browsingTimestamp;
@@ -146,7 +162,7 @@ presence.on("UpdateData", async () => {
 				presenceData.state = "релізи";
 			} else if (document.location.pathname.includes("/privmsg.php")) {
 				presenceData.startTimestamp = browsingTimestamp;
-				presenceData.smallImageKey = "sms";
+				presenceData.smallImageKey = Assets.Sms;
 				presenceData.smallImageText = "ПП";
 				if (document.location.search.includes("?folder=inbox&mode=read")) {
 					title = document.querySelector(
@@ -224,7 +240,7 @@ presence.on("UpdateData", async () => {
 				presenceData.startTimestamp = browsingTimestamp;
 				if (document.location.search.includes("?mode=searchuser")) {
 					presenceData.details = "Шукаю співрозмовника";
-					presenceData.smallImageKey = "search";
+					presenceData.smallImageKey = Assets.Search;
 					presenceData.smallImageText = "Пошук";
 				} else if (document.location.search.includes("?search_id=newposts")) {
 					presenceData.details = "Переглядаю нові";
@@ -258,7 +274,7 @@ presence.on("UpdateData", async () => {
 					presenceData.details = "Шукаю:";
 					presenceData.state = search.value;
 				}
-				presenceData.smallImageKey = "search";
+				presenceData.smallImageKey = Assets.Search;
 				presenceData.smallImageText = "Пошук";
 			} else if (document.location.pathname.includes("/release.php")) {
 				presenceData.startTimestamp = browsingTimestamp;

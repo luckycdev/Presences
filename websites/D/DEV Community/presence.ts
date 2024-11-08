@@ -88,14 +88,18 @@ function isPodcast(): boolean {
 	}
 }
 
+const assets: Record<string, string> = {
+	play: Assets.Play,
+	pause: Assets.Pause,
+};
+
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-			largeImageKey: "lg",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/D/DEV%20Community/assets/logo.png",
 			startTimestamp: timestamp,
 		},
 		buttons = await presence.getSetting<boolean>("buttons");
-
-	let endTimestamp = 0;
 
 	switch (true) {
 		case isShop():
@@ -103,7 +107,8 @@ presence.on("UpdateData", async () => {
 			break;
 		case isProfile():
 			presenceData.details = authorName;
-			presenceData.smallImageKey = "user";
+			presenceData.smallImageKey =
+				"https://cdn.rcd.gg/PreMiD/websites/D/DEV%20Community/assets/0.png";
 			presenceData.smallImageText = "Profile";
 			if (buttons) {
 				presenceData.buttons = [
@@ -117,7 +122,7 @@ presence.on("UpdateData", async () => {
 		case isArticle():
 			presenceData.details = articleTitle;
 			presenceData.state = authorName;
-			presenceData.smallImageKey = "reading";
+			presenceData.smallImageKey = Assets.Reading;
 			presenceData.smallImageText = "Reading";
 			if (buttons) {
 				presenceData.buttons = [
@@ -153,15 +158,13 @@ presence.on("UpdateData", async () => {
 				: "play";
 			contentStateText = contentStateKey === "pause" ? "Paused" : "Playing";
 
-			presenceData.smallImageKey = contentStateKey;
+			presenceData.smallImageKey = assets[contentStateKey];
 			presenceData.smallImageText = contentStateText;
 
-			[, endTimestamp] = presence.getTimestampsfromMedia(
-				document.querySelector("video")
-			);
-			if (contentStateKey === "play" && endTimestamp > 0)
-				presenceData.endTimestamp = endTimestamp;
-			else {
+			if (contentStateKey === "play") {
+				[presenceData.startTimestamp, presenceData.endTimestamp] =
+					presence.getTimestampsfromMedia(document.querySelector("video"));
+			} else {
 				delete presenceData.startTimestamp;
 				delete presenceData.endTimestamp;
 			}
@@ -188,15 +191,13 @@ presence.on("UpdateData", async () => {
 				: "play";
 			contentStateText = contentStateKey === "pause" ? "Paused" : "Listening";
 
-			presenceData.smallImageKey = contentStateKey;
+			presenceData.smallImageKey = assets[contentStateKey];
 			presenceData.smallImageText = contentStateText;
 
-			[, endTimestamp] = presence.getTimestampsfromMedia(
-				document.querySelector("#audio")
-			);
-			if (contentStateKey === "play" && endTimestamp > 0)
-				presenceData.endTimestamp = endTimestamp;
-			else {
+			if (contentStateKey === "play") {
+				[presenceData.startTimestamp, presenceData.endTimestamp] =
+					presence.getTimestampsfromMedia(document.querySelector("video"));
+			} else {
 				delete presenceData.startTimestamp;
 				delete presenceData.endTimestamp;
 			}
@@ -233,7 +234,7 @@ presence.on("UpdateData", async () => {
 			break;
 		case pathIncludes("/new"):
 			presenceData.details = "Writing a Post";
-			presenceData.smallImageKey = "writing";
+			presenceData.smallImageKey = Assets.Writing;
 			presenceData.smallImageText = "Writing";
 			break;
 		case pathIncludes("/readinglist"):
@@ -258,7 +259,7 @@ presence.on("UpdateData", async () => {
 			searchLength = document.querySelector("#substories").children.length;
 			presenceData.details = `Search: ${searchTerm}`;
 			presenceData.state = `${searchLength} Results`;
-			presenceData.smallImageKey = "search";
+			presenceData.smallImageKey = Assets.Search;
 			presenceData.smallImageText = "Searching...";
 			break;
 		case pathIncludes("/settings"):
@@ -275,37 +276,37 @@ presence.on("UpdateData", async () => {
 			break;
 		case pathIncludes("/code-of-conduct"):
 			presenceData.details = "Code of Conduct";
-			presenceData.smallImageKey = "reading";
+			presenceData.smallImageKey = Assets.Reading;
 			presenceData.smallImageText = "Reading";
 			break;
 		case pathIncludes("/faq"):
 			presenceData.details = "FAQ 🤔";
-			presenceData.smallImageKey = "reading";
+			presenceData.smallImageKey = Assets.Reading;
 			presenceData.smallImageText = "Reading";
 			break;
 		case pathIncludes("/sponsors"):
 			presenceData.details = "Sponsors";
-			presenceData.smallImageKey = "reading";
+			presenceData.smallImageKey = Assets.Reading;
 			presenceData.smallImageText = "Reading";
 			break;
 		case pathIncludes("/about"):
 			presenceData.details = "About";
-			presenceData.smallImageKey = "reading";
+			presenceData.smallImageKey = Assets.Reading;
 			presenceData.smallImageText = "Reading";
 			break;
 		case pathIncludes("/privacy"):
 			presenceData.details = "Privacy";
-			presenceData.smallImageKey = "reading";
+			presenceData.smallImageKey = Assets.Reading;
 			presenceData.smallImageText = "Reading";
 			break;
 		case pathIncludes("/terms"):
 			presenceData.details = "Terms and Conditions";
-			presenceData.smallImageKey = "reading";
+			presenceData.smallImageKey = Assets.Reading;
 			presenceData.smallImageText = "Reading";
 			break;
 		case pathIncludes("/contact"):
 			presenceData.details = "Contact";
-			presenceData.smallImageKey = "reading";
+			presenceData.smallImageKey = Assets.Reading;
 			presenceData.smallImageText = "Reading";
 			break;
 		case pathIncludes("/onboarding"):
@@ -314,6 +315,5 @@ presence.on("UpdateData", async () => {
 		default:
 			presenceData.details = "General Feed";
 	}
-	if (endTimestamp === 0) delete presenceData.endTimestamp;
 	presence.setActivity(presenceData);
 });

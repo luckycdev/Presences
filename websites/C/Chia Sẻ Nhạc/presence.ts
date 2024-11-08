@@ -5,7 +5,8 @@ const presence = new Presence({
 
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-			largeImageKey: "lg",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/C/Chia%20S%E1%BA%BB%20Nh%E1%BA%A1c/assets/logo.png",
 			startTimestamp: browsingTimestamp,
 		},
 		{ pathname, href } = document.location,
@@ -54,13 +55,13 @@ presence.on("UpdateData", async () => {
 				delete presenceData.startTimestamp;
 
 				if (!paused) {
-					presenceData.endTimestamp =
-						Date.now() / 1000 + duration - currentTime;
+					[presenceData.startTimestamp, presenceData.endTimestamp] =
+						presence.getTimestamps(duration, currentTime);
 				}
 			}
 			if (buttons)
 				presenceData.buttons = [{ label: "Xem video", url: document.URL }];
-			presenceData.smallImageKey = paused ? "paused" : "play";
+			presenceData.smallImageKey = paused ? Assets.Pause : Assets.Play;
 			presenceData.smallImageText = paused ? "Đã dừng" : "Đang phát";
 		}
 	} else if (
@@ -104,13 +105,13 @@ presence.on("UpdateData", async () => {
 				delete presenceData.startTimestamp;
 
 				if (!paused) {
-					presenceData.endTimestamp =
-						Date.now() / 1000 + duration - currentTime;
+					[presenceData.startTimestamp, presenceData.endTimestamp] =
+						presence.getTimestamps(duration, currentTime);
 				}
 			}
 			if (buttons)
 				presenceData.buttons = [{ label: "Nghe bài hát", url: document.URL }];
-			presenceData.smallImageKey = paused ? "paused" : "play";
+			presenceData.smallImageKey = paused ? Assets.Pause : Assets.Play;
 			presenceData.smallImageText = paused ? "Đã dừng" : "Đang phát";
 		}
 	} else if (

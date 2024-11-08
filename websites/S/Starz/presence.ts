@@ -20,7 +20,8 @@ let elapsed: number, oldUrl: string;
 
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-			largeImageKey: "starz-logo",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/S/Starz/assets/logo.png",
 		},
 		{ href, pathname: path } = window.location;
 
@@ -35,27 +36,25 @@ presence.on("UpdateData", async () => {
 
 	if (video) {
 		const title = document.querySelector("title")?.textContent,
-			[startTimestamp, endTimestamp] = presence.getTimestamps(
-				Math.floor(video.currentTime),
-				Math.floor(video.duration)
-			),
-			live = endTimestamp === Infinity;
+			live = video.duration === Infinity;
 
 		presenceData.details = title;
 		presenceData.state = getStateText(video.paused, live);
 		presenceData.smallImageKey = live
-			? "live"
+			? Assets.Live
 			: video.paused
-			? "pause"
-			: "play";
+			? Assets.Pause
+			: Assets.Play;
 		presenceData.smallImageText = live
 			? (await strings).live
 			: video.paused
 			? (await strings).pause
 			: (await strings).play;
-		presenceData.startTimestamp = live ? elapsed : startTimestamp;
-		if (!live) presenceData.endTimestamp = endTimestamp;
-		if (live) delete presenceData.endTimestamp;
+		if (!live) {
+			[presenceData.startTimestamp, presenceData.endTimestamp] =
+				presence.getTimestampsfromMedia(video);
+		} else if (live) delete presenceData.endTimestamp;
+
 		if (video.paused) {
 			delete presenceData.startTimestamp;
 			delete presenceData.endTimestamp;

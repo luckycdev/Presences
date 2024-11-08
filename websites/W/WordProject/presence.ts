@@ -5,7 +5,8 @@ const presence = new Presence({
 
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-			largeImageKey: "logo",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/W/WordProject/assets/logo.png",
 			startTimestamp: browsingTimestamp,
 		},
 		{ pathname, href } = location,
@@ -23,7 +24,8 @@ presence.on("UpdateData", async () => {
 					presence.timestampFromFormat(e.textContent)
 				);
 
-				[, presenceData.endTimestamp] = presence.getTimestamps(currTS, durTS);
+				[presenceData.startTimestamp, presenceData.endTimestamp] =
+					presence.getTimestamps(currTS, durTS);
 			}
 		}
 	} else if (
@@ -66,7 +68,8 @@ presence.on("UpdateData", async () => {
 					const [timeTS, durTS] = [time, duration].map(e =>
 						presence.timestampFromFormat(e.textContent)
 					);
-					[, presenceData.endTimestamp] = presence.getTimestamps(timeTS, durTS);
+					[presenceData.startTimestamp, presenceData.endTimestamp] =
+						presence.getTimestamps(timeTS, durTS);
 				}
 			}
 			if (buttons) {
@@ -105,7 +108,8 @@ presence.on("UpdateData", async () => {
 				const [timeTS, durTS] = [time, duration].map(e =>
 					presence.timestampFromFormat(e.textContent)
 				);
-				[, presenceData.endTimestamp] = presence.getTimestamps(timeTS, durTS);
+				[presenceData.startTimestamp, presenceData.endTimestamp] =
+					presence.getTimestamps(timeTS, durTS);
 			}
 		}
 		if (buttons) {

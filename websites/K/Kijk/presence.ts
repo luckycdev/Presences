@@ -5,7 +5,8 @@ const presence = new Presence({
 
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-			largeImageKey: "https://i.imgur.com/LSOqk1G.png",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/K/Kijk/assets/logo.png",
 			startTimestamp: browsingTimestamp,
 		},
 		search = document.querySelector<HTMLInputElement>(
@@ -29,7 +30,7 @@ presence.on("UpdateData", async () => {
 	else if (search?.value) {
 		presenceData.details = "Zoekt naar";
 		presenceData.state = search.value;
-		presenceData.smallImageKey = "searching";
+		presenceData.smallImageKey = Assets.Search;
 	} else {
 		switch (pathname.split("/")[1]) {
 			case "": {
@@ -66,10 +67,10 @@ presence.on("UpdateData", async () => {
 								'[name="og:image"]'
 							).content;
 						if (!video.paused) {
-							[, presenceData.endTimestamp] =
+							[presenceData.startTimestamp, presenceData.endTimestamp] =
 								presence.getTimestampsfromMedia(video);
-							presenceData.smallImageKey = "play";
-						} else presenceData.smallImageKey = "pause";
+							presenceData.smallImageKey = Assets.Play;
+						} else presenceData.smallImageKey = Assets.Pause;
 						if (
 							!document
 								.querySelector('[class="jw-text jw-reset-text jw-text-alt"]')
@@ -116,10 +117,10 @@ presence.on("UpdateData", async () => {
 								'[name="og:image"]'
 							).content;
 						if (!video.paused) {
-							[, presenceData.endTimestamp] =
+							[presenceData.startTimestamp, presenceData.endTimestamp] =
 								presence.getTimestampsfromMedia(video);
-							presenceData.smallImageKey = "play";
-						} else presenceData.smallImageKey = "pause";
+							presenceData.smallImageKey = Assets.Play;
+						} else presenceData.smallImageKey = Assets.Pause;
 						if (
 							!document
 								.querySelector('[class="jw-text jw-reset-text jw-text-alt"]')
@@ -148,7 +149,10 @@ presence.on("UpdateData", async () => {
 		}
 	}
 
-	if (!covers) presenceData.largeImageKey = "https://i.imgur.com/LSOqk1G.png";
+	if (!covers) {
+		presenceData.largeImageKey =
+			"https://cdn.rcd.gg/PreMiD/websites/K/Kijk/assets/logo.png";
+	}
 	if (!buttons) delete presenceData.buttons;
 	if (presenceData.details) presence.setActivity(presenceData);
 	else presence.setActivity();

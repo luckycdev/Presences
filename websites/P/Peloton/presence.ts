@@ -12,7 +12,8 @@ presence.on("UpdateData", async () => {
 		pause: "general.paused",
 	});
 	const presenceData: PresenceData = {
-		largeImageKey: "peloton",
+		largeImageKey:
+			"https://cdn.rcd.gg/PreMiD/websites/P/Peloton/assets/logo.png",
 		startTimestamp: browsingTimestamp,
 	};
 
@@ -120,18 +121,16 @@ presence.on("UpdateData", async () => {
 
 				switch (!video.paused) {
 					case true:
-						presenceData.smallImageKey = "play";
+						presenceData.smallImageKey = Assets.Play;
 						presenceData.smallImageText = strings.play;
-						presenceData.endTimestamp = new Date(
-							Date.now() + (video.duration - video.currentTime) * 1000
-						).getTime();
+						[presenceData.startTimestamp, presenceData.endTimestamp] =
+							presence.getTimestampsfromMedia(video);
 						break;
 					case false:
-						presenceData.smallImageKey = "pause";
+						presenceData.smallImageKey = Assets.Pause;
 						presenceData.smallImageText = strings.pause;
-						presenceData.endTimestamp = new Date(
-							Date.now() + (video.duration - video.currentTime) * 1000
-						).getTime();
+						[presenceData.startTimestamp, presenceData.endTimestamp] =
+							presence.getTimestampsfromMedia(video);
 						break;
 				}
 				presenceData.details = clipTitle.replace("&amp;", "&");
@@ -158,14 +157,14 @@ presence.on("UpdateData", async () => {
 				!(document.querySelector(".jw-video") as HTMLVideoElement).paused
 			) {
 				case true:
-					presenceData.smallImageKey = "live";
+					presenceData.smallImageKey = Assets.Live;
 					presenceData.smallImageText = strings.live;
 					presenceData.endTimestamp = new Date(
 						Date.now() + (clipTimeLeft[0] * 1 + clipTimeLeft[1] * 1) * 10
 					).getTime();
 					break;
 				case false:
-					presenceData.smallImageKey = "live";
+					presenceData.smallImageKey = Assets.Live;
 					presenceData.smallImageText = strings.live;
 					break;
 			}

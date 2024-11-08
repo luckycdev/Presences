@@ -15,7 +15,8 @@ presence.on("UpdateData", async () => {
 
 	const path = window.location.pathname,
 		presenceData: PresenceData = {
-			largeImageKey: "peacock",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/P/Peacock/assets/logo.png",
 			startTimestamp: elapsed,
 		};
 
@@ -62,10 +63,10 @@ presence.on("UpdateData", async () => {
 			}
 
 			presenceData.smallImageKey = live
-				? "live"
+				? Assets.Live
 				: video.paused
-				? "pause"
-				: "play";
+				? Assets.Pause
+				: Assets.Play;
 			presenceData.smallImageText = live
 				? strings.live
 				: video.paused

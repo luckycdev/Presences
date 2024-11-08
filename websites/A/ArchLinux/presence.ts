@@ -7,7 +7,8 @@ const presence = new Presence({
 
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-			largeImageKey: "arch",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/A/ArchLinux/assets/logo.png",
 			startTimestamp: browsingTimestamp,
 		},
 		archData: {

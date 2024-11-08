@@ -5,7 +5,8 @@ const presence = new Presence({
 
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-		largeImageKey: "logo",
+		largeImageKey:
+			"https://cdn.rcd.gg/PreMiD/websites/D/Durarara/assets/logo.png",
 		startTimestamp: browsingTimestamp,
 	};
 
@@ -14,7 +15,7 @@ presence.on("UpdateData", async () => {
 		presenceData.state = `Username: ${
 			document.querySelector(".name").textContent
 		}`;
-		presenceData.smallImageKey = "search";
+		presenceData.smallImageKey = Assets.Search;
 	} else if (document.location.pathname.includes("/create_room"))
 		presenceData.details = "Creating a room";
 	else if (document.location.pathname.includes("/room/")) {
@@ -24,7 +25,8 @@ presence.on("UpdateData", async () => {
 		presenceData.state = `Members: ${
 			document.querySelector(".room-title-capacity").textContent
 		}`;
-		presenceData.smallImageKey = "chat";
+		presenceData.smallImageKey =
+			"https://cdn.rcd.gg/PreMiD/websites/D/Durarara/assets/0.png";
 	}
 
 	if (presenceData.details) presence.setActivity(presenceData);

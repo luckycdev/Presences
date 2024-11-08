@@ -5,7 +5,8 @@ const presence = new Presence({
 
 presence.on("UpdateData", () => {
 	const presenceData: PresenceData = {
-		largeImageKey: "logo",
+		largeImageKey:
+			"https://cdn.rcd.gg/PreMiD/websites/U/Usercord.org/assets/logo.png",
 		startTimestamp: browsingTimestamp,
 	};
 	if (document.location.hostname === "usercord.org") {

@@ -15,7 +15,8 @@ presence.on("UpdateData", async () => {
 			"#root > div.story.story-container > h1"
 		),
 		presenceData: PresenceData = {
-			largeImageKey: "hn-logo",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/H/HackerNoon/assets/logo.png",
 			startTimestamp: browsingTimestamp,
 		};
 
@@ -30,7 +31,8 @@ presence.on("UpdateData", async () => {
 		presenceData.state = document.querySelector<HTMLInputElement>(
 			"#searchbox > div > form > input"
 		).value;
-		presenceData.smallImageKey = "hn-logo";
+		presenceData.smallImageKey =
+			"https://cdn.rcd.gg/PreMiD/websites/H/HackerNoon/assets/logo.png";
 	} else if (user && user.textContent !== "") {
 		presenceData.details = "Viewing User Profile:";
 		presenceData.state = user.textContent;

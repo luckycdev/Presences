@@ -32,7 +32,8 @@ let lastTitle: string,
 
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-			largeImageKey: "logo",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/A/Aqua/assets/logo.png",
 		},
 		[changeDetails, changeState, changeSmallText] = await Promise.all([
 			presence.getSetting<string>("changedetails"),

@@ -1,5 +1,6 @@
 {
-	"$schema": "https://schemas.premid.app/metadata/1.7",
+	"$schema": "https://schemas.premid.app/metadata/1.11",
+	"apiVersion": 1,
 	"author": {
 		"id": "257151906038677504",
 		"name": "SHISEN"
@@ -9,10 +10,10 @@
 		"en": "Website for online watching movies, series, sports broadcasts and concerts",
 		"ru": "Сайт для онлайн просмотра фильмов, сериалов, спортивных трансляций и концертов"
 	},
-	"url": "kinopub.net",
-	"version": "1.0.0",
-	"logo": "https://i.imgur.com/HAvvvj7.png",
-	"thumbnail": "https://i.imgur.com/TFaoJbL.png",
+	"url": "kino.pub",
+	"version": "1.0.11",
+	"logo": "https://cdn.rcd.gg/PreMiD/websites/K/Kinopub/assets/logo.png",
+	"thumbnail": "https://cdn.rcd.gg/PreMiD/websites/K/Kinopub/assets/thumbnail.png",
 	"color": "#1c202b",
 	"category": "videos",
 	"tags": [
@@ -22,6 +23,7 @@
 		"media"
 	],
 	"iframe": true,
+	"iFrameRegExp": ".*",
 	"settings": [
 		{
 			"id": "privacy",

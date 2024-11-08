@@ -1,12 +1,15 @@
-let presence = new Presence({
+const presence = new Presence({
 	clientId: "658230518520741915",
 });
 
-function setClient(options: PresenceOptions) {
-	if (presence.getExtensionVersion() < 224) return;
-
-	presence.clearActivity();
-	presence = new Presence(options);
+enum LogoAssets {
+	BbcFuture = "https://cdn.rcd.gg/PreMiD/websites/B/BBC/assets/0.png",
+	BbciPlayer = "https://cdn.rcd.gg/PreMiD/websites/B/BBC/assets/1.png",
+	Bbc = "https://cdn.rcd.gg/PreMiD/websites/B/BBC/assets/2.png",
+	BbcNews = "https://cdn.rcd.gg/PreMiD/websites/B/BBC/assets/3.png",
+	BbcSounds = "https://cdn.rcd.gg/PreMiD/websites/B/BBC/assets/4.png",
+	BbcSport = "https://cdn.rcd.gg/PreMiD/websites/B/BBC/assets/5.png",
+	BbcWeather = "https://cdn.rcd.gg/PreMiD/websites/B/BBC/assets/6.png",
 }
 
 const browsingTimestamp = Math.floor(Date.now() / 1000),
@@ -15,9 +18,9 @@ const browsingTimestamp = Math.floor(Date.now() / 1000),
 			{
 				play: "general.playing",
 				pause: "general.paused",
-				live: "general.live",
+				Live: "general.Live",
 				browse: "general.browsing",
-				searchFor: "general.searchFor",
+				searchSomething: "general.searchSomething",
 				viewTeam: "twitch.viewTeam",
 				viewPage: "general.viewPage",
 				viewMovie: "general.viewMovie",
@@ -35,31 +38,21 @@ const browsingTimestamp = Math.floor(Date.now() / 1000),
 	serviceName = (() => {
 		switch (location.pathname.split("/")[1]) {
 			case "iplayer":
-				setClient({
-					clientId: "932513249327460402",
-				});
-				return "bbciplayer";
+				return "iPlayer";
 			case "sounds":
-				setClient({
-					clientId: "944257541964169287",
-				});
-				return "bbcsounds";
+				return "Sounds";
 			case "sport":
-				return "bbcsport";
+				return "Sport";
 			case "news":
-				return "bbcnews";
+				return "News";
 			case "weather":
-				return "bbcweather";
+				return "Weather";
+			case "future":
+				return "Future";
 			default:
-				setClient({
-					clientId: "658230518520741915",
-				});
-				return "bbc";
+				return "";
 		}
-	})(),
-	assets = {
-		LIVE: "https://i.imgur.com/vibO5wd.gif",
-	} as const;
+	})();
 
 let oldLang: string = null,
 	strings: Awaited<ReturnType<typeof getStrings>>,
@@ -73,7 +66,9 @@ let oldLang: string = null,
 		currentTime: 0,
 		paused: true,
 		title: null,
-	};
+	},
+	iPlayer: IPlayerData,
+	soundData: SoundData;
 
 presence.on("iFrameData", (data: IFrameData) => {
 	if (data.audio) SoundMedia = data.audio;
@@ -82,12 +77,13 @@ presence.on("iFrameData", (data: IFrameData) => {
 
 presence.on("UpdateData", async () => {
 	const path = document.location.pathname,
-		[newLang, buttons, showSearchQuery, showCover] = await Promise.all([
+		[newLang, buttons, showCover, usePresenceName] = await Promise.all([
 			presence.getSetting<string>("lang").catch(() => "en"),
 			presence.getSetting<boolean>("buttons"),
-			presence.getSetting<boolean>("search"),
 			presence.getSetting<boolean>("cover"),
+			presence.getSetting<boolean>("usePresenceName"),
 		]),
+		{ href } = document.location,
 		setCover = (url: string, size?: string) => {
 			if (url) {
 				presenceData.largeImageKey = url.replace(
@@ -97,10 +93,13 @@ presence.on("UpdateData", async () => {
 			}
 		},
 		handleVideo = () => {
+			presenceData.type = ActivityType.Watching;
 			[presenceData.startTimestamp, presenceData.endTimestamp] =
 				presence.getTimestamps(VideoMedia.currentTime, VideoMedia.duration);
 
-			presenceData.smallImageKey = VideoMedia.paused ? "pause" : "play";
+			presenceData.smallImageKey = VideoMedia.paused
+				? Assets.Pause
+				: Assets.Play;
 			presenceData.smallImageText = VideoMedia.paused
 				? strings.pause
 				: strings.play;
@@ -117,15 +116,17 @@ presence.on("UpdateData", async () => {
 	}
 
 	let presenceData: PresenceData = {
-		largeImageKey: `${serviceName}_logo`,
+		name: `BBC ${serviceName}`,
+		largeImageKey: LogoAssets[`Bbc${serviceName}`],
 		details: strings.browse,
 		startTimestamp: browsingTimestamp,
 	};
 
 	if (path.includes("/iplayer")) {
-		const iPlayer = await presence.getPageletiable<IPlayerData>(
-			"__IPLAYER_REDUX_STATE__"
-		);
+		presenceData.type = ActivityType.Watching;
+		iPlayer ??= await presence
+			.getPageVariable("__IPLAYER_REDUX_STATE__")
+			.then(data => data.__IPLAYER_REDUX_STATE__);
 
 		let iPlayerVideo: HTMLVideoElement | MediaData = document
 			.querySelector("smp-toucan-player")
@@ -134,17 +135,15 @@ presence.on("UpdateData", async () => {
 
 		if (!iPlayerVideo && VideoMedia) iPlayerVideo = VideoMedia;
 
-		presenceData.details = strings.browse;
-
 		if (path.includes("/iplayer/episode")) {
-			if (!iPlayerVideo.duration || iPlayer.episode?.live) {
-				if (iPlayer.channel?.onAir || iPlayer.episode?.live) {
+			if (!iPlayerVideo.duration || iPlayer.episode?.Live) {
+				if (iPlayer.channel?.onAir || iPlayer.episode?.Live) {
 					presenceData.details = (iPlayer.channel ?? iPlayer.episode).title;
-					presenceData.state = strings.live;
+					presenceData.state = strings.Live;
 
 					setCover(iPlayer.episode?.images?.standard);
 
-					presenceData.smallImageKey = assets.LIVE;
+					presenceData.smallImageKey = Assets.Live;
 				} else if (!iPlayer.channel) {
 					setCover(
 						iPlayer.episode?.images?.promotional ??
@@ -160,25 +159,36 @@ presence.on("UpdateData", async () => {
 				}
 			} else {
 				let subtitle = document.querySelector(
-					":is(.typo.typo--skylark.play-cta__subtitle, .typo.typo--bold.play-cta__title.typo--skylark)"
-				)?.textContent;
+						":is(.typo.typo--skylark.play-cta__subtitle, .typo.typo--bold.play-cta__title.typo--skylark)"
+					)?.textContent,
+					episodeTitle;
 
 				if (subtitle) {
-					const episodeNumber = subtitle.match(/[0-9]{1,2}/g),
-						episodeTitle =
-							subtitle.match(/: [0-9]{1,2}. (.*)/)?.[1] ??
-							subtitle.match(/: (.*)/)?.[1];
+					const episodeNumber = subtitle.match(/[0-9]{1,2}/g);
+					episodeTitle =
+						subtitle.match(/: [0-9]{1,2}. (.*)/)?.[1] ??
+						subtitle.match(/: (.*)/)?.[1];
 
 					if (/Series [0-9]{1,2}: (Episode )?[0-9]{1,2}.?/i.test(subtitle)) {
-						subtitle = `S${episodeNumber[0]}${
-							episodeNumber[1] ? `:E${episodeNumber[1]}` : ""
-						}${episodeTitle ? ` ${episodeTitle}` : ""}`;
+						if (usePresenceName) {
+							subtitle = `Season ${episodeNumber[0]}, Episode ${
+								episodeNumber[1] || 1
+							}`;
+						} else {
+							subtitle = `S${episodeNumber[0]}${
+								episodeNumber[1] ? `:E${episodeNumber[1]}` : ""
+							}${episodeTitle ? ` ${episodeTitle}` : ""}`;
+						}
 					}
 				}
 
-				presenceData.details = (iPlayer.episode || iPlayer.header).title;
-				presenceData.state =
-					subtitle || iPlayer.episode?.labels?.category || "Animation";
+				const { title } = iPlayer.episode || iPlayer.header,
+					state = subtitle || iPlayer.episode?.labels?.category || "Animation";
+
+				if (usePresenceName) presenceData.name = title;
+
+				presenceData.details = usePresenceName ? episodeTitle : title;
+				presenceData.state = usePresenceName ? subtitle : state;
 
 				setCover(iPlayer.episode?.images?.promotional);
 
@@ -188,7 +198,9 @@ presence.on("UpdateData", async () => {
 						iPlayerVideo.duration
 					);
 
-				presenceData.smallImageKey = iPlayerVideo.paused ? "pause" : "play";
+				presenceData.smallImageKey = iPlayerVideo.paused
+					? Assets.Pause
+					: Assets.Play;
 				presenceData.smallImageText = iPlayerVideo.paused
 					? strings.pause
 					: strings.play;
@@ -197,24 +209,20 @@ presence.on("UpdateData", async () => {
 					presenceData.buttons = [
 						{
 							label: strings.buttonViewEpisode,
-							url: `https://www.bbc.co.uk/iplayer/episode/${
-								document.location.pathname.split("/")[3]
-							}`,
+							url: href,
 						},
 						{
 							label: strings.buttonViewSeries,
-							url: `https://www.bbc.co.uk/iplayer/episode/${iPlayer.relatedEpisodes.episodes[0].episode.id}`,
+							url: href,
 						},
 					];
 				} else {
 					presenceData.buttons = [
 						{
-							label: presenceData.state.toLocaleLowerCase().includes("film")
+							label: state.toLocaleLowerCase().includes("film")
 								? strings.buttonViewMovie
 								: strings.watchVideo,
-							url: `https://www.bbc.co.uk/iplayer/episode/${
-								document.location.pathname.split("/")[3]
-							}`,
+							url: href,
 						},
 					];
 				}
@@ -226,33 +234,34 @@ presence.on("UpdateData", async () => {
 			}
 		}
 	} else if (path.includes("/sounds")) {
-		const soundData = await presence.getPageletiable<SoundData>(
-			"__PRELOADED_STATE__"
-		);
-
-		presenceData.details = strings.browse;
+		presenceData.type = ActivityType.Listening;
+		soundData ??= await presence
+			.getPageVariable("__PRELOADED_STATE__")
+			.then(data => data.__PRELOADED_STATE__);
 
 		if (path.includes("/play/")) {
-			const isLive = path.includes("live:");
+			const isLive = path.includes("Live:");
 			setCover(soundData.programmes.current.image_url);
 
 			if (isLive) {
 				presenceData.details =
 					SoundMedia.title ?? soundData.programmes.current.titles.primary;
 				presenceData.state = soundData.programmes.current.titles.secondary;
-				presenceData.smallImageKey = assets.LIVE;
+				presenceData.smallImageKey = Assets.Live;
 			} else {
 				presenceData.details =
 					SoundMedia.title ?? soundData.programmes.current.titles.primary;
 				presenceData.state = soundData.programmes.current.titles.secondary;
 				presenceData.smallImageKey =
-					SoundMedia.paused || !SoundMedia.duration ? "pause" : "play";
+					SoundMedia.paused || !SoundMedia.duration
+						? Assets.Pause
+						: Assets.Play;
 			}
 
 			presenceData.smallImageText =
 				SoundMedia.paused || !SoundMedia.duration
 					? isLive
-						? strings.live
+						? strings.Live
 						: strings.pause
 					: strings.play;
 
@@ -262,9 +271,7 @@ presence.on("UpdateData", async () => {
 			presenceData.buttons = [
 				{
 					label: strings.buttonListenAlong,
-					url: `https://www.bbc.co.uk/sounds/play/${
-						document.URL.split("/")[5]
-					}`,
+					url: href,
 				},
 			];
 
@@ -275,7 +282,7 @@ presence.on("UpdateData", async () => {
 		}
 	} else if (path.includes("/sport")) {
 		presenceData.details = strings.browse;
-		presenceData.smallImageKey = "reading";
+		presenceData.smallImageKey = Assets.Reading;
 
 		const title = document.querySelector("h1")?.textContent;
 
@@ -295,7 +302,7 @@ presence.on("UpdateData", async () => {
 				presenceData.buttons = [
 					{
 						label: strings.buttonReadArticle,
-						url: document.baseURI,
+						url: href,
 					},
 				];
 			} else if (path.includes("/formula1/")) {
@@ -304,7 +311,7 @@ presence.on("UpdateData", async () => {
 				presenceData.buttons = [
 					{
 						label: strings.buttonReadArticle,
-						url: document.baseURI,
+						url: href,
 					},
 				];
 			}
@@ -324,7 +331,7 @@ presence.on("UpdateData", async () => {
 				presenceData.buttons = [
 					{
 						label: strings.buttonReadArticle,
-						url: document.baseURI,
+						url: href,
 					},
 				];
 			} else if (path.includes("/transfers")) {
@@ -333,7 +340,7 @@ presence.on("UpdateData", async () => {
 				presenceData.buttons = [
 					{
 						label: strings.buttonReadArticle,
-						url: document.baseURI,
+						url: href,
 					},
 				];
 			} else if (path.includes("/top-scorers")) {
@@ -354,7 +361,7 @@ presence.on("UpdateData", async () => {
 				presenceData.buttons = [
 					{
 						label: strings.buttonReadArticle,
-						url: document.baseURI,
+						url: href,
 					},
 				];
 			}
@@ -401,7 +408,7 @@ presence.on("UpdateData", async () => {
 				presenceData.buttons = [
 					{
 						label: strings.buttonReadArticle,
-						url: document.baseURI,
+						url: href,
 					},
 				];
 			}
@@ -421,7 +428,7 @@ presence.on("UpdateData", async () => {
 				presenceData.buttons = [
 					{
 						label: strings.buttonReadArticle,
-						url: document.baseURI,
+						url: href,
 					},
 				];
 			}
@@ -431,7 +438,7 @@ presence.on("UpdateData", async () => {
 
 			presenceData.smallImageText = "Tennis";
 
-			if (path.includes("/live-scores")) {
+			if (path.includes("/Live-scores")) {
 				presenceData.details = strings.viewPage;
 				presenceData.state = title;
 			} else if (path.includes("/order-of-play")) {
@@ -443,7 +450,7 @@ presence.on("UpdateData", async () => {
 				presenceData.buttons = [
 					{
 						label: strings.buttonReadArticle,
-						url: document.baseURI,
+						url: href,
 					},
 				];
 			}
@@ -459,7 +466,7 @@ presence.on("UpdateData", async () => {
 				presenceData.buttons = [
 					{
 						label: strings.buttonReadArticle,
-						url: document.baseURI,
+						url: href,
 					},
 				];
 			}
@@ -475,7 +482,7 @@ presence.on("UpdateData", async () => {
 				presenceData.buttons = [
 					{
 						label: strings.buttonReadArticle,
-						url: document.baseURI,
+						url: href,
 					},
 				];
 			}
@@ -485,7 +492,7 @@ presence.on("UpdateData", async () => {
 			presenceData.buttons = [
 				{
 					label: strings.buttonReadArticle,
-					url: document.baseURI,
+					url: href,
 				},
 			];
 
@@ -498,7 +505,7 @@ presence.on("UpdateData", async () => {
 				presenceData.buttons = [
 					{
 						label: strings.watchVideo,
-						url: document.baseURI,
+						url: href,
 					},
 				];
 			}
@@ -530,7 +537,7 @@ presence.on("UpdateData", async () => {
 			presenceData.buttons = [
 				{
 					label: strings.watchVideo,
-					url: document.baseURI,
+					url: href,
 				},
 			];
 		}
@@ -545,16 +552,12 @@ presence.on("UpdateData", async () => {
 				[key: string]: PresenceData;
 			} = {
 				"/weather/search": {
-					details: strings.searchFor,
-					state: document.querySelector<HTMLInputElement>(
-						"input.location-search-input__input"
-					)?.value,
-					smallImageKey: "search",
+					details: strings.searchSomething,
+					smallImageKey: Assets.Search,
 				},
 				"/weather/map": {
 					details: strings.viewPage,
 					state: "Map",
-					smallImageKey: "map",
 				},
 				"/weather/([0-9])": {
 					details: "Viewing weather of:",
@@ -565,22 +568,22 @@ presence.on("UpdateData", async () => {
 					smallImageText: document.querySelector(
 						"div.wr-day-summary > div > span"
 					)?.textContent,
-					smallImageKey: "reading",
+					smallImageKey: Assets.Reading,
 					buttons: [
 						{
 							label: "View Weather",
-							url: document.baseURI,
+							url: href,
 						},
 					],
 				},
-				"/weather/features/([0-9])": {
+				"/weather/articles/": {
 					details: strings.readingArticle,
 					state: title,
-					smallImageKey: "reading",
+					smallImageKey: Assets.Reading,
 					buttons: [
 						{
 							label: strings.buttonReadArticle,
-							url: document.baseURI,
+							url: href,
 						},
 					],
 				},
@@ -599,9 +602,9 @@ presence.on("UpdateData", async () => {
 				handleVideo();
 			}
 		}
-	} else if (path.includes("/news")) {
+	} else if (path.includes("/news") || path.includes("/future")) {
 		presenceData.details = strings.browse;
-		presenceData.smallImageKey = "reading";
+		presenceData.smallImageKey = Assets.Reading;
 
 		const title = document.querySelector("h1")?.textContent,
 			newsPages: {
@@ -621,7 +624,7 @@ presence.on("UpdateData", async () => {
 					buttons: [
 						{
 							label: strings.buttonReadArticle,
-							url: document.baseURI,
+							url: href,
 						},
 					],
 				},
@@ -695,43 +698,42 @@ presence.on("UpdateData", async () => {
 				presenceData.buttons = [
 					{
 						label: strings.watchVideo,
-						url: document.baseURI,
+						url: href,
 					},
 				];
-			} else if (path.match(/(-[0-9])/)) {
+			} else if (path.includes("/articles/")) {
 				presenceData.details = strings.readingArticle;
 				presenceData.state = title;
 
 				presenceData.buttons = [
 					{
 						label: strings.buttonReadArticle,
-						url: document.baseURI,
+						url: href,
 					},
 				];
 			}
 		}
 	} else if (path === "/search") {
-		presenceData.details = strings.searchFor;
-		presenceData.state =
-			document.querySelector<HTMLInputElement>("#search-input")?.value;
-		presenceData.smallImageKey = "search";
+		presenceData.details = strings.searchSomething;
+		presenceData.smallImageKey = Assets.Search;
 	}
 
 	if (!buttons) delete presenceData.buttons;
-	if (!showCover && presenceData.largeImageKey?.startsWith("https"))
-		presenceData.largeImageKey = `${serviceName}_logo`;
-
-	if (presenceData.details === strings.searchFor && !showSearchQuery)
-		presenceData.state = "(Hidden)";
+	if (!showCover) presenceData.largeImageKey = LogoAssets[`Bbc${serviceName}`];
 
 	presence.setActivity(presenceData);
 });
 
+/* eslint-disable camelcase */
+// This is just to make sure that the above line is not removed by eslint
+// while at the same time passing Deepscan issues.
+const unused_variable = (a: number, b: number) => a + b;
+unused_variable(1, 2);
 interface IPlayerData {
 	episode?: {
 		title: string;
 		subtitle: string;
-		live: boolean;
+		Live: boolean;
 		images: {
 			portrait?: string;
 			standard: string;
@@ -789,7 +791,7 @@ interface MediaData {
 }
 
 interface SoundData {
-	programmes: {
+	programmes?: {
 		current: {
 			image_url: string;
 			titles: {
@@ -798,7 +800,7 @@ interface SoundData {
 			};
 		};
 	};
-	modules: {
+	modules?: {
 		data: {
 			data: {
 				titles?: {
@@ -813,3 +815,4 @@ interface SoundData {
 		}[];
 	};
 }
+/* eslint-enable camelcase */

@@ -2,15 +2,23 @@ const presence = new Presence({
 		clientId: "973710731549745152",
 	}),
 	browsingTimestamp = Math.floor(Date.now() / 1000);
+const enum Assets {
+	Drw = "https://cdn.rcd.gg/PreMiD/websites/D/Discord%20Resources/assets/0.png",
+	Wiki = "https://cdn.rcd.gg/PreMiD/websites/D/Discord%20Resources/assets/1.png",
+	Blog = "https://cdn.rcd.gg/PreMiD/websites/D/Discord%20Resources/assets/2.png",
+	Unsupported = "https://cdn.rcd.gg/PreMiD/websites/D/Discord%20Resources/assets/3.png",
+}
+
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-			largeImageKey: "drw",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/D/Discord%20Resources/assets/logo.png",
 			startTimestamp: browsingTimestamp,
 		},
 		{ pathname, search } = window.location;
 	switch (true) {
 		case pathname.includes("/resources/"): {
-			presenceData.smallImageKey = "wiki";
+			presenceData.smallImageKey = Assets.Wiki;
 			presenceData.smallImageText = "Wiki";
 			presenceData.details = "Reading a wiki page";
 			presenceData.state = document.title.split("|")[0];
@@ -24,7 +32,7 @@ presence.on("UpdateData", async () => {
 			break;
 		}
 		case pathname.includes("/blog"): {
-			presenceData.smallImageKey = "blog";
+			presenceData.smallImageKey = Assets.Blog;
 			presenceData.smallImageText = "Blog";
 			if (document.title === "Blog | Discord Resources")
 				presenceData.details = "Viewing the main page";
@@ -45,7 +53,7 @@ presence.on("UpdateData", async () => {
 			break;
 		}
 		case pathname === "/search": {
-			presenceData.smallImageKey = "searching";
+			presenceData.smallImageKey = Assets.Search;
 			presenceData.smallImageText = "Searching...";
 			if (search) {
 				presenceData.details = "Searching for:";
@@ -58,7 +66,7 @@ presence.on("UpdateData", async () => {
 			break;
 		}
 		default: {
-			presenceData.smallImageKey = "unsupported";
+			presenceData.smallImageKey = Assets.Unsupported;
 			presenceData.smallImageText = "Unknown";
 			presenceData.details = "Viewing an unsupported page";
 		}

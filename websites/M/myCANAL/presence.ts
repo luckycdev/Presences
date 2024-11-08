@@ -1,10 +1,3 @@
-enum Assets {
-	Logo = "https://i.imgur.com/ZpDYxNn.png",
-	Pause = "https://i.imgur.com/noKfV57.png",
-	Play = "https://i.imgur.com/kmMmdW0.png",
-	Live = "https://i.imgur.com/wAc7YId.png",
-}
-
 const presence = new Presence({
 		clientId: "844106861711196179",
 	}),
@@ -15,6 +8,10 @@ const presence = new Presence({
 	}),
 	browsingTimestamp = Math.floor(Date.now() / 1000),
 	containsTerm = (term: string) => document.location.pathname.includes(term);
+
+const enum Assets {
+	Logo = "https://cdn.rcd.gg/PreMiD/websites/M/myCANAL/assets/0.png",
+}
 
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
@@ -56,15 +53,15 @@ presence.on("UpdateData", async () => {
 				).textContent;
 				presenceData.state = `sur ${
 					document.querySelector<HTMLImageElement>(
-						`#\\3${channelID} > a > div > div > div > div > div > img`
-					).alt
+						`#\\3${channelID}_onclick > div > div.card__content_0dae1b.cardContent___DuNAN.ratio--169 > div[class*="cardLogoChannel"] > div > img`
+					)?.alt
 				}`;
 				[presenceData.startTimestamp, presenceData.endTimestamp] =
 					presence.getTimestamps(video.currentTime, video.duration);
 				presenceData.largeImageKey = showCover
 					? document.querySelector<HTMLImageElement>(
-							`#\\3${channelID} > a > div > div > div > div > div > img`
-					  ).src
+							`#\\3${channelID}_onclick > div > div.card__content_0dae1b.cardContent___DuNAN.ratio--169 > div[class*="cardLogoChannel"] > div > img`
+					  )?.src
 					: Assets.Logo;
 				presenceData.smallImageKey = Assets.Live;
 				presenceData.smallImageText = "En direct";

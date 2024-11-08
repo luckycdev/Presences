@@ -8,7 +8,8 @@ const presence = new Presence({
 
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-			largeImageKey: "storyfire",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/S/StoryFire/assets/logo.png",
 		},
 		video: HTMLVideoElement = document.querySelector(
 			"#storyfire-player_html5_api"
@@ -26,12 +27,14 @@ presence.on("UpdateData", async () => {
 		).textContent;
 		presenceData.state = document.querySelector(".user-name").textContent;
 		if (!video.paused) {
-			presenceData.startTimestamp = startTimestamp;
-			presenceData.endTimestamp = endTimestamp;
-			presenceData.smallImageKey = "play";
+			[presenceData.startTimestamp, presenceData.endTimestamp] = [
+				startTimestamp,
+				endTimestamp,
+			];
+			presenceData.smallImageKey = Assets.Play;
 			presenceData.smallImageText = (await strings).play;
 		} else {
-			presenceData.smallImageKey = "pause";
+			presenceData.smallImageKey = Assets.Pause;
 			presenceData.smallImageText = (await strings).pause;
 		}
 
@@ -62,7 +65,7 @@ presence.on("UpdateData", async () => {
 		presenceData.details = "Viewing legal & policies";
 	else if (document.location.pathname.startsWith("/search")) {
 		presenceData.details = "Searching";
-		presenceData.smallImageKey = "search";
+		presenceData.smallImageKey = Assets.Search;
 		if (
 			(await presence.getSetting<boolean>("showsearchterm")) &&
 			document.querySelector(".content-header > span")

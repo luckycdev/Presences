@@ -2,13 +2,6 @@ const presence = new Presence({
 	clientId: "1036732879725658213",
 });
 
-enum Assets {
-	play = "https://i.imgur.com/6s4WyWY.png",
-	pause = "https://i.imgur.com/PrYtpQb.png",
-	reading = "https://i.imgur.com/wPUmqu5.png",
-	view = "https://i.imgur.com/hxvvGUi.png",
-}
-
 enum Content {
 	friends = "Друзья",
 	friendRequests = "Друзья",
@@ -63,14 +56,6 @@ function typeContent(string: string) {
 	return Content[string as keyof typeof Content];
 }
 
-function getMillisecondsFromString(timeString: string): number {
-	return (
-		(Number(timeString?.split(":")[0]) * 60 +
-			Number(timeString?.split(":")[1])) *
-		1000
-	);
-}
-
 presence.on(
 	"iFrameData",
 	(data: { duration: number; currentTime: number; paused: boolean }) => {
@@ -82,7 +67,7 @@ presence.on("UpdateData", async () => {
 	if (!strings) strings = await getStrings();
 	const presenceData: PresenceData = {
 			details: "Где-то на сайте",
-			largeImageKey: "https://i.imgur.com/CTUW5vP.png",
+			largeImageKey: "https://cdn.rcd.gg/PreMiD/websites/O/OK/assets/logo.png",
 		},
 		[musicMode, privacy, time, logo] = await Promise.all([
 			presence.getSetting<boolean>("musicMode"),
@@ -102,7 +87,7 @@ presence.on("UpdateData", async () => {
 
 		presenceData.details = textContent(".mini-player_name");
 		presenceData.state = textContent(".mini-player_artist");
-		presenceData.smallImageKey = playMusic ? Assets.play : Assets.pause;
+		presenceData.smallImageKey = playMusic ? Assets.Play : Assets.Pause;
 		presenceData.smallImageText = playMusic ? strings.playMusic : strings.pause;
 
 		if (logo) {
@@ -112,10 +97,11 @@ presence.on("UpdateData", async () => {
 		}
 
 		if (timeMusic && playMusic) {
-			const startedAt = Date.now() - getMillisecondsFromString(timeMusic[0]);
-			presenceData.startTimestamp = startedAt;
-			presenceData.endTimestamp =
-				startedAt + getMillisecondsFromString(timeMusic[1]);
+			[presenceData.startTimestamp, presenceData.endTimestamp] =
+				presence.getTimestamps(
+					presence.timestampFromFormat(timeMusic[0]),
+					presence.timestampFromFormat(timeMusic[1])
+				);
 		}
 	}
 
@@ -128,14 +114,14 @@ presence.on("UpdateData", async () => {
 
 			case "video":
 				presenceData.details = "Смотрит видео";
-				presenceData.smallImageKey = Assets.view;
+				presenceData.smallImageKey = Assets.Viewing;
 				presenceData.smallImageText = strings.viewing;
 
 				if (document.querySelector(".vp-layer")) {
 					presenceData.state = textContent(".vp-layer-info_h");
 					presenceData.smallImageKey = video.paused
-						? Assets.pause
-						: Assets.play;
+						? Assets.Pause
+						: Assets.Play;
 					presenceData.smallImageText = video.paused
 						? strings.pause
 						: strings.playVideo;
@@ -151,7 +137,7 @@ presence.on("UpdateData", async () => {
 				presenceData.details = `Смотрит профиль ${textContent(
 					".__user-profile-name-decorator"
 				)}`;
-				presenceData.smallImageKey = Assets.view;
+				presenceData.smallImageKey = Assets.Viewing;
 				presenceData.smallImageText = strings.viewing;
 
 				if (pathname.split("/")[3]) {
@@ -183,14 +169,14 @@ presence.on("UpdateData", async () => {
 			case "payments":
 			case "online":
 				presenceData.details = `Смотрит ${typeContent(pathname.split("/")[1])}`;
-				presenceData.smallImageKey = Assets.view;
+				presenceData.smallImageKey = Assets.Viewing;
 				presenceData.smallImageText = strings.viewing;
 				break;
 
 			case "feed":
 			case "messages":
 				presenceData.details = `Читает ${typeContent(pathname.split("/")[1])}`;
-				presenceData.smallImageKey = Assets.reading;
+				presenceData.smallImageKey = Assets.Reading;
 				presenceData.smallImageText = strings.reading;
 				break;
 
@@ -199,7 +185,7 @@ presence.on("UpdateData", async () => {
 				presenceData.state = document.querySelector(
 					".toolbar-layer_menu .nav-side_i.__ac .tico"
 				)?.lastChild?.textContent;
-				presenceData.smallImageKey = Assets.reading;
+				presenceData.smallImageKey = Assets.Reading;
 				presenceData.smallImageText = strings.reading;
 				break;
 
@@ -210,7 +196,7 @@ presence.on("UpdateData", async () => {
 			case "bookmarks":
 				presenceData.details = "Смотрит закладки";
 				presenceData.state = textContent(".nav-side_i.__ac div");
-				presenceData.smallImageKey = Assets.view;
+				presenceData.smallImageKey = Assets.Viewing;
 				presenceData.smallImageText = strings.viewing;
 				break;
 

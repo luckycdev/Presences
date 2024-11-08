@@ -4,7 +4,7 @@ const presence = new Presence({
 
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-		largeImageKey: "juke-crown",
+		largeImageKey: "https://cdn.rcd.gg/PreMiD/websites/J/JUKE/assets/logo.png",
 		buttons: [{ label: "Radio luisteren", url: document.location.href }],
 	};
 
@@ -35,16 +35,16 @@ presence.on("UpdateData", async () => {
 	}
 
 	if (document.querySelector("rect")) {
-		presenceData.smallImageKey = "playing";
+		presenceData.smallImageKey = Assets.Play;
 		presenceData.smallImageText = "Wordt afgespeeld";
 		presenceData.buttons = [
 			{ label: "Ook radio luisteren", url: document.location.href },
 		];
 	} else if (document.querySelector("[class*=spinner]")) {
-		presenceData.smallImageKey = "waiting";
+		presenceData.smallImageKey = Assets.Pause;
 		presenceData.smallImageText = "Wordt geladen";
 	} else if (document.querySelector("polygon")) {
-		presenceData.smallImageKey = "paused";
+		presenceData.smallImageKey = Assets.Pause;
 		presenceData.smallImageText = "Gepauzeerd";
 	}
 

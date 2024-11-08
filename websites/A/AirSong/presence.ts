@@ -26,7 +26,8 @@ presence.on("UpdateData", async () => {
 					.textContent
 			),
 			presenceData: PresenceData = {
-				largeImageKey: "logo",
+				largeImageKey:
+					"https://cdn.rcd.gg/PreMiD/websites/A/AirSong/assets/logo.png",
 			},
 			paused = document
 				.querySelector<HTMLAnchorElement>("#as-player-play")
@@ -40,17 +41,18 @@ presence.on("UpdateData", async () => {
 			.replace("%artist%", artist)
 			.replace("%album%", album);
 		if (!paused && time === 1) {
-			presenceData.endTimestamp =
-				Date.now() / 1000 +
-				presence.timestampFromFormat(
-					document.querySelector<HTMLSpanElement>("span.mejs-duration")
-						.textContent
-				) -
-				timeElapsed;
+			[presenceData.startTimestamp, presenceData.endTimestamp] =
+				presence.getTimestamps(
+					presence.timestampFromFormat(
+						document.querySelector<HTMLSpanElement>("span.mejs-duration")
+							.textContent
+					),
+					timeElapsed
+				);
 		} else if (!paused && time === 2)
 			presenceData.startTimestamp = Date.now() / 1000 - timeElapsed;
 
-		presenceData.smallImageKey = paused ? "pause" : "play";
+		presenceData.smallImageKey = paused ? Assets.Pause : Assets.Play;
 		presenceData.smallImageText = paused
 			? "Paused"
 			: `Playing at ${volume * 2}%`;

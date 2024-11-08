@@ -48,18 +48,14 @@ const paths = {
 		if (iFrameVideo) {
 			const video = iFrameVideo;
 
-			presenceData.smallImageKey = video.paused ? "pause" : "play";
+			presenceData.smallImageKey = video.paused ? Assets.Pause : Assets.Play;
 			presenceData.smallImageText = video.paused
 				? (await strings).pause
 				: (await strings).play;
 
 			if (!video.paused) {
-				const [startTimestamp, endTimestamp] = presence.getTimestamps(
-					video.currentTime,
-					video.duration
-				);
-				presenceData.startTimestamp = startTimestamp;
-				presenceData.endTimestamp = endTimestamp;
+				[presenceData.startTimestamp, presenceData.endTimestamp] =
+					presence.getTimestamps(video.currentTime, video.duration);
 			}
 
 			return !video.paused;
@@ -67,7 +63,7 @@ const paths = {
 	},
 	"/search"(presenceData: PresenceData) {
 		presenceData.state = "Searching...";
-		presenceData.smallImageKey = "search";
+		presenceData.smallImageKey = Assets.Search;
 
 		let searchQuery = new URLSearchParams(window.location.search).get("q");
 
@@ -120,7 +116,8 @@ const paths = {
 presence.on("UpdateData", async () => {
 	const buttons = await presence.getSetting<boolean>("buttons"),
 		presenceData: PresenceData = {
-			largeImageKey: "logo",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/A/AnimeHeaven/assets/logo.png",
 			state: "Browsing...",
 			startTimestamp: browsingTimestamp,
 		};

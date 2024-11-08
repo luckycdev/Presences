@@ -5,7 +5,8 @@ const presence = new Presence({
 
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-			smallImageKey: "google",
+			smallImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/G/Google%20Messages/assets/0.png",
 			smallImageText: "Google",
 			startTimestamp: tmb,
 		},
@@ -13,14 +14,17 @@ presence.on("UpdateData", async () => {
 		showcon = await presence.getSetting<boolean>("showContact");
 	// Home Page
 	if (path === "/" || path.includes("/intl/")) {
-		presenceData.largeImageKey = "icon";
+		presenceData.largeImageKey =
+			"https://cdn.rcd.gg/PreMiD/websites/G/Google%20Messages/assets/logo.png";
 		presenceData.details = "Home page";
 	} else if (path === "/web/authentication") {
-		presenceData.largeImageKey = "icon";
+		presenceData.largeImageKey =
+			"https://cdn.rcd.gg/PreMiD/websites/G/Google%20Messages/assets/logo.png";
 		presenceData.details = "Authentication page";
 	} else if (path === "/web/conversations") {
 		presenceData.details = "Browsing conversations";
-		presenceData.largeImageKey = "icon";
+		presenceData.largeImageKey =
+			"https://cdn.rcd.gg/PreMiD/websites/G/Google%20Messages/assets/logo.png";
 	} else if (
 		path.includes("/web/conversations/") &&
 		path !== "/web/conversations/new"
@@ -34,15 +38,19 @@ presence.on("UpdateData", async () => {
 				.querySelector("div > span > h2").textContent;
 		}
 		presenceData.details = "Reading messages from:";
-		presenceData.largeImageKey = "icon";
+		presenceData.largeImageKey =
+			"https://cdn.rcd.gg/PreMiD/websites/G/Google%20Messages/assets/logo.png";
 	} else if (path === "/web/conversations/new") {
-		presenceData.largeImageKey = "icon";
+		presenceData.largeImageKey =
+			"https://cdn.rcd.gg/PreMiD/websites/G/Google%20Messages/assets/logo.png";
 		presenceData.details = "New conversation page";
 	} else if (path === "/web/settings") {
-		presenceData.largeImageKey = "icon";
+		presenceData.largeImageKey =
+			"https://cdn.rcd.gg/PreMiD/websites/G/Google%20Messages/assets/logo.png";
 		presenceData.details = "Browsing settings";
 	} else {
-		presenceData.largeImageKey = "icon";
+		presenceData.largeImageKey =
+			"https://cdn.rcd.gg/PreMiD/websites/G/Google%20Messages/assets/logo.png";
 		presenceData.details = "Browsing on Google Messages";
 	}
 	if (presenceData.details) presence.setActivity(presenceData);

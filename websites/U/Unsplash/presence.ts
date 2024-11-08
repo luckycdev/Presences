@@ -4,7 +4,8 @@ const presence = new Presence({
 
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-		largeImageKey: "unsplash_logo",
+		largeImageKey:
+			"https://cdn.rcd.gg/PreMiD/websites/U/Unsplash/assets/logo.png",
 	};
 
 	if (document.location.pathname === "/")

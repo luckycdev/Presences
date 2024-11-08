@@ -14,6 +14,7 @@ for (const presence of presences) {
 	const {
 		altnames,
 		author,
+		apiVersion,
 		category,
 		color,
 		contributors,
@@ -36,6 +37,7 @@ for (const presence of presences) {
 		JSON.stringify(
 			{
 				$schema: latestSchema,
+				apiVersion,
 				author,
 				contributors,
 				service,

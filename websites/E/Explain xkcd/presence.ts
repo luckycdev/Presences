@@ -24,20 +24,23 @@ function getTitleText() {
 
 presence.on("UpdateData", () => {
 	const presenceData: PresenceData = {
-			largeImageKey: "logo",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/E/Explain%20xkcd/assets/logo.png",
 			startTimestamp: browsingTimestamp,
 		},
 		path = window.location.pathname.split("/wiki/index.php/")[1] ?? "";
 	if (path === "Main_Page") {
 		presenceData.details = "Viewing the main page";
 		presenceData.state = `Comic #${getComicNumber()}: ${getComicName()}`;
-		presenceData.smallImageKey = "explainer";
+		presenceData.smallImageKey =
+			"https://cdn.rcd.gg/PreMiD/websites/E/Explain%20xkcd/assets/0.png";
 		presenceData.smallImageText = getTitleText();
 	} else if (/^\d+:_\w+$/.test(path)) {
 		// comic page
 		presenceData.details = "Viewing a comic explanation";
 		presenceData.state = `Comic #${getComicNumber()}: ${getComicName()}`;
-		presenceData.smallImageKey = "explainer";
+		presenceData.smallImageKey =
+			"https://cdn.rcd.gg/PreMiD/websites/E/Explain%20xkcd/assets/0.png";
 		presenceData.smallImageText = getTitleText();
 	} else if (path.startsWith("User:")) {
 		// user page

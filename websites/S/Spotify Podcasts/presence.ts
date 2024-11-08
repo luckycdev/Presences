@@ -1,33 +1,13 @@
 const presence = new Presence({
 		clientId: "619561001234464789",
 	}),
-	browsingStamp = Math.floor(Date.now() / 1000),
-	shortenedURLs: Record<string, string> = {};
+	browsingStamp = Math.floor(Date.now() / 1000);
 
 let search: HTMLInputElement,
 	recentlyCleared = 0;
 
-async function getShortURL(url: string) {
-	if (!url || url.length < 256) return url;
-	if (shortenedURLs[url]) return shortenedURLs[url];
-	try {
-		const pdURL = await (
-			await fetch(`https://pd.premid.app/create/${url}`)
-		).text();
-		shortenedURLs[url] = pdURL;
-		return pdURL;
-	} catch (err) {
-		presence.error(err);
-		return url;
-	}
-}
-
-enum Assets {
-	Logo = "https://i.imgur.com/q3tKDRA.png",
-	Reading = "https://i.imgur.com/8vMPNni.png",
-	Searching = "https://i.imgur.com/oGQtnIY.png",
-	Pause = "https://i.imgur.com/NyZsbVO.png",
-	Play = "https://i.imgur.com/Y1m0KVP.png",
+const enum Assets {
+	Logo = "https://cdn.rcd.gg/PreMiD/websites/S/Spotify%20Podcasts/assets/logo.png",
 }
 
 async function getStrings() {
@@ -74,6 +54,7 @@ let strings: Awaited<ReturnType<typeof getStrings>>,
 presence.on("UpdateData", async () => {
 	let presenceData: PresenceData = {
 		largeImageKey: Assets.Logo,
+		type: ActivityType.Listening,
 	};
 
 	//* Update strings if user selected another language.
@@ -254,19 +235,17 @@ presence.on("UpdateData", async () => {
 					presenceData.details = strings.searchFor;
 					presenceData.state = search.value;
 					if (search.value.length <= 3) presenceData.state = "something...";
-					presenceData.smallImageKey = Assets.Searching;
+					presenceData.smallImageKey = Assets.Search;
 				} else if (pathname.includes("/search")) {
 					searching = true;
 					presenceData.details = strings.search;
-					presenceData.smallImageKey = Assets.Searching;
+					presenceData.smallImageKey = Assets.Search;
 				} else if (pathname.includes("/playlist/")) {
-					const playlistCover = await getShortURL(
-						document
-							.querySelector(
-								"div.Ws8Ec3GREpT5PAUesr9b > div > img.mMx2LUixlnN_Fu45JpFB"
-							)
-							?.getAttribute("src")
-					);
+					const playlistCover = document
+						.querySelector(
+							"div.Ws8Ec3GREpT5PAUesr9b > div > img.mMx2LUixlnN_Fu45JpFB"
+						)
+						?.getAttribute("src");
 					presenceData.details = strings.viewPlaylist;
 					presenceData.state = document.querySelector(
 						"div.RP2rRchy4i8TIp1CTmb7 > span.rEN7ncpaUeSGL9z0NGQR > h1"
@@ -286,13 +265,11 @@ presence.on("UpdateData", async () => {
 					presenceData.state = document.querySelector(
 						"div.RP2rRchy4i8TIp1CTmb7 > span.rEN7ncpaUeSGL9z0NGQR > h1 > span"
 					)?.textContent;
-					presenceData.largeImageKey = await getShortURL(
-						document
-							.querySelector(
-								"div.klz_XuZpllvTMzpJF1gw > div > img.mMx2LUixlnN_Fu45JpFB"
-							)
-							?.getAttribute("src")
-					);
+					presenceData.largeImageKey = document
+						.querySelector(
+							"div.klz_XuZpllvTMzpJF1gw > div > img.mMx2LUixlnN_Fu45JpFB"
+						)
+						?.getAttribute("src");
 					presenceData.smallImageKey = Assets.Logo;
 					presenceData.buttons = [
 						{
@@ -350,7 +327,7 @@ presence.on("UpdateData", async () => {
 					delete presenceData.smallImageKey;
 				} else if (pathname.includes("/download")) {
 					presenceData.details = strings.download;
-					presenceData.smallImageKey = "downloading";
+					presenceData.smallImageKey = Assets.Downloading;
 				} else if (pathname.includes("/account")) {
 					presenceData.details = strings.account;
 					delete presenceData.smallImageKey;
@@ -386,36 +363,31 @@ presence.on("UpdateData", async () => {
 			recentlyCleared = Date.now();
 		}
 	} else {
-		const currentTime = presence.timestampFromFormat(
-				document.querySelector(".playback-bar").children[0].textContent ??
-					"0:00"
-			),
-			duration = presence.timestampFromFormat(
-				document.querySelector(".playback-bar").children[2].textContent ??
-					"0:00"
-			),
-			pause =
-				document
-					.querySelector("[data-testid=control-button-playpause]")
-					.getAttribute("aria-label") === "Play";
+		const pause =
+			document
+				.querySelector("[data-testid=control-button-playpause]")
+				.getAttribute("aria-label") === "Play";
 
 		presenceData.smallImageKey = pause ? Assets.Pause : Assets.Play;
 		presenceData.smallImageText = pause ? strings.pause : strings.play;
-		[, presenceData.endTimestamp] = presence.getTimestamps(
-			currentTime,
-			duration
-		);
+		[presenceData.startTimestamp, presenceData.endTimestamp] =
+			presence.getTimestamps(
+				presence.timestampFromFormat(
+					document.querySelector('[data-testid="playback-position"]')
+						.textContent
+				),
+				presence.timestampFromFormat(
+					document.querySelector('[data-testid="playback-duration"]')
+						.textContent
+				)
+			);
 
 		if (pause || !timestamps) {
 			delete presenceData.startTimestamp;
 			delete presenceData.endTimestamp;
 		}
 
-		if (cover) {
-			presenceData.largeImageKey = await getShortURL(
-				albumCover.querySelector("img").src
-			);
-		}
+		if (cover) presenceData.largeImageKey = albumCover.querySelector("img").src;
 
 		presenceData.details = document.querySelector(
 			":is(a[nowplaying-track-link], a[data-testid=context-item-link"

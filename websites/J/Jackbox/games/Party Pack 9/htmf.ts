@@ -1,5 +1,6 @@
 export const name = "Roomerang";
-export const logo = "https://i.imgur.com/jZAqMNf.png";
+export const logo =
+	"https://cdn.rcd.gg/PreMiD/websites/J/Jackbox/assets/40.png";
 
 export function getPresenceData({
 	playerState,
@@ -21,7 +22,7 @@ export function getPresenceData({
 			break;
 		}
 		case "choosing": {
-			if (playerState.prompt === "")
+			if (playerState.prompt.text === "")
 				presenceData.state = "Voting for a response";
 			else if (playerState.round === "firestarter")
 				presenceData.state = "Choosing a player to burn";

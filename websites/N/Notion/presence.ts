@@ -19,7 +19,8 @@ async function shortenURL(url: string, fallback?: string): Promise<string> {
 
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-			largeImageKey: "logo",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/N/Notion/assets/logo.png",
 			startTimestamp: browsingTimestamp,
 		},
 		path = document.location.pathname,
@@ -73,7 +74,7 @@ presence.on("UpdateData", async () => {
 							.toString(16)}.png`
 					: await shortenURL(pageIcon.src, "edit")
 				: "edit";
-		} else presenceData.smallImageKey = "edit";
+		} else presenceData.smallImageKey = Assets.Writing;
 		presenceData.smallImageText = "Editing";
 	} else if (
 		document.querySelector<HTMLDivElement>(
@@ -90,7 +91,7 @@ presence.on("UpdateData", async () => {
 							.toString(16)}.png`
 					: await shortenURL(pageIcon.src, "read")
 				: "read";
-		} else presenceData.smallImageKey = "read";
+		} else presenceData.smallImageKey = Assets.Reading;
 		presenceData.smallImageText = "Reading";
 	}
 	presence.setActivity(presenceData);

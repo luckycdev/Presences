@@ -22,7 +22,8 @@ const presence: Presence = new Presence({
 
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-			largeImageKey: "nativshark_logo_lg",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/N/NativShark/assets/logo.png",
 			startTimestamp,
 		},
 		{ pathname } = window.location;

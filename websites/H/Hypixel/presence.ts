@@ -2,26 +2,20 @@ const presence = new Presence({
 		clientId: "629093766170411014",
 	}),
 	browsingTimestamp = Math.floor(Date.now() / 1000);
+
 let user: HTMLElement, search: HTMLInputElement, title: HTMLElement | string;
 
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-		largeImageKey: "hypixel",
+		largeImageKey:
+			"https://cdn.rcd.gg/PreMiD/websites/H/Hypixel/assets/logo.png",
 		startTimestamp: browsingTimestamp,
 	};
 	switch (document.location.hostname) {
 		case "hypixel.net": {
-			title = document.querySelector<HTMLElement>(
-				"#headerFix > div.hypixel_titleWrapper > div > div > h1 > nav > fieldset > span > span > a > span"
-			);
+			title = document.querySelector<HTMLElement>(".p-title  h1.p-title-value");
 			if (document.location.pathname.includes("/threads/")) {
-				title = document.querySelector<HTMLElement>(
-					"#headerFix > div.hypixel_titleWrapper > div > div > h1"
-				);
-				search = document.querySelector(
-					"#headerFix > div.hypixel_titleWrapper > div > div > h1 > nav"
-				);
-				title = title.textContent.replace(search.value, "").replace("»", "");
+				title = title.textContent;
 				presenceData.details = "Forums, viewing thread:";
 				if (title.length > 128)
 					presenceData.state = `${title.substring(0, 125)}...`;
@@ -30,17 +24,8 @@ presence.on("UpdateData", async () => {
 				delete presenceData.smallImageKey;
 				presence.setActivity(presenceData);
 			} else if (document.location.pathname.includes("/forums/")) {
-				title = document.querySelector<HTMLElement>(
-					"#headerFix > div.hypixel_titleWrapper > div > div > h1"
-				);
 				if (title) {
-					title = document.querySelector<HTMLElement>(
-						"#headerFix > div.hypixel_titleWrapper > div > div > h1"
-					);
-					search = document.querySelector(
-						"#headerFix > div.hypixel_titleWrapper > div > div > h1 > nav"
-					);
-					title = title.textContent.replace(search.value, "").replace("»", "");
+					title = title.textContent;
 					presenceData.details = "Forums, viewing category:";
 					presenceData.state = title;
 
@@ -93,20 +78,20 @@ presence.on("UpdateData", async () => {
 					presenceData.details = "Forums, searching for:";
 					presenceData.state = search.value;
 
-					presenceData.smallImageKey = "search";
+					presenceData.smallImageKey = Assets.Search;
 
 					presence.setActivity(presenceData);
 				} else {
 					presenceData.details = "Forums, about to search";
 					presenceData.state = "something up";
 
-					presenceData.smallImageKey = "search";
+					presenceData.smallImageKey = Assets.Search;
 
 					presence.setActivity(presenceData);
 				}
 			} else if (document.location.pathname.includes("/members/")) {
-				user = document.querySelector(
-					"#content > div > div > div.mainContainer_noSidebar > div > div.mainProfileColumn > div > div > h1"
+				user = document.querySelector<HTMLElement>(
+					".p-title h1.p-title-value playerWrapper"
 				);
 				presenceData.details = "Forums, viewing user:";
 				presenceData.state = user.textContent;
@@ -201,7 +186,7 @@ presence.on("UpdateData", async () => {
 						presenceData.state = `${title.substring(0, 125)}...`;
 					else presenceData.state = title;
 
-					presenceData.smallImageKey = "reading";
+					presenceData.smallImageKey = Assets.Reading;
 
 					presence.setActivity(presenceData);
 				} else {
@@ -220,11 +205,8 @@ presence.on("UpdateData", async () => {
 
 				presence.setActivity(presenceData);
 			} else if (document.location.pathname.includes("/player/")) {
-				user = document.querySelector(
-					"#headerFix > div.hypixel_titleWrapper.shiftedTitle > div > div > h1 > nav > fieldset > span > span:nth-child(2) > a > span"
-				);
 				presenceData.details = "Players, Viewing:";
-				presenceData.state = user.textContent;
+				presenceData.state = document.location.pathname.split("/").pop();
 
 				delete presenceData.smallImageKey;
 
@@ -314,10 +296,7 @@ presence.on("UpdateData", async () => {
 		case "store.hypixel.net": {
 			title = document.querySelector<HTMLElement>("head > title");
 			presenceData.details = "Store, viewing:";
-			presenceData.state = title.textContent.replace(
-				"Hypixel Server Store | ",
-				""
-			);
+			presenceData.state = title.textContent.replace("Hypixel Store | ", "");
 
 			delete presenceData.smallImageKey;
 

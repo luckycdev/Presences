@@ -5,7 +5,8 @@ const presence = new Presence({
 
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-		largeImageKey: "icon",
+		largeImageKey:
+			"https://cdn.rcd.gg/PreMiD/websites/S/Shard%20Hosting/assets/logo.png",
 		startTimestamp: browsingTimestamp,
 	};
 
@@ -69,8 +70,6 @@ presence.on("UpdateData", async () => {
 		}
 		case "control.shardhosting.co.uk": {
 			const [serverName] = document.title.split(" | ");
-			presenceData.smallImageKey = "pterodactyl";
-			presenceData.smallImageText = "Pterodactyl";
 			if (document.location.pathname === "/") {
 				presenceData.details = "Viewing Servers";
 				presenceData.state = "Browsing Services!";
@@ -112,16 +111,12 @@ presence.on("UpdateData", async () => {
 			break;
 		}
 		case "status.shardhosting.co.uk": {
-			presenceData.smallImageKey = "hetrix";
-			presenceData.smallImageText = "HetrixTools";
 			presenceData.details = "Server Status";
 			presenceData.state = "Guess what! Someone broke it! Blame Ashley!";
 
 			break;
 		}
 		case "web-ore-01.shardhosting.co.uk": {
-			presenceData.smallImageKey = "cpanel";
-			presenceData.smallImageText = "cPanel";
 			presenceData.details = "Web Hosting";
 			presenceData.state = "Managing cPanel";
 

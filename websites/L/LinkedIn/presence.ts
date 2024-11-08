@@ -11,7 +11,8 @@ function unescapeHTML(string: string): string {
 
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-			largeImageKey: "linkedin_logo",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/L/LinkedIn/assets/logo.png",
 			startTimestamp: browsingTimestamp,
 		},
 		path = document.location.pathname;

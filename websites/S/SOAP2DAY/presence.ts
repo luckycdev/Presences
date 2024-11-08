@@ -32,11 +32,11 @@ const presence = new Presence({
 		faq: "Reading the FAQ",
 		tv: "Relaxing to some TV",
 	};
-let watchStamp = 0;
 
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-			largeImageKey: "icon",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/S/SOAP2DAY/assets/logo.png",
 			details: constructAction[getAction()],
 		},
 		showTitle = await presence.getSetting<boolean>("title");
@@ -54,12 +54,10 @@ presence.on("UpdateData", async () => {
 	}
 
 	if (getStatus() !== "Pause") {
-		[, watchStamp] = presence.getTimestampsfromMedia(
-			document.querySelector("video")
-		);
-		presenceData.endTimestamp = watchStamp;
-		presenceData.smallImageKey = "play";
-	} else presenceData.smallImageKey = "pause";
+		[presenceData.startTimestamp, presenceData.endTimestamp] =
+			presence.getTimestampsfromMedia(document.querySelector("video"));
+		presenceData.smallImageKey = Assets.Play;
+	} else presenceData.smallImageKey = Assets.Pause;
 
 	presenceData.state = `${getStatus()} | ${getText(
 		"[class~=player-title-bar]"

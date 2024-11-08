@@ -2,6 +2,13 @@ const presence = new Presence({
 	clientId: "501842028569559061", // Official Wolfy Discord App Client ID, owned by Wolfy's Admin
 });
 
+const enum Assets {
+	Logo = "https://cdn.rcd.gg/PreMiD/websites/W/Wolfy/assets/logo.png",
+	Skin = "https://cdn.rcd.gg/PreMiD/websites/W/Wolfy/assets/0.png",
+	Shop = "https://cdn.rcd.gg/PreMiD/websites/W/Wolfy/assets/1.png",
+	Leaderboard = "https://cdn.rcd.gg/PreMiD/websites/W/Wolfy/assets/2.png",
+}
+
 let path,
 	prev: string,
 	elapsed: number,
@@ -62,7 +69,7 @@ async function addJoinGameButton(presenceData: PresenceData, gameId: string) {
 	addButton(
 		presenceData,
 		`(${
-			document.querySelector("div.Header_timeState__L9yx4")?.textContent
+			document.querySelector("div[class*='Header_timeState']")?.textContent
 		}) Rejoindre la partie`,
 		`https://wolfy.net/game/${gameId}`
 	);
@@ -97,39 +104,21 @@ async function handleCheckingLeaderboard(
 	presenceData: PresenceData,
 	username?: string
 ) {
-	presenceData.smallImageKey = "leaderboard";
+	presenceData.smallImageKey = Assets.Leaderboard;
 	presenceData.smallImageText = "Consulte le classement";
 
 	if (!username) {
-		const classementType =
-			document.querySelector("div.Leaderboard_moonLeaderboard__7q9CE") !== null
-				? "Lunaire"
-				: document.querySelector("div.Leaderboard_lifeLeaderboard__itvcT") !==
-				  null
-				? "Éternel"
-				: null;
-
-		presenceData.details = `Regarde le classement ${classementType}`;
-		presenceData.state = `Top ${parseInt(
-			document.querySelector(
-				"div.Leaderboard_playerLine__Qo9eG > div.Leaderboard_rank__n6Cz_"
-			)?.textContent
-		).toLocaleString()} ${classementType} (${parseInt(
-			document.querySelector("div.Leaderboard_lifetimeXp__UpQAh > p")
-				?.textContent
-		).toLocaleString()} ${classementType === "Lunaire" ? "lauriers" : "xp"})`;
+		presenceData.details = "Regarde le classement";
+		presenceData.state = `Niveau ${
+			document.querySelector("div[class*='ProfilePicture_levelMarker']")
+				.textContent
+		}`;
 	} else {
 		presenceData.details = `Regarde le profil de ${username}`;
-		presenceData.state = `[${
-			document.querySelector("div.ExperienceGroup_first__cLc5y > p")
-				?.textContent
-		}] ${parseInt(
-			document
-				.querySelector("div.ExperienceGroup_experienceBarFull__xUSsB > span")
-				?.textContent.split(" / ")[0]
-		).toLocaleString()} xp & ${parseInt(
-			document.querySelector("p.PlayerCard_number__BC5Cv").textContent
-		).toLocaleString()} lauriers`;
+		presenceData.state = `Niveau ${
+			document.querySelector("div[class*='ProfilePicture_levelMarker']")
+				.textContent
+		}`;
 		await addVisitProfilButton(presenceData, username);
 	}
 }
@@ -146,7 +135,7 @@ function resolveLanguage(lang: string): keyof typeof waitingString {
 
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-		largeImageKey: "logo",
+		largeImageKey: Assets.Logo,
 	};
 
 	path = document.location.pathname.split("/");
@@ -164,14 +153,12 @@ presence.on("UpdateData", async () => {
 	presenceData.startTimestamp = elapsed;
 
 	if (document.location.hostname.includes("help.wolfy")) {
-		if (path.includes("article") && path[2]) {
+		if (path.includes("article") && path[1]) {
 			presenceData.details = "Lit l'article ⤵️";
-			presenceData.state = document.querySelector(
-				"h1.csh-navigation-title-item-inner"
-			)?.textContent;
+			presenceData.state = document.querySelector("h1")?.textContent;
 			addConsultArticleButton(presenceData, document.location.href);
 			addVisitHelpCenterButton(presenceData);
-		} else if (path.includes("category") && path[2]) {
+		} else if (path.includes("category") && path[1]) {
 			presenceData.details = "Consulte la catégorie ⤵️";
 			presenceData.state = document.querySelector(
 				"span.csh-category-badge"
@@ -184,12 +171,12 @@ presence.on("UpdateData", async () => {
 		}
 	} else if (path.includes("articles") && path[1]) {
 		presenceData.details = "Lis l'article ⤵️";
-		presenceData.smallImageKey = "reading";
+		presenceData.smallImageKey = Assets.Reading;
 		presenceData.smallImageText = "Lis un article";
 		presenceData.state = document.querySelector("body h1").textContent;
 	} else if (path.includes("game") && path[1]) {
 		presenceData.state = document
-			.querySelector("div.Header_nameState__arW6y")
+			.querySelector("div[class*='Header_nameState']")
 			.textContent.toUpperCase();
 
 		if (presenceData.state !== prevState) {
@@ -197,26 +184,28 @@ presence.on("UpdateData", async () => {
 			delete presenceData.endTimestamp;
 			prevState = presenceData.state;
 			cp = Date.now();
-			currTime = document.querySelector("div.Header_timer__xtmy2").textContent;
+			currTime = document.querySelector(
+				"div[class*='Header_timer']"
+			).textContent;
 		}
 
 		await addVisitProfilButton(
 			presenceData,
-			document.querySelector("span.ChatMain_username__0G_cN")?.textContent // Will be the anonymous username if used
+			document.querySelector("span[class*='ChatMain_username']")?.textContent // Will be the anonymous username if used
 		);
 
 		if (
 			isWaitingGame(presenceData.state, document.querySelector("html")?.lang)
 		) {
 			presenceData.state += ` (${
-				document.querySelector("div.Header_timeState__L9yx4")?.textContent
+				document.querySelector("div[class*='Header_timeState']")?.textContent
 			})`;
 			await addJoinGameButton(presenceData, path[1]);
 		}
 
 		presenceData.details = "En jeu";
 
-		presenceData.smallImageKey = "live";
+		presenceData.smallImageKey = Assets.Live;
 		if (currTime?.includes(":")) {
 			[presenceData.startTimestamp, presenceData.endTimestamp] = getTimestamps(
 				cp,
@@ -231,35 +220,35 @@ presence.on("UpdateData", async () => {
 
 		await handleCheckingLeaderboard(presenceData, path[1]);
 	} else if (path.includes("event") && path[1]) {
-		if (document.querySelector("div.Event_eventIntroduction__tumD2")) {
+		if (document.querySelector("div[class*='Event_eventIntroduction']'")) {
 			presenceData.details = "Participe à un évènement";
 			presenceData.state = `Top ${parseInt(
 				document.querySelector(
-					"div.Event_lineLeaderboard__FMbXh.Event_me__5c0fl > div.Event_rank__lrB8C"
+					"div[class*='Event_lineLeaderboard'][class*='Event_me'] > div[class*='Event_rank']"
 				).textContent
 			).toLocaleString()} - ${parseInt(
 				document.querySelector(
-					"div.Event_lineLeaderboard__FMbXh.Event_me__5c0fl > div.Event_points__6cXnJ"
+					"div[class*='Event_lineLeaderboard Event_me'][class*='Event_me'] > div[class*='Event_points']"
 				).textContent
 			).toLocaleString()} points`;
 		} else {
 			presenceData.details = "Consulte un évènement à venir ⤵️";
 			presenceData.state = document.querySelector(
-				"div.Event_title__YeebM"
+				"div[class*='Event_title']"
 			)?.textContent;
 		}
 		addConsultEventButton(presenceData, document.location.href);
 	} else {
 		await addVisitProfilButton(
 			presenceData,
-			document.querySelector("p.Social_username__qpX4D")?.textContent
+			document.querySelector("p[class*='Social_username']")?.textContent
 		);
 
 		presenceData.details = "Dans un menu";
 
 		switch (path[0]) {
 			case "skin":
-				presenceData.smallImageKey = "skin";
+				presenceData.smallImageKey = Assets.Skin;
 				presenceData.smallImageText = "Choisis ton skin";
 				presenceData.state = "Consulte ses Skins";
 				break;
@@ -267,13 +256,13 @@ presence.on("UpdateData", async () => {
 				presenceData.state = "Change ses paramètres";
 				break;
 			case "shop":
-				presenceData.smallImageKey = "shop";
+				presenceData.smallImageKey = Assets.Shop;
 				presenceData.smallImageText = "Achète des skins";
 				presenceData.state = "Consulte la Boutique";
 				break;
 			case "articles":
 				presenceData.state = "Consulte les dernières actualités";
-				presenceData.smallImageKey = "reading";
+				presenceData.smallImageKey = Assets.Reading;
 				presenceData.smallImageText = "En train de lire";
 				break;
 			default:

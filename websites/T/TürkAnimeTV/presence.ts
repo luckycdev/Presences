@@ -24,7 +24,8 @@ presence.on("iFrameData", (msg: Video) => {
 
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-			largeImageKey: "turkanime",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/T/T%C3%BCrkAnimeTV/assets/logo.png",
 		},
 		title =
 			document
@@ -85,16 +86,17 @@ presence.on("UpdateData", async () => {
 	}
 
 	if (video) {
-		presenceData.smallImageKey = video.paused ? "pause" : "play";
+		presenceData.smallImageKey = video.paused ? Assets.Pause : Assets.Play;
 		presenceData.smallImageText = video.paused
 			? (await strings).paused
 			: (await strings).playing;
 
 		if (!video.paused && video.duration) {
-			[, presenceData.endTimestamp] = presence.getTimestamps(
-				Math.floor(video.currentTime),
-				Math.floor(video.duration)
-			);
+			[presenceData.startTimestamp, presenceData.endTimestamp] =
+				presence.getTimestamps(
+					Math.floor(video.currentTime),
+					Math.floor(video.duration)
+				);
 		}
 	}
 

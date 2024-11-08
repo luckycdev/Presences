@@ -7,20 +7,22 @@ presence.on("UpdateData", async () => {
 		valor = document.querySelectorAll("button").length,
 		players = document.querySelectorAll(".userActive"),
 		presenceData: PresenceData = {
-			largeImageKey: "large_image",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/B/Broken%20Picturephone/assets/logo.png",
 			startTimestamp: browsingTimestamp,
 		};
 
 	if (valor === 1) {
 		presenceData.details = "Creating a room";
-		presenceData.smallImageKey = "home";
+		presenceData.smallImageKey =
+			"https://cdn.rcd.gg/PreMiD/websites/B/Broken%20Picturephone/assets/0.png";
 		presenceData.smallImageText = "On homepage";
 	}
 	if (valor >= 6) {
 		const numLimit = parseFloat(document.querySelector(".line b").textContent);
 		presenceData.details = "Waiting";
 		presenceData.state = `Playing ${`(${players.length} of ${numLimit})`}`;
-		presenceData.smallImageKey = "playing";
+		presenceData.smallImageKey = Assets.Play;
 		presenceData.smallImageText = "On game";
 
 		if (players.length > numLimit)

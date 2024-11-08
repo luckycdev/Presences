@@ -4,7 +4,8 @@ const presence = new Presence({
 
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-			largeImageKey: "https://i.imgur.com/4hiyxuW.png",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/A/Animeflix/assets/0.png",
 		},
 		{ pathname } = document.location;
 
@@ -31,21 +32,10 @@ presence.on("UpdateData", async () => {
 		}
 		default:
 			if (pathname.includes("/watch")) {
-				const episodeName = document.querySelector<HTMLMetaElement>(
-					'meta[name="anime-skip.episode.name"]'
-				);
-				presenceData.details = `Watching ${
-					document.querySelector<HTMLMetaElement>(
-						'meta[name="anime-skip.show.name"]'
-					).content
-				}`;
-				presenceData.state = episodeName.content.includes("Episode")
-					? episodeName.content
-					: `${
-							document.querySelector<HTMLMetaElement>(
-								'meta[name="anime-skip.episode.number"]'
-							).content
-					  }. ${episodeName.content}`;
+				presenceData.details = `Watching ${JSON.parse(
+					document.querySelector<HTMLMetaElement>('script[id="syncData"]')
+						.textContent
+				).name.replace(/\b[a-z]/g, (letter: string) => letter.toUpperCase())}`;
 			} else presenceData.details = "Exploring Animeflix";
 	}
 	presence.setActivity(presenceData);

@@ -1,12 +1,13 @@
 # General files
 .idea
 node_modules
-pnpm-lock.json
+pnpm-lock.yaml
 yarn.lock
 .env
 
 # Compiled files
 **/*.js
+!cli/bin/**/*.js
 !websites/*/*.js
 !programs/*/*.js
 */*/*/dist
@@ -34,6 +35,9 @@ lerna-debug.log*
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+
+# Cache files
+.eslintcache
 
 # local VSCode files
 **/.vscode/*

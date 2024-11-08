@@ -4,7 +4,8 @@ const presence = new Presence({
 
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-			largeImageKey: "malltvlogo",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/M/MALL.TV/assets/logo.png",
 		},
 		strings = await presence.getStrings({
 			browsing: "general.browsing",
@@ -28,11 +29,11 @@ presence.on("UpdateData", async () => {
 	if (document.location.pathname === "/") {
 		presenceData.details = strings.homepage;
 		presenceData.state = strings.browsing;
-		presenceData.smallImageKey = "malltvbrowsing";
+		presenceData.smallImageKey = Assets.Reading;
 	} else if (channel) {
 		presenceData.details = channel.textContent;
 		presenceData.state = strings.browsing;
-		presenceData.smallImageKey = "malltvbrowsing";
+		presenceData.smallImageKey = Assets.Reading;
 	} else if (videoTitle && videoChannel) {
 		const videoLive: HTMLButtonElement =
 			document.querySelector("button.vp-live");
@@ -52,15 +53,15 @@ presence.on("UpdateData", async () => {
 			},
 		];
 		if (videoLive.style.display !== "none") {
-			presenceData.smallImageKey = "malltvlive";
+			presenceData.smallImageKey = Assets.Live;
 			presenceData.smallImageText = strings.live;
 		} else if (!videoElement.paused) {
 			([presenceData.startTimestamp, presenceData.endTimestamp] =
 				presence.getTimestampsfromMedia(videoElement)),
-				(presenceData.smallImageKey = "malltvplaying");
+				(presenceData.smallImageKey = Assets.Play);
 			presenceData.smallImageText = strings.playing;
 		} else {
-			presenceData.smallImageKey = "malltvpaused";
+			presenceData.smallImageKey = Assets.Pause;
 			presenceData.smallImageText = strings.paused;
 		}
 	}

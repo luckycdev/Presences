@@ -4,8 +4,9 @@ const presence = new Presence({
 
 presence.on("UpdateData", () => {
 	const presenceData: PresenceData = {
-		largeImageKey: "logo",
-		smallImageKey: "logo-outline",
+		largeImageKey:
+			"https://cdn.rcd.gg/PreMiD/websites/C/CodePen/assets/logo.png",
+		smallImageKey: "https://cdn.rcd.gg/PreMiD/websites/C/CodePen/assets/0.png",
 		smallImageText: "codepen.io",
 		details: "Codepen.io",
 		state: "Coding...",

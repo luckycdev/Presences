@@ -5,8 +5,10 @@ const presence = new Presence({
 
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-			largeImageKey: "favicon",
-			smallImageKey: "google",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/G/Google%20Fonts/assets/logo.png",
+			smallImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/G/Google%20Fonts/assets/0.png",
 			startTimestamp: tmb,
 		},
 		path = document.location.pathname.toLowerCase(),

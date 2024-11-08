@@ -5,7 +5,8 @@ const presence = new Presence({
 		pause: "general.paused",
 	}),
 	presenceData: PresenceData = {
-		largeImageKey: "logo",
+		largeImageKey:
+			"https://cdn.rcd.gg/PreMiD/websites/P/Prambors%20Radio/assets/logo.png",
 	};
 
 let timestamp: number;
@@ -30,10 +31,10 @@ presence.on("UpdateData", async () => {
 				if (status === "stopped") {
 					timestamp = null;
 					delete presenceData.startTimestamp;
-					presenceData.smallImageKey = "pause";
+					presenceData.smallImageKey = Assets.Pause;
 					presenceData.smallImageText = pause;
 				} else if (status === "playing") {
-					presenceData.smallImageKey = "live";
+					presenceData.smallImageKey = Assets.Live;
 					presenceData.smallImageText = "Listening";
 					presenceData.startTimestamp = timestamp;
 				}
@@ -55,10 +56,10 @@ presence.on("UpdateData", async () => {
 				if (buttonAction === "play") {
 					timestamp = null;
 					delete presenceData.startTimestamp;
-					presenceData.smallImageKey = "pause";
+					presenceData.smallImageKey = Assets.Pause;
 					presenceData.smallImageText = pause;
 				} else if (buttonAction === "pause") {
-					presenceData.smallImageKey = "live";
+					presenceData.smallImageKey = Assets.Live;
 					presenceData.smallImageText = "Listening";
 					presenceData.startTimestamp = timestamp;
 				}

@@ -23,7 +23,8 @@ presence.on("iFrameData", async (data: IFrameData) => {
 
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-			largeImageKey: "aniturk",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/A/AniT%C3%BCrk/assets/logo.png",
 		},
 		title = document.querySelector(
 			"html > body > div.konter > a > div.icerik-bilgi"
@@ -48,7 +49,7 @@ presence.on("UpdateData", async () => {
 	}
 
 	if (video) {
-		presenceData.smallImageKey = video.paused ? "stop" : "resume";
+		presenceData.smallImageKey = video.paused ? Assets.Pause : Assets.Play;
 		presenceData.smallImageText = video.paused
 			? (await strings).paused
 			: (await strings).playing;

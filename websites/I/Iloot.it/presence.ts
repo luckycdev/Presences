@@ -5,7 +5,8 @@ const presence = new Presence({
 
 presence.on("UpdateData", () => {
 	const presenceData: PresenceData = {
-		largeImageKey: "logo1",
+		largeImageKey:
+			"https://cdn.rcd.gg/PreMiD/websites/I/Iloot.it/assets/logo.png",
 		startTimestamp: browsingTimestamp,
 	};
 

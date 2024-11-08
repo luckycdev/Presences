@@ -3,15 +3,13 @@ const presence = new Presence({
 	}),
 	browsingTimestamp = Math.floor(Date.now() / 1000);
 
+const enum Assets {
+	Logo = "https://cdn.rcd.gg/PreMiD/websites/M/MangaDex/assets/logo.png",
+}
+
 let username: string,
 	mangaId: string = null,
 	coverFileName: string = null;
-
-enum Assets {
-	Logo = "https://i.imgur.com/zs8myqz.png",
-	Reading = "https://i.imgur.com/53N4eY6.png",
-	Searching = "https://i.imgur.com/OIgfjTG.png",
-}
 
 async function getCoverImage(newMangaId: string) {
 	/**
@@ -30,6 +28,33 @@ async function getCoverImage(newMangaId: string) {
 		(relation: { type: string }) => relation.type === "cover_art"
 	).attributes.fileName;
 	return `https://uploads.mangadex.org/covers/${mangaId}/${coverFileName}`;
+}
+
+const titleImageCache = new Map<string, string>();
+
+async function getTitleImage(img: HTMLImageElement | null): Promise<string> {
+	return new Promise(resolve => {
+		if (img === null) return Assets.Logo;
+
+		const image = titleImageCache.get(img.src);
+
+		if (image) return resolve(image);
+
+		fetch(img.src)
+			.then(res => res.blob())
+			.then(blob => {
+				const reader = new FileReader();
+
+				reader.onload = function (e) {
+					const dataUrl = e.target.result.toString();
+
+					titleImageCache.set(img.src, dataUrl);
+					resolve(dataUrl);
+				};
+
+				reader.readAsDataURL(blob);
+			});
+	});
 }
 
 presence.on("UpdateData", async () => {
@@ -53,8 +78,9 @@ presence.on("UpdateData", async () => {
 				.querySelector("head > title")
 				.textContent.replace(" - MangaDex", "");
 			presenceData.buttons = [{ label: "View Manga", url: href }];
-			presenceData.largeImageKey =
-				document.querySelector<HTMLImageElement>("img.rounded").src;
+			presenceData.largeImageKey = await getTitleImage(
+				document.querySelector<HTMLImageElement>("img.rounded")
+			);
 			break;
 		case "titles":
 			presenceData.details = {
@@ -64,7 +90,7 @@ presence.on("UpdateData", async () => {
 				recent: "Browsing Recents Mangas",
 				follows: "Viewing their Library",
 			}[pathArr[2]];
-			presenceData.smallImageKey = Assets.Searching;
+			presenceData.smallImageKey = Assets.Search;
 			break;
 		case "chapter": {
 			const title = document.querySelector(".text-primary").textContent.trim();

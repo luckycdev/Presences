@@ -1,5 +1,6 @@
 {
-	"$schema": "https://schemas.premid.app/metadata/1.7",
+	"$schema": "https://schemas.premid.app/metadata/1.11",
+	"apiVersion": 1,
 	"author": {
 		"name": "Bas950",
 		"id": "241278257335500811"
@@ -10,14 +11,24 @@
 		"nl": "Officiële website van KimCartoon. Bekijk cartoon gratis online in HD."
 	},
 	"url": "kimcartoon.si",
-	"version": "1.1.14",
-	"logo": "https://i.imgur.com/0oTbCN4.png",
-	"thumbnail": "https://i.imgur.com/pk2GCF7.png",
+	"regExp": "(ww([0-9]?)(w)?[.])?kim(-)?cartoon[.].*",
+	"version": "2.0.3",
+	"logo": "https://cdn.rcd.gg/PreMiD/websites/K/KimCartoon/assets/logo.png",
+	"thumbnail": "https://cdn.rcd.gg/PreMiD/websites/K/KimCartoon/assets/thumbnail.png",
 	"color": "#fdf5ad",
 	"category": "videos",
 	"tags": [
 		"cartoon",
 		"videos"
 	],
-	"iframe": true
+	"iframe": true,
+	"iFrameRegExp": ".*",
+	"settings": [
+		{
+			"id": "cover",
+			"title": "Show Cover",
+			"icon": "fad fa-images",
+			"value": true
+		}
+	]
 }

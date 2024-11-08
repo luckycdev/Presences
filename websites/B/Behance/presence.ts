@@ -22,9 +22,13 @@ presence.on(
 	}
 );
 
+const enum Assets {
+	Logo = "https://cdn.rcd.gg/PreMiD/websites/B/Behance/assets/logo.png",
+}
+
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-			largeImageKey: "logo",
+			largeImageKey: Assets.Logo,
 			details: "Browsing",
 			startTimestamp: browsingTimestamp,
 		},
@@ -36,7 +40,7 @@ presence.on("UpdateData", async () => {
 	if (pathname.startsWith("/gallery")) {
 		presenceData.details =
 			document.querySelector<HTMLSpanElement>("figcaption > span").textContent;
-		presenceData.smallImageKey = "reading";
+		presenceData.smallImageKey = Assets.Reading;
 		if (
 			document.querySelector<HTMLSpanElement>(
 				"figcaption > div > a > div > div.Popover-activator-14J.Miniprofile-activator-1QJ > span"
@@ -48,7 +52,7 @@ presence.on("UpdateData", async () => {
 			presenceData.largeImageKey =
 				document.querySelector<HTMLImageElement>(
 					"div.Popover-activator-14J.Miniprofile-activator-1QJ > span > a > div > img"
-				)?.src ?? "logo";
+				)?.src ?? Assets.Logo;
 			presenceData.buttons = [
 				{
 					label: "View Work",
@@ -74,7 +78,7 @@ presence.on("UpdateData", async () => {
 		presenceData.state = document.querySelector<HTMLHeadingElement>(
 			"#site-content div > div > h1"
 		).textContent;
-		presenceData.smallImageKey = "search";
+		presenceData.smallImageKey = Assets.Search;
 	} else if (
 		document.querySelector<HTMLHeadingElement>(
 			"#site-content div.ProfileCard-header-2wU > h1"
@@ -87,7 +91,7 @@ presence.on("UpdateData", async () => {
 		presenceData.largeImageKey =
 			document.querySelector<HTMLImageElement>(
 				"#site-content div > div > div > img"
-			)?.src ?? "logo";
+			)?.src ?? Assets.Logo;
 		presenceData.buttons = [{ label: "View Profile", url: document.URL }];
 	} else if (pathname.startsWith("/search")) {
 		const searchContent = document.querySelector<HTMLSpanElement>(
@@ -98,7 +102,7 @@ presence.on("UpdateData", async () => {
 			presenceData.details = "Searching for:";
 			presenceData.state = searchContent.textContent;
 		}
-		presenceData.smallImageKey = "search";
+		presenceData.smallImageKey = Assets.Search;
 	} else if (pathname.startsWith("/videos")) {
 		presenceData.details = document.querySelector<HTMLHeadingElement>(
 			"div.Stream-titleContainer-1D_ > h1"
@@ -109,9 +113,9 @@ presence.on("UpdateData", async () => {
 		presenceData.largeImageKey =
 			document
 				.querySelector('meta[name="twitter:image"]')
-				?.getAttribute("content") ?? "logo";
+				?.getAttribute("content") ?? Assets.Logo;
 		if (video.live) {
-			presenceData.smallImageKey = "live";
+			presenceData.smallImageKey = Assets.Live;
 			presenceData.smallImageText = "Live";
 			presenceData.buttons = [
 				{
@@ -129,13 +133,14 @@ presence.on("UpdateData", async () => {
 			// Intentional `delete` for pause boolean
 			delete presenceData.startTimestamp;
 			if (!video.paused) {
-				presenceData.endTimestamp =
-					Date.now() / 1000 +
-					presence.timestampFromFormat(video.duration) -
-					presence.timestampFromFormat(video.currentTime);
+				[presenceData.startTimestamp, presenceData.endTimestamp] =
+					presence.getTimestamps(
+						presence.timestampFromFormat(video.currentTime),
+						presence.timestampFromFormat(video.duration)
+					);
 			}
 
-			presenceData.smallImageKey = video.paused ? "pause" : "play";
+			presenceData.smallImageKey = video.paused ? Assets.Pause : Assets.Play;
 			presenceData.smallImageText = video.paused ? "Paused" : "Playing";
 			presenceData.buttons = [
 				{
@@ -152,25 +157,28 @@ presence.on("UpdateData", async () => {
 		}
 	} else if (pathname.startsWith("/live")) {
 		presenceData.details = "Browsing Videos";
-		presenceData.smallImageKey = "search";
+		presenceData.smallImageKey = Assets.Search;
 	} else if (pathname.startsWith("/joblist")) {
 		const jobLocation = document.querySelector<HTMLParagraphElement>(
 			"div.JobDetailContent-jobHeader-2Pv > p"
 		);
 		if (!jobLocation) {
 			presenceData.details = "Searching for a Job";
-			presenceData.smallImageKey = "search";
+			presenceData.smallImageKey = Assets.Search;
 		} else {
 			presenceData.details = "Viewing a Job:";
 			presenceData.state = jobLocation.textContent;
 			presenceData.largeImageKey =
 				document.querySelector<HTMLImageElement>(
 					"div.JobDetailContent-teamAvatar-3qv > div > a > img"
-				)?.src ?? "logo";
-			presenceData.smallImageKey = "reading";
+				)?.src ?? Assets.Logo;
+			presenceData.smallImageKey = Assets.Reading;
 		}
 	}
-	if (!image) presenceData.largeImageKey = "logo";
+	if (!image) {
+		presenceData.largeImageKey =
+			"https://cdn.rcd.gg/PreMiD/websites/B/Behance/assets/logo.png";
+	}
 	if (!buttons) delete presenceData.buttons;
 	presence.setActivity(presenceData);
 });

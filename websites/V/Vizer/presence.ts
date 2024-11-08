@@ -28,7 +28,7 @@ presence.on("iFrameData", (data: IFrameData) => {
 
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-		largeImageKey: "vizer_logo",
+		largeImageKey: "https://cdn.rcd.gg/PreMiD/websites/V/Vizer/assets/logo.png",
 	};
 
 	let title;
@@ -57,16 +57,15 @@ presence.on("UpdateData", async () => {
 					} - ${episodeName.textContent.split(".")[1]}`;
 
 					if (iFrameVideo && !isNaN(duration)) {
-						const [startTimestamp, endTimestamp] = presence.getTimestamps(
-							Math.floor(currentTime),
-							Math.floor(duration)
-						);
-						presenceData.startTimestamp = startTimestamp;
-						presenceData.endTimestamp = endTimestamp;
-						presenceData.smallImageKey = "play";
+						[presenceData.startTimestamp, presenceData.endTimestamp] =
+							presence.getTimestamps(
+								Math.floor(currentTime),
+								Math.floor(duration)
+							);
+						presenceData.smallImageKey = Assets.Play;
 						presenceData.smallImageText = (await strings).play;
 					} else {
-						presenceData.smallImageKey = "pause";
+						presenceData.smallImageKey = Assets.Pause;
 						presenceData.smallImageText = (await strings).pause;
 					}
 				} else {
@@ -91,16 +90,15 @@ presence.on("UpdateData", async () => {
 				} - ${document.querySelector(".rating").textContent}`;
 
 				if (iFrameVideo && !isNaN(duration)) {
-					const [startTimestamp, endTimestamp] = presence.getTimestamps(
-						Math.floor(currentTime),
-						Math.floor(duration)
-					);
-					presenceData.startTimestamp = startTimestamp;
-					presenceData.endTimestamp = endTimestamp;
-					presenceData.smallImageKey = "play";
+					[presenceData.startTimestamp, presenceData.endTimestamp] =
+						presence.getTimestamps(
+							Math.floor(currentTime),
+							Math.floor(duration)
+						);
+					presenceData.smallImageKey = Assets.Play;
 					presenceData.smallImageText = (await strings).play;
 				} else {
-					presenceData.smallImageKey = "pause";
+					presenceData.smallImageKey = Assets.Pause;
 					presenceData.smallImageText = (await strings).pause;
 				}
 			} else {
@@ -113,7 +111,7 @@ presence.on("UpdateData", async () => {
 	else if (document.location.pathname.includes("/aplicativo"))
 		presenceData.details = "Vendo os aplicativos";
 	else if (document.location.pathname.includes("/pesquisar")) {
-		presenceData.smallImageKey = "search";
+		presenceData.smallImageKey = Assets.Search;
 		presenceData.smallImageText = (await strings).search;
 
 		if (document.location.pathname.includes("/pesquisar/")) {

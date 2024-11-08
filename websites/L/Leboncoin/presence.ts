@@ -5,8 +5,9 @@ const presence = new Presence({
 
 presence.on("UpdateData", () => {
 	const presenceData: PresenceData = {
-		largeImageKey: "logo",
-		smallImageKey: "reading",
+		largeImageKey:
+			"https://cdn.rcd.gg/PreMiD/websites/L/Leboncoin/assets/logo.png",
+		smallImageKey: Assets.Reading,
 		smallImageText: "Regarde des annonces",
 		startTimestamp: browsingTimestamp,
 		details: "Regarde la page :",

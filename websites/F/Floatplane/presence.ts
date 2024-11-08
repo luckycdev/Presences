@@ -1,11 +1,43 @@
 const presence = new Presence({
 		clientId: "889918462477095012",
 	}),
-	browsingTimestamp = Date.now();
+	browsingTimestamp = Date.now(),
+	/* eslint-disable camelcase */
+	assets = {
+		bitwit_ultra:
+			"https://cdn.rcd.gg/PreMiD/websites/F/Floatplane/assets/0.png",
+		tech_deals: "https://cdn.rcd.gg/PreMiD/websites/F/Floatplane/assets/1.png",
+		eposvox: "https://cdn.rcd.gg/PreMiD/websites/F/Floatplane/assets/2.png",
+		ufdtech: "https://cdn.rcd.gg/PreMiD/websites/F/Floatplane/assets/3.png",
+		level1techs: "https://cdn.rcd.gg/PreMiD/websites/F/Floatplane/assets/4.png",
+		"3dprintingnerd":
+			"https://cdn.rcd.gg/PreMiD/websites/F/Floatplane/assets/5.png",
+		themightyjingles:
+			"https://cdn.rcd.gg/PreMiD/websites/F/Floatplane/assets/6.png",
+		restoreit: "https://cdn.rcd.gg/PreMiD/websites/F/Floatplane/assets/7.png",
+		badseedtech: "https://cdn.rcd.gg/PreMiD/websites/F/Floatplane/assets/8.png",
+		robertneal: "https://cdn.rcd.gg/PreMiD/websites/F/Floatplane/assets/9.png",
+		lawfulmasses:
+			"https://cdn.rcd.gg/PreMiD/websites/F/Floatplane/assets/10.png",
+		gearseekers:
+			"https://cdn.rcd.gg/PreMiD/websites/F/Floatplane/assets/11.png",
+		craftcomputing:
+			"https://cdn.rcd.gg/PreMiD/websites/F/Floatplane/assets/12.png",
+		toastybros: "https://cdn.rcd.gg/PreMiD/websites/F/Floatplane/assets/13.png",
+		theguncollective:
+			"https://cdn.rcd.gg/PreMiD/websites/F/Floatplane/assets/14.png",
+		forgottenweapons:
+			"https://cdn.rcd.gg/PreMiD/websites/F/Floatplane/assets/15.png",
+		linustechtips:
+			"https://cdn.rcd.gg/PreMiD/websites/F/Floatplane/assets/16.png",
+		lonseidman: "https://cdn.rcd.gg/PreMiD/websites/F/Floatplane/assets/17.png",
+	};
+/* eslint-enable camelcase */
 
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-			largeImageKey: "logo",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/F/Floatplane/assets/logo.png",
 			startTimestamp: browsingTimestamp,
 		},
 		[, page, pageType, pageTypeType] = location.pathname.split("/");
@@ -42,7 +74,7 @@ presence.on("UpdateData", async () => {
 
 				presenceData.details = "Browsing";
 				presenceData.state = `${channelCount} Channels`;
-				presenceData.smallImageKey = "reading";
+				presenceData.smallImageKey = Assets.Reading;
 				presenceData.smallImageText = "Browsing";
 
 				if (searchTerm) {
@@ -63,7 +95,7 @@ presence.on("UpdateData", async () => {
 
 					presenceData.details = `Searching: ${searchTerm}`;
 					presenceData.state = stringFormated;
-					presenceData.smallImageKey = "search";
+					presenceData.smallImageKey = Assets.Search;
 					presenceData.smallImageText = "Searching";
 				}
 
@@ -79,8 +111,10 @@ presence.on("UpdateData", async () => {
 
 				presenceData.details = "Viewing channel:";
 				presenceData.state = channelTitle;
-				presenceData.largeImageKey = pageType.toLowerCase();
-				presenceData.smallImageKey = "logo";
+				presenceData.largeImageKey =
+					assets[pageType.toLowerCase() as keyof typeof assets];
+				presenceData.smallImageKey =
+					"https://cdn.rcd.gg/PreMiD/websites/F/Floatplane/assets/logo.png";
 				presenceData.smallImageText = document.title;
 				presenceData.buttons = [{ label: "View Channel", url: location.href }];
 
@@ -92,7 +126,7 @@ presence.on("UpdateData", async () => {
 					delete presenceData.startTimestamp;
 
 					presenceData.details = title;
-					presenceData.smallImageKey = "live";
+					presenceData.smallImageKey = Assets.Live;
 					presenceData.smallImageText = "Live";
 					presenceData.buttons = [
 						{
@@ -168,7 +202,7 @@ presence.on("UpdateData", async () => {
 
 									presenceData.details = `Searching FAQ: ${searchTerm}`;
 									presenceData.state = stringFormated;
-									presenceData.smallImageKey = "search";
+									presenceData.smallImageKey = Assets.Search;
 									presenceData.smallImageText = "Searching";
 								}
 
@@ -204,15 +238,22 @@ presence.on("UpdateData", async () => {
 									document.querySelector(".title-text")?.textContent;
 								presenceData.state =
 									document.querySelector(".channel-title")?.textContent;
-								presenceData.largeImageKey = (
-									document.querySelector(".channel-title") as HTMLLinkElement
-								)?.href
-									.toLowerCase()
-									?.split("/")
-									.slice(-1)[0];
-								[, presenceData.endTimestamp] =
+								presenceData.largeImageKey =
+									assets[
+										(
+											document.querySelector(
+												".channel-title"
+											) as HTMLLinkElement
+										)?.href
+											.toLowerCase()
+											?.split("/")
+											.slice(-1)[0] as keyof typeof assets
+									];
+								[presenceData.startTimestamp, presenceData.endTimestamp] =
 									presence.getTimestampsfromMedia(video);
-								presenceData.smallImageKey = video.paused ? "pause" : "play";
+								presenceData.smallImageKey = video.paused
+									? Assets.Pause
+									: Assets.Play;
 								presenceData.smallImageText = video.paused
 									? "Paused"
 									: "Playing";

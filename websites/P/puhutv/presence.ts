@@ -17,7 +17,8 @@ presence.on("UpdateData", async () => {
 		(category && category.textContent !== "")
 	) {
 		presence.setActivity({
-			largeImageKey: "puhu-logo",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/P/puhutv/assets/logo.png",
 			startTimestamp: Math.floor(Date.now() / 1000),
 			details: "Geziniyor...",
 			state:
@@ -52,7 +53,8 @@ presence.on("UpdateData", async () => {
 			if (!title || title.textContent === "") return;
 
 			const presenceData: PresenceData = {
-				largeImageKey: "puhu-logo",
+				largeImageKey:
+					"https://cdn.rcd.gg/PreMiD/websites/P/puhutv/assets/logo.png",
 				details: title.textContent,
 				state:
 					episode !== ""
@@ -68,7 +70,7 @@ presence.on("UpdateData", async () => {
 											.textContent.replace("\n", ": ")
 									: null
 						  }`,
-				smallImageKey: video.paused ? "paused" : "playing",
+				smallImageKey: video.paused ? Assets.Pause : Assets.Play,
 				smallImageText: video.paused
 					? (await strings).pause
 					: (await strings).play,

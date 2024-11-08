@@ -5,7 +5,8 @@ const presence = new Presence({
 
 presence.on("UpdateData", () => {
 	const presenceData: PresenceData = {
-			largeImageKey: "lg",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/T/TugaStrikes/assets/logo.png",
 		},
 		[page, section] = window.location.href
 			.replace("https://tugastrikes.com/", "")

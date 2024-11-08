@@ -3,7 +3,7 @@ const presence = new Presence({
 });
 
 interface Video {
-	time: number;
+	currentTime: number;
 	duration: number;
 	paused: boolean;
 }
@@ -36,7 +36,13 @@ function timeToString(nbr: number): string {
 	return nbrString;
 }
 
+const websiteDomain = "https://animecat.net";
+
 let video: Video = null;
+
+const enum Assets {
+	Logo = "https://cdn.rcd.gg/PreMiD/websites/N/Neko-sama.fr/assets/logo.png",
+}
 
 presence.on("iFrameData", (data: Video) => {
 	video = data;
@@ -44,7 +50,7 @@ presence.on("iFrameData", (data: Video) => {
 
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-			largeImageKey: "nekosama-icon",
+			largeImageKey: Assets.Logo,
 			details: "Navigue sur Neko-sama",
 		},
 		{ pathname } = document.location,
@@ -55,19 +61,24 @@ presence.on("UpdateData", async () => {
 			switch (pathSplit[2]) {
 				case "episode": {
 					const episodeImage: string = document.querySelector<HTMLMetaElement>(
-						'meta[property="og:image"]'
-					).content;
+							'meta[property="og:image"]'
+						).content,
+						animeImage: string =
+							document.querySelector<HTMLImageElement>("a.cover img").src,
+						defaultThumbnail = `${websiteDomain}/images/default_thumbnail.png`;
+					presenceData.largeImageKey =
+						episodeImage === defaultThumbnail
+							? animeImage === defaultThumbnail
+								? Assets.Logo
+								: animeImage
+							: episodeImage;
 					if (video === null) {
 						presenceData.details = `Regarde ${
 							document.querySelector<HTMLMetaElement>(
 								'meta[property="og:title"]'
 							).content
 						}`;
-						presenceData.largeImageKey =
-							episodeImage ===
-							"https://neko-sama.fr/images/default_thumbnail.png"
-								? "nekosama-icon"
-								: episodeImage;
+
 						presenceData.buttons = [
 							{
 								label: "Voir Épisode",
@@ -76,24 +87,19 @@ presence.on("UpdateData", async () => {
 						];
 						break;
 					}
-					const { paused, time, duration } = video;
+					const { paused, currentTime, duration } = video;
 					if (!paused) {
-						const timestamps = presence.getTimestamps(time, duration);
-						presenceData.startTimestamp = timestamps[0];
-						presenceData.endTimestamp = timestamps[1];
+						[presenceData.startTimestamp, presenceData.endTimestamp] =
+							presence.getTimestamps(currentTime, duration);
 					}
 					presenceData.state = `${timeToString(
-						Math.floor(time)
+						Math.floor(currentTime)
 					)}/${timeToString(Math.floor(duration))}`;
 					presenceData.details = `Regarde ${
 						document.querySelector<HTMLMetaElement>('meta[property="og:title"]')
 							.content
 					}`;
-					presenceData.largeImageKey =
-						episodeImage === "https://neko-sama.fr/images/default_thumbnail.png"
-							? "nekosama-icon"
-							: episodeImage;
-					presenceData.smallImageKey = paused ? "pause" : "play";
+					presenceData.smallImageKey = paused ? Assets.Pause : Assets.Play;
 					presenceData.smallImageText = paused
 						? "En pause"
 						: "Lecture en cours";
@@ -113,8 +119,8 @@ presence.on("UpdateData", async () => {
 					presenceData.state =
 						document.querySelector("h1").firstChild.textContent;
 					presenceData.largeImageKey =
-						animeImage === "https://neko-sama.fr/images/default_thumbnail.png"
-							? "nekosama-icon"
+						animeImage === `${websiteDomain}/images/default_thumbnail.png`
+							? Assets.Logo
 							: animeImage;
 					presenceData.buttons = [
 						{

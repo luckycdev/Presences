@@ -5,7 +5,8 @@ const presence = new Presence({
 
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-		largeImageKey: "logo",
+		largeImageKey:
+			"https://cdn.rcd.gg/PreMiD/websites/A/Audible/assets/logo.png",
 		startTimestamp: browsingTimestamp,
 	};
 	if (document.location.pathname.includes("/account"))
@@ -33,24 +34,39 @@ presence.on("UpdateData", async () => {
 			.getAttribute("src");
 	} else if (document.location.pathname.includes("/webplayer")) {
 		presenceData.details = `Listening to ${document
-			.querySelector("input[name=title]")
-			.getAttribute("value")}`;
+			.querySelector("#adbl-cloud-player-container-data")
+			.getAttribute("data-title")}`;
 		presenceData.state = document.querySelector(
-			"span.bc-text.timeLeft"
+			"#cp-Top-chapter-display"
 		).textContent;
+
+		const chapterRemaining = presence.getTimestamps(
+			presence.timestampFromFormat(
+				document.querySelector("#adblMediaBarTimeSpent")?.textContent
+			),
+			presence.timestampFromFormat(
+				document
+					.querySelector("#adblMediaBarTimeLeft")
+					?.textContent.replace("– ", "")
+			) +
+				presence.timestampFromFormat(
+					document.querySelector("#adblMediaBarTimeSpent")?.textContent
+				)
+		);
+		[presenceData.startTimestamp, presenceData.endTimestamp] = chapterRemaining;
 		presenceData.largeImageKey = document
-			.querySelector("img[id=adbl-cloudBook]")
+			.querySelector("#adbl-cloudBook")
 			.getAttribute("src");
 		if (
-			document
-				.querySelector("img[title='Play/Pause']")
-				.className.includes("bc-hidden")
+			document.querySelector(".adblPlayButton").classList.contains("bc-hidden")
 		)
-			presenceData.smallImageKey = "pause";
-		else presenceData.smallImageKey = "play";
+			presenceData.smallImageKey = Assets.Pause;
+		else presenceData.smallImageKey = Assets.Play;
 	} else {
 		presenceData.details = "Browsing";
 		delete presenceData.state;
+		delete presenceData.startTimestamp;
+		delete presenceData.endTimestamp;
 	}
 	presence.setActivity(presenceData);
 });

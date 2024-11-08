@@ -35,7 +35,8 @@ setInterval(() => {
 presence.on("UpdateData", async () => {
 	const privacySettings = await presence.getSetting<boolean>("privacy");
 	let presenceData: PresenceData = {
-		largeImageKey: "logo",
+		largeImageKey:
+			"https://cdn.rcd.gg/PreMiD/websites/O/OpenStreetMap/assets/logo.png",
 		startTimestamp: browsingTimestamp,
 		details: "Viewing:",
 	};

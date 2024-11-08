@@ -12,7 +12,8 @@ presence.on("UpdateData", async () => {
 	const page = document.location.pathname,
 		title = document.querySelector("#question-header > h1"),
 		presenceData: PresenceData = {
-			largeImageKey: "logo",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/A/AskUbuntu/assets/logo.png",
 			startTimestamp: Math.floor(Date.now() / 1000),
 		};
 
@@ -27,7 +28,8 @@ presence.on("UpdateData", async () => {
 		presenceData.state = (
 			document.querySelector("#bigsearch > div > input") as HTMLInputElement
 		).value;
-		presenceData.smallImageKey = "logo";
+		presenceData.smallImageKey =
+			"https://cdn.rcd.gg/PreMiD/websites/A/AskUbuntu/assets/logo.png";
 	} else if (page.includes("/users")) {
 		presenceData.details = "Viewing User Profile:";
 		presenceData.state = document

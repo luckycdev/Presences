@@ -21,7 +21,8 @@ presence.on("UpdateData", async () => {
 		pause: "general.paused",
 	});
 	const presenceData: PresenceData = {
-		largeImageKey: "logo",
+		largeImageKey:
+			"https://cdn.rcd.gg/PreMiD/websites/S/Streamlabs/assets/logo.png",
 	};
 
 	switch (window.location.hostname) {
@@ -71,16 +72,15 @@ presence.on("UpdateData", async () => {
 				.textContent.split(" ");
 			switch (!video.paused) {
 				case true:
-					presenceData.smallImageKey = "play";
+					presenceData.smallImageKey = Assets.Play;
 					presenceData.smallImageText = strings.play;
-					presenceData.endTimestamp = new Date(
-						Date.now() + (video.duration - video.currentTime) * 1000
-					).getTime();
+					[presenceData.startTimestamp, presenceData.endTimestamp] =
+						presence.getTimestampsfromMedia(video);
 					break;
 				case false:
-					presenceData.smallImageKey = "pause";
+					presenceData.smallImageKey = Assets.Pause;
 					presenceData.smallImageText = strings.pause;
-					presenceData.endTimestamp = null;
+					delete presenceData.endTimestamp;
 					break;
 			}
 			presenceData.details = `Watching ${clipTitle[0]} to`;
@@ -134,22 +134,20 @@ presence.on("UpdateData", async () => {
 			.textContent.split(" ");
 		switch (!video.paused) {
 			case true:
-				presenceData.smallImageKey = "play";
+				presenceData.smallImageKey = Assets.Play;
 				presenceData.smallImageText = strings.play;
-				presenceData.endTimestamp = new Date(
-					Date.now() + (video.duration - video.currentTime) * 1000
-				).getTime();
+				[presenceData.startTimestamp, presenceData.endTimestamp] =
+					presence.getTimestampsfromMedia(video);
 				break;
 			case false:
-				presenceData.smallImageKey = "pause";
+				presenceData.smallImageKey = Assets.Pause;
 				presenceData.smallImageText = strings.pause;
-				presenceData.endTimestamp = new Date(
-					Date.now() + (video.duration - video.currentTime) * 1000
-				).getTime();
+				[presenceData.startTimestamp, presenceData.endTimestamp] =
+					presence.getTimestampsfromMedia(video);
 				break;
 			default:
-				presenceData.smallImageKey = null;
-				presenceData.smallImageText = null;
+				delete presenceData.smallImageKey;
+				delete presenceData.smallImageText;
 				break;
 		}
 		presenceData.details = `Watching ${clipTitle[0]} to`;

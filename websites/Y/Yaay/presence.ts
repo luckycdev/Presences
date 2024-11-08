@@ -18,7 +18,8 @@ const presence = new Presence({
 
 presence.on("UpdateData", () => {
 	const presenceData: PresenceData = {
-			largeImageKey: "yaay-logo",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/Y/Yaay/assets/logo.png",
 			startTimestamp: Math.floor(Date.now() / 1000),
 		},
 		page = document.location.pathname,
@@ -65,7 +66,7 @@ presence.on("UpdateData", () => {
 
 		presence.setActivity(presenceData);
 	} else if (page.includes("/search")) {
-		presenceData.smallImageKey = "search";
+		presenceData.smallImageKey = Assets.Search;
 		presenceData.details = "Bir şey arıyor:";
 		presenceData.state =
 			document.querySelector(".top .text b")?.textContent || "Bilinmeyen Arama";

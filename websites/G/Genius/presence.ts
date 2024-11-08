@@ -2,6 +2,7 @@ const presence = new Presence({
 		clientId: "809133308604055622",
 	}),
 	browsingTimestamp = Math.floor(Date.now() / 1000);
+
 async function getStrings() {
 	return presence.getStrings(
 		{
@@ -36,7 +37,8 @@ presence.on("UpdateData", async () => {
 	}
 
 	const presenceData: PresenceData = {
-			largeImageKey: "genius",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/G/Genius/assets/logo.png",
 			startTimestamp: browsingTimestamp,
 		},
 		path = document.location.pathname;
@@ -48,7 +50,7 @@ presence.on("UpdateData", async () => {
 
 		presenceData.details = strings.article;
 		presenceData.state = article;
-		presenceData.smallImageKey = "reading";
+		presenceData.smallImageKey = Assets.Reading;
 		presenceData.smallImageText = strings.reading;
 	} else if (path.startsWith("/artists/")) {
 		presenceData.details = strings.profile;
@@ -72,24 +74,14 @@ presence.on("UpdateData", async () => {
 		document.querySelector("div[class*='SongPageGrid']") !== null ||
 		document.querySelector(".song_body-lyrics") !== null
 	) {
+		const artist = await presence.getPageVariable("_sf_async_config.authors");
 		presenceData.details = strings.lyrics;
-		presenceData.state = `${
+		presenceData.state = `${artist["_sf_async_config.authors"]} - ${
 			document
-				.querySelector("a[class*='SongHeaderdesktop__Artist-sc-1effuo1-11']")
+				.querySelector('h1[class*="SongHeaderdesktop__Title"]')
 				?.textContent.trim() ||
 			document
-				.querySelector("a[class*='SongHeadermobile__Artist-sc-1hu0heo-10']")
-				?.textContent.trim()
-		} - ${
-			document
-				.querySelector(
-					"span[class*='SongHeaderdesktop__HiddenMask-sc-1effuo1-10']"
-				)
-				?.textContent.trim() ||
-			document
-				.querySelector(
-					"span[class*='SongHeadermobile__HiddenMask-sc-1hu0heo-9']"
-				)
+				.querySelector('h1[class*="SongHeadermobile__Title"]')
 				?.textContent.trim()
 		}`;
 		if (buttons) {
@@ -118,7 +110,7 @@ presence.on("UpdateData", async () => {
 			[presenceData.startTimestamp, presenceData.endTimestamp] =
 				presence.getTimestampsfromMedia(video);
 
-			presenceData.smallImageKey = video.paused ? "pause" : "play";
+			presenceData.smallImageKey = video.paused ? Assets.Pause : Assets.Play;
 			presenceData.smallImageText = video.paused ? strings.pause : strings.play;
 
 			if (video.paused) {
@@ -131,7 +123,7 @@ presence.on("UpdateData", async () => {
 		presenceData.state = document.querySelector(
 			"h2.search_results_page-header"
 		).textContent;
-		presenceData.smallImageKey = "search";
+		presenceData.smallImageKey = Assets.Search;
 		presenceData.smallImageText = strings.searching;
 	}
 

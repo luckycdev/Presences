@@ -7,7 +7,8 @@ presence.on("UpdateData", async () => {
 	const entries = await presence.getSetting<boolean>("entries"),
 		buttons = await presence.getSetting<boolean>("buttons"),
 		presenceData: PresenceData = {
-			largeImageKey: "logo",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/M/MangaSee/assets/logo.png",
 			startTimestamp: browsingTimestamp,
 		},
 		{ pathname, search } = document.location;
@@ -18,7 +19,7 @@ presence.on("UpdateData", async () => {
 	) {
 		presenceData.details = "Searching: ";
 		presenceData.state = new URLSearchParams(search).get("name");
-		presenceData.smallImageKey = "search";
+		presenceData.smallImageKey = Assets.Search;
 	} else if (pathname === "/directory/" || pathname === "/search/")
 		presenceData.details = "Browsing all manga";
 	else if (pathname === "/discussion/")
@@ -56,7 +57,7 @@ presence.on("UpdateData", async () => {
 		presenceData.state = document.querySelector(
 			".list-group-item > h1"
 		).textContent;
-		presenceData.smallImageKey = "view";
+		presenceData.smallImageKey = Assets.Viewing;
 		if (buttons) {
 			presenceData.buttons = [
 				{ label: "View manga", url: window.location.href },
@@ -73,7 +74,7 @@ presence.on("UpdateData", async () => {
 			.textContent.trim()
 			.split(" ")
 			.pop()}${page ? ` 📄 ${page.textContent.trim().split(" ").pop()}` : ""}`;
-		presenceData.smallImageKey = "read";
+		presenceData.smallImageKey = Assets.Reading;
 		if (buttons) {
 			presenceData.buttons = [
 				{ label: "View manga", url: window.location.href },
