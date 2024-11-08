@@ -5,7 +5,8 @@ const presence = new Presence({
 
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-			largeImageKey: "bitchute_logo",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/B/BitChute/assets/logo.png",
 			startTimestamp: browsingTimestamp,
 		},
 		{ pathname, href } = document.location,
@@ -28,7 +29,10 @@ presence.on("UpdateData", async () => {
 			channelName = document.querySelector<HTMLAnchorElement>(
 				".details > .name > a"
 			),
-			video = document.querySelector<HTMLVideoElement>("video#player");
+			video = document.querySelector<HTMLVideoElement>("video#player"),
+			sensitivity = document.querySelector<HTMLAnchorElement>(
+				".video-detail-list tr:last-child a"
+			)?.textContent;
 		if (title) presenceData.details = `Watching ${title.textContent}`;
 		if (channelName) {
 			presenceData.state = `By ${channelName.textContent}`;
@@ -45,9 +49,15 @@ presence.on("UpdateData", async () => {
 				];
 			}
 		}
+		if (sensitivity?.startsWith("NSFW")) {
+			presenceData.details = "Watching a video";
+			delete presenceData.state;
+			delete presenceData.buttons;
+		}
 		if (time && video && !video.paused) {
-			[, presenceData.endTimestamp] = presence.getTimestampsfromMedia(video);
-			presenceData.smallImageText = presenceData.smallImageKey = "play";
+			[presenceData.startTimestamp, presenceData.endTimestamp] =
+				presence.getTimestampsfromMedia(video);
+			presenceData.smallImageText = presenceData.smallImageKey = Assets.Play;
 		}
 	} else if (pathname.startsWith("/channel")) {
 		const name = document.querySelector<HTMLAnchorElement>(

@@ -7,7 +7,8 @@ let isInGame = false,
 
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-			largeImageKey: "logo",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/D/dod%20Games/assets/logo.png",
 		},
 		playerName = document.querySelector(
 			"#component_top_right_loginasname_text"
@@ -40,7 +41,7 @@ presence.on("UpdateData", async () => {
 							document.querySelector<HTMLDivElement>("#drawtools").style
 								.display !== "none"
 						) {
-							presenceData.smallImageKey = "molivaki";
+							presenceData.smallImageKey = Assets.Writing;
 							presenceData.smallImageText = "Ζωγραφίζει";
 						}
 

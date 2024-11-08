@@ -3,9 +3,13 @@ const presence = new Presence({
 	}),
 	browsingTimestamp = Math.floor(Date.now() / 1000);
 
+const enum Assets {
+	Logo = "https://cdn.rcd.gg/PreMiD/websites/G/GG%20App/assets/logo.png",
+}
+
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-			largeImageKey: "lg",
+			largeImageKey: Assets.Logo,
 			startTimestamp: browsingTimestamp,
 		},
 		path = document.location.pathname,
@@ -29,7 +33,7 @@ presence.on("UpdateData", async () => {
 			presenceData.largeImageKey = document.querySelector<HTMLImageElement>(
 				"#root > div > div.css-1dbjc4n > div > div > div > div.css-1dbjc4n > img"
 			).src;
-			presenceData.smallImageKey = "lg";
+			presenceData.smallImageKey = Assets.Logo;
 		}
 		presenceData.buttons = [{ label: "View Game", url: document.URL }];
 	} else if (
@@ -58,7 +62,7 @@ presence.on("UpdateData", async () => {
 			presenceData.largeImageKey = document.querySelector<HTMLImageElement>(
 				"#root > div > div.css-1dbjc4n > div > div:nth-child(3) > div.w-full > div > div > a > img"
 			).src;
-			presenceData.smallImageKey = "lg";
+			presenceData.smallImageKey = Assets.Logo;
 		}
 	} else if (path.includes("/games/")) {
 		if (path.endsWith("/reviews")) {
@@ -73,7 +77,7 @@ presence.on("UpdateData", async () => {
 			presenceData.state = document.querySelector<HTMLAnchorElement>(
 				"#root > div > div.css-1dbjc4n > div > div > h1 > a"
 			).textContent;
-			presenceData.smallImageKey = "write";
+			presenceData.smallImageKey = Assets.Writing;
 		} else if (path.endsWith("/lists")) {
 			presenceData.details = "Browsing lists containing:";
 			presenceData.state = document
@@ -97,7 +101,7 @@ presence.on("UpdateData", async () => {
 			presenceData.largeImageKey = document.querySelector<HTMLImageElement>(
 				"#root > div > div.css-1dbjc4n > div > div > div > div > a > img"
 			).src;
-			presenceData.smallImageKey = "lg";
+			presenceData.smallImageKey = Assets.Logo;
 		}
 		presenceData.buttons = [{ label: "Read Review", url: document.URL }];
 	} else if (path.startsWith("/home")) presenceData.details = "At Home page";
@@ -106,14 +110,14 @@ presence.on("UpdateData", async () => {
 		presenceData.state = document.querySelector<HTMLSpanElement>(
 			"#root > div > div.css-1dbjc4n > div > div.w-full.xl\\:max-w-max.mx-auto > div > div:nth-child(1) > p > span.text-2xl.font-bold.pl-2"
 		).textContent;
-		presenceData.smallImageKey = "search";
+		presenceData.smallImageKey = Assets.Search;
 	} else if (path.endsWith("/lists")) {
 		presenceData.details = `Viewing ${document.title.match(/(.*) -/)[1]}`;
 		if (cover) {
 			presenceData.largeImageKey = document.querySelector<HTMLImageElement>(
 				"#root > div > div.css-1dbjc4n > div > div > div.w-full > div > div > a > img"
 			).src;
-			presenceData.smallImageKey = "lg";
+			presenceData.smallImageKey = Assets.Logo;
 		}
 		presenceData.buttons = [{ label: "View Lists", url: document.URL }];
 	} else if (path.includes("/lists/")) {

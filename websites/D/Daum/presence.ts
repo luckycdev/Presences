@@ -82,6 +82,12 @@ let video: {
 		article: string;
 	};
 
+const enum Assets {
+	Logo = "https://cdn.rcd.gg/PreMiD/websites/D/Daum/assets/logo.png",
+	DaumMail = "https://cdn.rcd.gg/PreMiD/websites/D/Daum/assets/0.png",
+	DaumCafe = "https://cdn.rcd.gg/PreMiD/websites/D/Daum/assets/1.png",
+}
+
 presence.on(
 	"iFrameData",
 	(data: { video?: typeof video; cafe?: typeof cafe }) => {
@@ -92,17 +98,17 @@ presence.on(
 
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-		largeImageKey: "daum",
+		largeImageKey: Assets.Logo,
 		startTimestamp: startTime,
 	};
 
 	switch (presence.serviceName) {
 		case "DAUM_MAIL":
-			presenceData.largeImageKey = presence.serviceName.toLowerCase();
+			presenceData.largeImageKey = Assets.DaumMail;
 			break;
 
 		case "DAUM_CAFE":
-			presenceData.largeImageKey = presence.serviceName.toLowerCase();
+			presenceData.largeImageKey = Assets.DaumCafe;
 			break;
 
 		default:
@@ -129,13 +135,13 @@ presence.on("UpdateData", async () => {
 					presenceData.state =
 						video.title ?? document.querySelector("h3.tit_view")?.textContent;
 
-					presenceData.smallImageKey = video.paused ? "pause" : "play";
+					presenceData.smallImageKey = video.paused
+						? Assets.Pause
+						: Assets.Play;
 					presenceData.smallImageText = video.paused ? "Paused" : "Playing";
 
-					[, presenceData.endTimestamp] = presence.getTimestamps(
-						video.currentTime,
-						video.duration
-					);
+					[presenceData.startTimestamp, presenceData.endTimestamp] =
+						presence.getTimestamps(video.currentTime, video.duration);
 
 					presenceData.buttons = [
 						{
@@ -173,7 +179,7 @@ presence.on("UpdateData", async () => {
 				presenceData.state =
 					document.querySelector("strong.tit_vod")?.textContent;
 
-				presenceData.smallImageKey = video?.paused ? "pause" : "play";
+				presenceData.smallImageKey = video?.paused ? Assets.Pause : Assets.Play;
 				presenceData.smallImageText = video?.paused ? "Paused" : "Playing";
 
 				[presenceData.startTimestamp, presenceData.endTimestamp] =
@@ -245,13 +251,13 @@ presence.on("UpdateData", async () => {
 					presenceData.state =
 						document.querySelector("strong.tit_player")?.textContent;
 
-					presenceData.smallImageKey = video.paused ? "pause" : "play";
+					presenceData.smallImageKey = video.paused
+						? Assets.Pause
+						: Assets.Play;
 					presenceData.smallImageText = video.paused ? "Paused" : "Playing";
 
-					[, presenceData.endTimestamp] = presence.getTimestamps(
-						video.currentTime,
-						video.duration
-					);
+					[presenceData.startTimestamp, presenceData.endTimestamp] =
+						presence.getTimestamps(video.currentTime, video.duration);
 
 					presenceData.buttons = [
 						{
@@ -274,13 +280,11 @@ presence.on("UpdateData", async () => {
 				presenceData.state =
 					document.querySelector("strong.tit_vod")?.textContent;
 
-				presenceData.smallImageKey = video?.paused ? "pause" : "play";
+				presenceData.smallImageKey = video?.paused ? Assets.Pause : Assets.Play;
 				presenceData.smallImageText = video?.paused ? "Paused" : "Playing";
 
-				[, presenceData.endTimestamp] = presence.getTimestamps(
-					video?.currentTime,
-					video?.duration
-				);
+				[presenceData.startTimestamp, presenceData.endTimestamp] =
+					presence.getTimestamps(video?.currentTime, video?.duration);
 
 				presenceData.buttons = [
 					{
@@ -305,13 +309,11 @@ presence.on("UpdateData", async () => {
 					.querySelector("a.link_txt")
 					?.textContent.trim();
 
-				presenceData.smallImageKey = video?.paused ? "pause" : "play";
+				presenceData.smallImageKey = video?.paused ? Assets.Pause : Assets.Play;
 				presenceData.smallImageText = video?.paused ? "Paused" : "Playing";
 
-				[, presenceData.endTimestamp] = presence.getTimestamps(
-					video?.currentTime,
-					video?.duration
-				);
+				[presenceData.startTimestamp, presenceData.endTimestamp] =
+					presence.getTimestamps(video?.currentTime, video?.duration);
 
 				presenceData.buttons = [
 					{

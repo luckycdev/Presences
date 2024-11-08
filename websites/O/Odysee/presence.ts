@@ -6,7 +6,8 @@ presence.on("UpdateData", async () => {
 			".content__viewer--floating"
 		),
 		presenceData: PresenceData = {
-			largeImageKey: "logo",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/O/Odysee/assets/logo.png",
 		};
 	if (document.location.pathname === "/" && !floatingViewer)
 		presenceData.details = "Browsing homepage";
@@ -66,7 +67,7 @@ presence.on("UpdateData", async () => {
 					document.querySelector(
 						"div.card__main-actions div.media__subtitle  span.channel-name"
 					)?.textContent;
-				presenceData.smallImageKey = "paused";
+				presenceData.smallImageKey = Assets.Pause;
 				presenceData.smallImageText = "Paused";
 
 				if (uploaderUrlElement && buttons) {
@@ -82,9 +83,11 @@ presence.on("UpdateData", async () => {
 					];
 				}
 				if (video) {
-					[, presenceData.endTimestamp] =
+					[presenceData.startTimestamp, presenceData.endTimestamp] =
 						presence.getTimestampsfromMedia(video);
-					presenceData.smallImageKey = video.paused ? "paused" : "play";
+					presenceData.smallImageKey = video.paused
+						? Assets.Pause
+						: Assets.Play;
 					presenceData.smallImageText = video.paused ? "Paused" : "Watching";
 					if (video.paused) delete presenceData.endTimestamp;
 				}

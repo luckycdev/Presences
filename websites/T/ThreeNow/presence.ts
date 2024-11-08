@@ -15,24 +15,18 @@ presence.on("iFrameData", (data: iFrameData) => {
 });
 
 presence.on("UpdateData", () => {
-	const [startTimestamps, endTimestamps] = presence.getTimestamps(
-			Math.floor(currentTime),
-			Math.floor(duration)
-		),
-		presenceData: PresenceData = {
-			largeImageKey: "logo",
-		};
+	const presenceData: PresenceData = {
+		largeImageKey:
+			"https://cdn.rcd.gg/PreMiD/websites/T/ThreeNow/assets/logo.png",
+	};
 
 	if (document.URL === "https://www.threenow.co.nz/") {
 		presenceData.details = "Browsing the main page";
 		presenceData.startTimestamp = Math.floor(Date.now() / 1000);
 	} else if (document.location.pathname.includes("/shows/")) {
 		if (document.querySelectorAll(".EpisodeSynopsis-subtitle").length >= 1) {
-			if (!isNaN(endTimestamps)) {
-				presenceData.startTimestamp = startTimestamps;
-				presenceData.endTimestamp = endTimestamps;
-			}
-
+			[presenceData.startTimestamp, presenceData.endTimestamp] =
+				presence.getTimestamps(Math.floor(currentTime), Math.floor(duration));
 			presenceData.state = document.querySelectorAll(
 				".EpisodeSynopsis-title"
 			)[0].textContent;
@@ -41,10 +35,10 @@ presence.on("UpdateData", () => {
 				presenceData.details = "Watching a show";
 				delete presenceData.startTimestamp;
 				delete presenceData.endTimestamp;
-				presenceData.smallImageKey = "pause";
+				presenceData.smallImageKey = Assets.Pause;
 			} else {
 				presenceData.details = "Watching a show";
-				presenceData.smallImageKey = "play";
+				presenceData.smallImageKey = Assets.Play;
 			}
 		} else {
 			presenceData.details = "Viewing a show";

@@ -2,19 +2,19 @@ const presence = new Presence({
 		clientId: "713726722671116330",
 	}),
 	browsingTimestamp = Math.floor(Date.now() / 1000);
+
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-		largeImageKey: "logo",
+		largeImageKey:
+			"https://cdn.rcd.gg/PreMiD/websites/G/GTAForums/assets/logo.png",
 		startTimestamp: browsingTimestamp,
 	};
 
-	if (document.location.pathname === "/") {
+	if (document.location.pathname === "/")
 		presenceData.details = "Browsing the home page...";
-		presenceData.smallImageKey = "home";
-	} else if (document.location.pathname.startsWith("/settings")) {
+	else if (document.location.pathname.startsWith("/settings")) {
 		delete presenceData.details;
 		presenceData.details = "In settings...";
-		presenceData.smallImageKey = "settings";
 		presenceData.state = "Overview";
 		switch (document.location.pathname) {
 			case "/settings/email/":
@@ -58,7 +58,7 @@ presence.on("UpdateData", async () => {
 	} else if (document.location.pathname.startsWith("/search/")) {
 		delete presenceData.details;
 		presenceData.details = "Searching...";
-		presenceData.smallImageKey = "search";
+		presenceData.smallImageKey = Assets.Search;
 		presenceData.state = `Looking${
 			document
 				.querySelectorAll(".ipsType_reset.ipsType_large")[0]

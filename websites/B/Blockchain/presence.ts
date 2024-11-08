@@ -20,7 +20,8 @@ let currencyTitle: string, pageStatus: string;
 
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-		largeImageKey: "logo",
+		largeImageKey:
+			"https://cdn.rcd.gg/PreMiD/websites/B/Blockchain/assets/logo.png",
 		startTimestamp: browsingTimestamp,
 	};
 

@@ -46,7 +46,8 @@ let strings: Awaited<ReturnType<typeof getStrings>>,
 
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-			largeImageKey: "logo",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/G/Gmail/assets/logo.png",
 			startTimestamp: browsingTimestamp,
 		},
 		path = window.location.href,

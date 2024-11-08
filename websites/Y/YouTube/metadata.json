@@ -1,5 +1,6 @@
 {
-	"$schema": "https://schemas.premid.app/metadata/1.7",
+	"$schema": "https://schemas.premid.app/metadata/1.11",
+	"apiVersion": 1,
 	"author": {
 		"name": "Timeraa",
 		"id": "223238938716798978"
@@ -10,8 +11,12 @@
 			"id": "241278257335500811"
 		},
 		{
-			"name": "DooMLorD",
-			"id": "465105167751315471"
+			"name": "theusaf",
+			"id": "193714715631812608"
+		},
+		{
+			"name": "veryCrunchy",
+			"id": "576097150359044106"
 		}
 	],
 	"service": "YouTube",
@@ -67,9 +72,9 @@
 		"www.youtube.com",
 		"studio.youtube.com"
 	],
-	"version": "5.3.3",
-	"logo": "https://i.imgur.com/o5injgg.png",
-	"thumbnail": "https://i.imgur.com/3QfIc5v.jpg",
+	"version": "5.13.3",
+	"logo": "https://cdn.rcd.gg/PreMiD/websites/Y/YouTube/assets/logo.png",
+	"thumbnail": "https://cdn.rcd.gg/PreMiD/websites/Y/YouTube/assets/thumbnail.jpg",
 	"color": "#E40813",
 	"category": "videos",
 	"tags": [
@@ -88,6 +93,36 @@
 			"value": false
 		},
 		{
+			"id": "hidePaused",
+			"title": "Hide Paused",
+			"icon": "fad fa-pause-circle",
+			"value": false,
+			"if": {
+				"privacy": false
+			}
+		},
+		{
+			"id": "privacy-shown",
+			"title": "Privacy Overwrite Button",
+			"icon": "fad fa-eye-low-vision",
+			"value": true
+		},
+		{
+			"id": "privacy-ttl",
+			"if": {
+				"privacy-shown": true
+			},
+			"title": "Privacy Overwrite TTL",
+			"icon": "fad fa-eye",
+			"value": 0,
+			"values": [
+				"5 hours",
+				"12 hours",
+				"one day",
+				"one week"
+			]
+		},
+		{
 			"id": "time",
 			"title": "Show timestamps",
 			"icon": "fad fa-stopwatch",
@@ -101,7 +136,7 @@
 			"title": "Video Details row1",
 			"icon": "fas fa-comment-alt-edit",
 			"value": "%title%",
-			"placeholder": "Use %title% or %uploader%"
+			"placeholder": "Use %title%, %uploader%, %playlistTitle%, %playlistQueue%"
 		},
 		{
 			"id": "vidState",
@@ -111,7 +146,7 @@
 			"title": "Video Details row2",
 			"icon": "fas fa-comment-alt-edit",
 			"value": "%uploader%",
-			"placeholder": "Use %title%, %uploader% or {0} to delete the row completely"
+			"placeholder": "same like row1 or use {0} to delete the row completely"
 		},
 		{
 			"id": "channelPic",
@@ -144,6 +179,15 @@
 			"title": "Show Buttons",
 			"icon": "fas fa-compress-arrows-alt",
 			"value": true
+		},
+		{
+			"id": "hideHome",
+			"if": {
+				"privacy": false
+			},
+			"title": "Hide Homepage",
+			"icon": "fad fa-user-secret",
+			"value": false
 		}
 	]
 }

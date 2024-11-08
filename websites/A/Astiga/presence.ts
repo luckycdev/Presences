@@ -36,7 +36,8 @@ let musicTitle: HTMLElement,
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
 		details: "Unknown page",
-		largeImageKey: "lg",
+		largeImageKey:
+			"https://cdn.rcd.gg/PreMiD/websites/A/Astiga/assets/logo.png",
 	};
 
 	currentUser = document.querySelector(
@@ -97,11 +98,6 @@ presence.on("UpdateData", async () => {
 		if (!play.style.display || currentTime === 0) playback = false;
 		else playback = true;
 
-		const [startTimestamp, endTimestamp] = presence.getTimestamps(
-			currentTime,
-			duration
-		);
-
 		presenceData.details = `Song: ${musicTitle.textContent}`;
 
 		if (
@@ -125,15 +121,14 @@ presence.on("UpdateData", async () => {
 		)
 			presenceData.state = "No artist / No album";
 
-		presenceData.smallImageKey = playback ? "play" : "pause";
+		presenceData.smallImageKey = playback ? Assets.Play : Assets.Pause;
 
 		presenceData.smallImageText = playback
 			? (await strings).play
 			: (await strings).pause;
 
-		presenceData.startTimestamp = startTimestamp;
-
-		presenceData.endTimestamp = endTimestamp;
+		[presenceData.startTimestamp, presenceData.endTimestamp] =
+			presence.getTimestamps(Math.floor(currentTime), Math.floor(duration));
 
 		if (playback === false) {
 			delete presenceData.startTimestamp;

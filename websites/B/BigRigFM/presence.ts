@@ -2,9 +2,11 @@ const presence = new Presence({
 		clientId: "985821439829622825",
 	}),
 	browsingTimestamp = Math.floor(Date.now() / 1000);
+
 presence.on("UpdateData", () => {
 	const presenceData: PresenceData = {
-			largeImageKey: "brfmlogo",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/B/BigRigFM/assets/logo.png",
 			startTimestamp: browsingTimestamp,
 		},
 		spotifyUrl = document

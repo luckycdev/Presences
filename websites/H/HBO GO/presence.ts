@@ -8,7 +8,8 @@ const presence = new Presence({
 
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-			largeImageKey: "lg",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/H/HBO%20GO/assets/logo.png",
 		},
 		video: HTMLVideoElement = document.querySelector(
 			"#hbo-sdk--controller-container #hbo-sdk--controller-osd #hbo-sdk--vid #hbo-sdk--vid_Clpp_html5_mse_smooth_api"
@@ -34,14 +35,15 @@ presence.on("UpdateData", async () => {
 		);
 		presenceData.details = "Watching:";
 		presenceData.state = title.textContent;
-		presenceData.smallImageKey = video.paused ? "pause" : "play";
+		presenceData.smallImageKey = video.paused ? Assets.Pause : Assets.Play;
 		presenceData.smallImageText = video.paused
 			? (await strings).pause
 			: (await strings).play;
-		[, presenceData.endTimestamp] = presence.getTimestamps(
-			Math.floor(video.currentTime),
-			Math.floor(video.duration)
-		);
+		[presenceData.startTimestamp, presenceData.endTimestamp] =
+			presence.getTimestamps(
+				Math.floor(video.currentTime),
+				Math.floor(video.duration)
+			);
 
 		//* Remove timestamps if paused
 		if (video.paused) {

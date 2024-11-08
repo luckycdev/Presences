@@ -7,21 +7,12 @@ const presence = new Presence({
 	}),
 	browsingTimestamp = Math.floor(Date.now() / 1000);
 
-/**
- * Get Timestamps
- * @param {Number} videoTime Current video time seconds
- * @param {Number} videoDuration Video duration seconds
- */
-function getTimestamps(videoTime: number, videoDuration: number): number[] {
-	const startTime = Date.now();
-	return [
-		Math.floor(startTime / 1000),
-		Math.floor(startTime / 1000) - videoTime + videoDuration,
-	];
-}
-
 presence.on("UpdateData", async () => {
-	const presenceData: PresenceData = { largeImageKey: "pvid" };
+	const presenceData: PresenceData = {
+		type: ActivityType.Watching,
+		largeImageKey:
+			"https://cdn.rcd.gg/PreMiD/websites/P/Prime%20Video/assets/logo.png",
+	};
 	presenceData.startTimestamp = browsingTimestamp;
 	const title: string =
 			document.querySelector(
@@ -59,33 +50,41 @@ presence.on("UpdateData", async () => {
 				presenceData.state = subtitle.textContent;
 
 			if (video.paused) {
-				presenceData.smallImageKey = "paused";
+				presenceData.smallImageKey = Assets.Pause;
 				presenceData.smallImageText = (await strings).paused;
 				delete presenceData.startTimestamp;
 			} else {
-				const [startTimestamp, endTimestamp] = getTimestamps(
-					Math.floor(video.currentTime),
-					Math.floor(video.duration)
-				);
-				presenceData.startTimestamp = startTimestamp;
-				presenceData.endTimestamp = endTimestamp;
-				presenceData.smallImageKey = "playing";
+				const [unformattedCurrentTime, unformattedDuration] = document
+					.querySelector(".atvwebplayersdk-timeindicator-text")
+					.textContent.trim()
+					.split(" / ");
+				[presenceData.startTimestamp, presenceData.endTimestamp] =
+					presence.getTimestamps(
+						presence.timestampFromFormat(unformattedCurrentTime),
+						presence.timestampFromFormat(unformattedDuration) +
+							presence.timestampFromFormat(unformattedCurrentTime)
+					);
+				presenceData.smallImageKey = Assets.Play;
 				presenceData.smallImageText = (await strings).playing;
 			}
 		} else if (video && !video.className.includes("tst")) {
 			if (title2 !== "") presenceData.details = title2;
 			if (video.paused) {
-				presenceData.smallImageKey = "paused";
+				presenceData.smallImageKey = Assets.Pause;
 				presenceData.smallImageText = (await strings).paused;
 				delete presenceData.startTimestamp;
 			} else {
-				const [startTimestamp, endTimestamp] = getTimestamps(
-					Math.floor(video.currentTime),
-					Math.floor(video.duration)
-				);
-				presenceData.startTimestamp = startTimestamp;
-				presenceData.endTimestamp = endTimestamp;
-				presenceData.smallImageKey = "playing";
+				const [unformattedCurrentTime, unformattedDuration] = document
+					.querySelector(".atvwebplayersdk-timeindicator-text")
+					.textContent.trim()
+					.split(" / ");
+				[presenceData.startTimestamp, presenceData.endTimestamp] =
+					presence.getTimestamps(
+						presence.timestampFromFormat(unformattedCurrentTime),
+						presence.timestampFromFormat(unformattedDuration) +
+							presence.timestampFromFormat(unformattedCurrentTime)
+					);
+				presenceData.smallImageKey = Assets.Play;
 				presenceData.smallImageText = (await strings).playing;
 			}
 		} else if (title2) {
@@ -113,9 +112,8 @@ presence.on("UpdateData", async () => {
 			.querySelector(".av-refine-bar-summaries")
 			.textContent.split(/["„]/)[1]
 			.split(/[”"]/);
-		presenceData.smallImageKey = "search";
+		presenceData.smallImageKey = Assets.Search;
 	}
-
 	if (presenceData.details) presence.setActivity(presenceData);
 	else presence.setActivity();
 });

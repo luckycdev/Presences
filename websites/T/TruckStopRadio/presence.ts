@@ -26,7 +26,8 @@ let strings: Awaited<ReturnType<typeof getStrings>> = null,
 
 presence.on("UpdateData", async () => {
 	let presenceData: PresenceData = {
-		largeImageKey: "tsr",
+		largeImageKey:
+			"https://cdn.rcd.gg/PreMiD/websites/T/TruckStopRadio/assets/logo.png",
 		startTimestamp: browsingTimestamp,
 	};
 
@@ -54,7 +55,7 @@ presence.on("UpdateData", async () => {
 		if (details !== "{0}") presenceData.details = replacePlaceholders(details);
 		if (state !== "{0}") presenceData.state = replacePlaceholders(state);
 
-		presenceData.smallImageKey = playing ? "play" : "pause";
+		presenceData.smallImageKey = playing ? Assets.Play : Assets.Pause;
 		presenceData.smallImageText = playing ? strings.play : strings.pause;
 
 		if (cover) {
@@ -130,7 +131,7 @@ presence.on("UpdateData", async () => {
 				"/article": {
 					details: strings.readArticle,
 					state: document.querySelector(".post-header > h1")?.textContent,
-					smallImageKey: "reading",
+					smallImageKey: Assets.Reading,
 					buttons: [
 						{
 							label: strings.btnReadArticle,
@@ -158,7 +159,7 @@ presence.on("UpdateData", async () => {
 					.replace("=", "/")
 					.match(k)
 			) {
-				presenceData.smallImageKey = "reading";
+				presenceData.smallImageKey = Assets.Reading;
 				presenceData.smallImageText = strings.browse;
 				presenceData = { ...presenceData, ...v };
 			}

@@ -21,8 +21,8 @@ async function getShortURL(url: string) {
 
 presence.on("UpdateData", async () => {
 	let presenceData: PresenceData = {
-		largeImageKey: "tving",
-		smallImageKey: "browse",
+		largeImageKey: "https://cdn.rcd.gg/PreMiD/websites/T/TVING/assets/logo.png",
+		smallImageKey: Assets.Search,
 		startTimestamp: browsingTimestamp,
 	};
 
@@ -37,7 +37,8 @@ presence.on("UpdateData", async () => {
 		> = {
 			"/(vod|movie)/player/": async video => {
 				const data: PresenceData = {
-					largeImageKey: "tving",
+					largeImageKey:
+						"https://cdn.rcd.gg/PreMiD/websites/T/TVING/assets/logo.png",
 				};
 
 				if (video) {
@@ -55,16 +56,18 @@ presence.on("UpdateData", async () => {
 						? title[0].replace(title[1], "").trim()
 						: "영화";
 
-					data.smallImageKey = video.paused ? "pause" : "play";
+					data.smallImageKey = video.paused ? Assets.Pause : Assets.Play;
 					data.smallImageText = video.paused ? "Paused" : "Playing";
 
 					if (cover && coverUrl) {
 						data.largeImageKey = await getShortURL(coverUrl);
-						data.smallImageKey = video.paused ? "pause-c" : "play-c";
+						data.smallImageKey = video.paused ? Assets.Pause : Assets.Play;
 					}
 
-					if (!video.paused)
-						data.endTimestamp = presence.getTimestampsfromMedia(video).pop();
+					if (!video.paused) {
+						[data.startTimestamp, data.endTimestamp] =
+							presence.getTimestampsfromMedia(video);
+					}
 
 					data.buttons = [
 						{
@@ -79,10 +82,11 @@ presence.on("UpdateData", async () => {
 				}
 			},
 			"/live/player/": video => ({
-				largeImageKey: "tving",
+				largeImageKey:
+					"https://cdn.rcd.gg/PreMiD/websites/T/TVING/assets/logo.png",
 				details: document.querySelector(".live-title__channel").textContent,
 				state: "라이브",
-				smallImageKey: video.paused ? "pause" : "play",
+				smallImageKey: video.paused ? Assets.Pause : Assets.Play,
 				smallImageText: video.paused ? "일시 정지" : "재생 중",
 				endTimestamp: (() => {
 					if (!video.paused)

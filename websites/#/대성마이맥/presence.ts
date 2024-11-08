@@ -9,7 +9,8 @@ const presence = new Presence({
 
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-		largeImageKey: "logo",
+		largeImageKey:
+			"https://cdn.rcd.gg/PreMiD/websites/%23/%EB%8C%80%EC%84%B1%EB%A7%88%EC%9D%B4%EB%A7%A5/assets/logo.png",
 	};
 
 	if (document.location.pathname.includes("/common/aquaplayer/")) {
@@ -21,15 +22,13 @@ presence.on("UpdateData", async () => {
 		const video: HTMLVideoElement = document.querySelector("#video-nplayer-1");
 
 		if (!video.paused) {
-			[, presenceData.endTimestamp] = presence.getTimestamps(
-				video.currentTime,
-				video.duration
-			);
-			presenceData.smallImageKey = "play";
+			[presenceData.startTimestamp, presenceData.endTimestamp] =
+				presence.getTimestampsfromMedia(video);
+			presenceData.smallImageKey = Assets.Play;
 			presenceData.smallImageText = (await strings).play;
 		} else {
 			delete presenceData.endTimestamp;
-			presenceData.smallImageKey = "pause";
+			presenceData.smallImageKey = Assets.Pause;
 			presenceData.smallImageText = (await strings).pause;
 		}
 	} else {

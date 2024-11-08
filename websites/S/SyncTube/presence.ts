@@ -4,13 +4,18 @@ const presence = new Presence({
 	browsingTimestamp = Math.floor(Date.now() / 1000);
 
 let video = {
-	current: 0,
+	currentTime: 0,
 	duration: 0,
 	paused: true,
 	title: "Unknown",
 	channel: "Unknown",
 	url: <string>null,
 };
+
+const enum Assets {
+	Logo = "https://cdn.rcd.gg/PreMiD/websites/S/SyncTube/assets/0.png",
+	Logo2 = "https://cdn.rcd.gg/PreMiD/websites/S/SyncTube/assets/1.png",
+}
 
 presence.on("UpdateData", async function () {
 	const [timeElapsed, moreDetails, showButtons, privacy, logo] =
@@ -22,7 +27,7 @@ presence.on("UpdateData", async function () {
 				presence.getSetting<number>("logo"),
 			]),
 		presenceData: PresenceData = {
-			largeImageKey: logo === 0 ? "logo" : "logo2",
+			largeImageKey: logo === 0 ? Assets.Logo : Assets.Logo2,
 		},
 		urlpath = window.location.pathname.split("/");
 
@@ -39,10 +44,8 @@ presence.on("UpdateData", async function () {
 					presenceData.details = video.title;
 					presenceData.state = video.channel;
 
-					presenceData.endTimestamp = presence.getTimestamps(
-						Math.floor(video.current),
-						Math.floor(video.duration)
-					)[1];
+					[presenceData.startTimestamp, presenceData.endTimestamp] =
+						presence.getTimestamps(video.currentTime, video.duration);
 				} else {
 					presenceData.state = document.querySelector(
 						"div.userCount.noselect"
@@ -75,7 +78,7 @@ presence.on("UpdateData", async function () {
 presence.on(
 	"iFrameData",
 	(data: {
-		current: number;
+		currentTime: number;
 		duration: number;
 		paused: boolean;
 		title: string;

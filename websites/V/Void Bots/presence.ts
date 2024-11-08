@@ -1,5 +1,6 @@
 const presence = new Presence({ clientId: "765261270814949417" }),
 	browsingTimestamp = Math.floor(Date.now() / 1000);
+
 let oldLang: string = null,
 	strings: LangStrings;
 
@@ -45,7 +46,8 @@ presence.on("UpdateData", async () => {
 	}
 
 	const presenceData: PresenceData = {
-		largeImageKey: "img_logo",
+		largeImageKey:
+			"https://cdn.rcd.gg/PreMiD/websites/V/Void%20Bots/assets/logo.png",
 	};
 
 	if (showTimestamp === true) presenceData.startTimestamp = browsingTimestamp;
@@ -90,7 +92,8 @@ presence.on("UpdateData", async () => {
 				0,
 				-1
 			)} ${strings.docsViewer2.toLowerCase()}:`;
-			presenceData.smallImageKey = "img_icon_code";
+			presenceData.smallImageKey =
+				"https://cdn.rcd.gg/PreMiD/websites/V/Void%20Bots/assets/0.png";
 			presenceData.smallImageText = "Confusion 100";
 			presenceData.state =
 				document.querySelector("title").textContent || "Home";

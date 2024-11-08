@@ -1,7 +1,18 @@
 const presence = new Presence({
 		clientId: "858408468854997052",
 	}),
-	browsingTimestamp = Math.floor(Date.now() / 1000);
+	browsingTimestamp = Math.floor(Date.now() / 1000),
+	assets = {
+		users: "https://cdn.rcd.gg/PreMiD/websites/S/SteamDB/assets/1.png",
+		game: "https://cdn.rcd.gg/PreMiD/websites/S/SteamDB/assets/2.png",
+		dlc: "https://cdn.rcd.gg/PreMiD/websites/S/SteamDB/assets/3.png",
+		tool: "https://cdn.rcd.gg/PreMiD/websites/S/SteamDB/assets/4.png",
+		config: "https://cdn.rcd.gg/PreMiD/websites/S/SteamDB/assets/5.png",
+		unknown: "https://cdn.rcd.gg/PreMiD/websites/S/SteamDB/assets/6.png",
+		music: "https://cdn.rcd.gg/PreMiD/websites/S/SteamDB/assets/7.png",
+		application: "https://cdn.rcd.gg/PreMiD/websites/S/SteamDB/assets/8.png",
+		video: "https://cdn.rcd.gg/PreMiD/websites/S/SteamDB/assets/9.png",
+	};
 
 presence.on("UpdateData", async () => {
 	let searchText: HTMLInputElement, h1Title: Element, h2Title: Element;
@@ -34,7 +45,8 @@ presence.on("UpdateData", async () => {
 		allH2 = document.querySelectorAll("h2.header-title,h2.header-subtitle"),
 		{ pathname, href, hostname } = document.location,
 		presenceData: PresenceData = {
-			largeImageKey: "https://i.imgur.com/QUPRec4.png",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/S/SteamDB/assets/logo.png",
 			startTimestamp: browsingTimestamp,
 		};
 
@@ -53,7 +65,8 @@ presence.on("UpdateData", async () => {
 				if (searchText?.value) {
 					presenceData.details = "Searching for";
 					presenceData.state = searchText.value;
-					presenceData.smallImageKey = "https://i.imgur.com/oGQtnIY.png";
+					presenceData.smallImageKey =
+						"https://cdn.rcd.gg/PreMiD/websites/S/SteamDB/assets/0.png";
 					return presence.setActivity(presenceData);
 				}
 				switch (pathname.split("/")[1]) {
@@ -121,7 +134,8 @@ presence.on("UpdateData", async () => {
 							.children.item(1).textContent;
 						presenceData.state =
 							document.querySelector("h1").lastChild.textContent;
-						presenceData.smallImageKey = tbody.toLowerCase();
+						presenceData.smallImageKey =
+							assets[tbody.toLowerCase() as keyof typeof assets];
 						presenceData.smallImageText = tbody;
 						presenceData.buttons = [
 							{

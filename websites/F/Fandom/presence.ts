@@ -1,3 +1,6 @@
+const enum Assets {
+	Logo = "https://cdn.rcd.gg/PreMiD/websites/F/Fandom/assets/logo.png",
+}
 if (
 	document.location.pathname.includes("/wiki/")
 		? document.querySelector(".skin-oasis") ||
@@ -15,7 +18,7 @@ if (
 			currentPath = currentURL.pathname.replace(/^\/|\/$/g, "").split("/"),
 			presenceData: PresenceData = {
 				details: "Viewing an unsupported page",
-				largeImageKey: "lg",
+				largeImageKey: Assets.Logo,
 				startTimestamp: browsingTimestamp,
 			};
 		const updateCallback = {
@@ -36,7 +39,7 @@ if (
 			resetData = (
 				defaultData: PresenceData = {
 					details: "Viewing an unsupported page",
-					largeImageKey: "lg",
+					largeImageKey: Assets.Logo,
 					startTimestamp: browsingTimestamp,
 				}
 			): void => {
@@ -105,7 +108,7 @@ if (
 										.querySelector(".jw-icon-playback")
 										.getAttribute("aria-label") === "Pause"
 								) {
-									[, presenceData.endTimestamp] =
+									[presenceData.startTimestamp, presenceData.endTimestamp] =
 										presence.getTimestampsfromMedia(
 											document.querySelector(".jw-video")
 										);

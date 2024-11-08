@@ -4,7 +4,8 @@ const presence = new Presence({
 
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-			largeImageKey: "dropbox_logo",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/D/Dropbox/assets/logo.png",
 		},
 		showFileNames = await presence.getSetting<boolean>("showFileNames");
 

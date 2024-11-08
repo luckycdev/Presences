@@ -2,7 +2,8 @@ const presence = new Presence({
 		clientId: "776113876605337660",
 	}),
 	presenceData: PresenceData = {
-		largeImageKey: "mojevideo",
+		largeImageKey:
+			"https://cdn.rcd.gg/PreMiD/websites/M/MojeVideo/assets/logo.png",
 	};
 
 presence.on("UpdateData", async () => {
@@ -28,8 +29,8 @@ function RefreshData() {
 		presenceData.smallImageKey =
 			document.querySelector<HTMLElement>("#mv-pl").style.visibility !==
 			"visible"
-				? "mvplaying"
-				: "mvpaused";
+				? Assets.Play
+				: Assets.Pause;
 	} else {
 		let actualUrl = window.location.toString();
 		const actualTitle = document.title;
@@ -63,7 +64,8 @@ function RefreshData() {
 				presenceData.state = `${extraPageNumber}.strana`;
 		}
 	}
-	presenceData.largeImageKey = "mojevideo";
+	presenceData.largeImageKey =
+		"https://cdn.rcd.gg/PreMiD/websites/M/MojeVideo/assets/logo.png";
 }
 
 setInterval(RefreshData, 1000);

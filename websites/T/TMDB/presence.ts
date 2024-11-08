@@ -5,7 +5,8 @@ const presence: Presence = new Presence({
 
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-			largeImageKey: "tmdb_logo_lg",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/T/TMDB/assets/logo.png",
 			startTimestamp: browsingTimestamp,
 		},
 		{ pathname } = window.location;

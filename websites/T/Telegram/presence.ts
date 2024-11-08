@@ -19,7 +19,9 @@ function setPresenceData(
 			presenceData.state = activeChatDetails.textContent;
 		} else presenceData.details = "Talking to someone";
 		presenceData.smallImageKey =
-			textArea && textArea.textContent.length >= 1 ? "writing" : "reading";
+			textArea && textArea.textContent.length >= 1
+				? Assets.Writing
+				: Assets.Reading;
 		presenceData.smallImageText =
 			textArea && textArea.textContent.length >= 1
 				? "Typing a message"
@@ -32,7 +34,8 @@ function setPresenceData(
 presence.on("UpdateData", async () => {
 	const showName: boolean = await presence.getSetting<boolean>("name"); // presence settings
 	let presenceData: PresenceData = {
-			largeImageKey: "telegram",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/T/Telegram/assets/logo.png",
 		}, // default PresenceData
 		isLoggedIn: boolean, // determine if logged in or still logging in
 		activeChatDetails: HTMLElement, // details of current active chat

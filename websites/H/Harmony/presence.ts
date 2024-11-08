@@ -21,8 +21,9 @@ setInterval(fetchStats, 10000);
 
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-		largeImageKey: "default",
-		smallImageKey: "live",
+		largeImageKey:
+			"https://cdn.rcd.gg/PreMiD/websites/H/Harmony/assets/logo.png",
+		smallImageKey: Assets.Live,
 	};
 
 	if (document.location.hash.startsWith("#/")) {

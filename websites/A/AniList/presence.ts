@@ -10,11 +10,15 @@ async function getStrings() {
 	});
 }
 
+const enum Assets {
+	Logo = "https://cdn.rcd.gg/PreMiD/websites/A/AniList/assets/logo.png",
+}
+
 let strings: Awaited<ReturnType<typeof getStrings>>;
 
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-			largeImageKey: "anilist_lg",
+			largeImageKey: Assets.Logo,
 			startTimestamp,
 		},
 		pathnameArray = document.location.pathname.split("/"),
@@ -31,7 +35,7 @@ presence.on("UpdateData", async () => {
 				presenceData.largeImageKey = document
 					.querySelectorAll(".avatar")[1]
 					.getAttribute("src");
-				presenceData.smallImageKey = "anilist_lg";
+				presenceData.smallImageKey = Assets.Logo;
 			}
 			switch (pathnameArray[3]) {
 				case "mangalist":
@@ -66,7 +70,7 @@ presence.on("UpdateData", async () => {
 		}
 		case "search":
 			presenceData.details = "Searching";
-			presenceData.smallImageKey = "search";
+			presenceData.smallImageKey = Assets.Search;
 			presenceData.smallImageText = "Searching";
 			break;
 		case "anime":
@@ -109,7 +113,7 @@ presence.on("UpdateData", async () => {
 				presenceData.state = `'${document
 					.querySelector("h1.title")
 					.textContent.trim()}'`;
-				presenceData.smallImageKey = "reading";
+				presenceData.smallImageKey = Assets.Reading;
 				presenceData.smallImageText = strings.reading;
 			} else presenceData.details = "Browsing the forum";
 			break;
@@ -129,7 +133,7 @@ presence.on("UpdateData", async () => {
 				.querySelector("a.author")
 				.textContent.trim()
 				.replace("a review ", "")}`;
-			presenceData.smallImageKey = "reading";
+			presenceData.smallImageKey = Assets.Reading;
 			presenceData.smallImageText = strings.reading;
 			break;
 		case "recommendations":

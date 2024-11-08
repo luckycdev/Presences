@@ -17,7 +17,7 @@ const presence = new Presence({
 
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-		largeImageKey: "jpdb",
+		largeImageKey: "https://cdn.rcd.gg/PreMiD/websites/J/jpdb/assets/logo.png",
 		startTimestamp: browsingTimestamp,
 	};
 	if (document.location.pathname.includes("/learn")) {

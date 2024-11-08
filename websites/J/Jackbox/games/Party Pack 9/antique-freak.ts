@@ -1,5 +1,6 @@
 export const name = "Junktopia";
-export const logo = "https://i.imgur.com/5vqvCuK.png";
+export const logo =
+	"https://cdn.rcd.gg/PreMiD/websites/J/Jackbox/assets/38.png";
 
 export function getPresenceData({
 	playerState,
@@ -21,7 +22,7 @@ export function getPresenceData({
 			else if (responseKey.startsWith("shopping"))
 				return { state: "Shopping for an item" };
 			else if (responseKey.startsWith("presentationChoice")) {
-				if (prompt === "Ready to present?")
+				if (prompt.text === "Ready to present?")
 					return { state: "Preparing to present" };
 				else return { state: "Presenting their item" };
 			} else if (responseKey.startsWith("reaction"))
@@ -34,10 +35,10 @@ export function getPresenceData({
 			return { state: "Creating facts about an item" };
 		}
 		case "writing": {
-			if (prompt === "This piece is entitled:")
+			if (prompt.text === "This piece is entitled:")
 				return { state: "Naming their item" };
 			else if (
-				prompt ===
+				prompt.text ===
 				'Your two items are part of a collection called "[blank][/blank]"'
 			)
 				return { state: "Naming their collection" };

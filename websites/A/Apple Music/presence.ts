@@ -8,11 +8,13 @@ const presence = new Presence({
 
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-			largeImageKey: "applemusic-logo",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/A/Apple%20Music/assets/logo.png",
 		},
-		[timestamps, cover] = await Promise.all([
+		[timestamps, cover, listening] = await Promise.all([
 			presence.getSetting<boolean>("timestamps"),
 			presence.getSetting<boolean>("cover"),
+			presence.getSetting<boolean>("listening"),
 		]),
 		audio = document.querySelector<HTMLAudioElement>(
 			"audio#apple-music-player"
@@ -37,7 +39,7 @@ presence.on("UpdateData", async () => {
 		presenceData.details = navigator.mediaSession.metadata.title;
 		presenceData.state = navigator.mediaSession.metadata.artist;
 
-		presenceData.smallImageKey = paused ? "pause" : "play";
+		presenceData.smallImageKey = paused ? Assets.Pause : Assets.Play;
 		presenceData.smallImageText = paused
 			? (await strings).pause
 			: (await strings).play;
@@ -60,7 +62,10 @@ presence.on("UpdateData", async () => {
 			delete presenceData.startTimestamp;
 			delete presenceData.endTimestamp;
 		}
+
+		if (listening) presenceData.type = ActivityType.Listening;
+
 		presence.setActivity(presenceData);
-	} else if (presence.getExtensionVersion() < 224) presence.setActivity();
+	} else if (+presence.getExtensionVersion() < 224) presence.setActivity();
 	else presence.clearActivity();
 });

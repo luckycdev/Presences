@@ -45,7 +45,8 @@ const startTimestamp = Math.floor(Date.now() / 1000);
 presence.on("UpdateData", async () => {
 	const page = location.pathname,
 		presenceData: PresenceData = {
-			largeImageKey: "s-logo",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/S/Sinefy/assets/logo.jpg",
 			startTimestamp,
 		},
 		settings = {
@@ -70,8 +71,10 @@ presence.on("UpdateData", async () => {
 				video.duration
 			);
 
-			presenceData.startTimestamp = startTimestamp;
-			presenceData.endTimestamp = endTimestamp;
+			[presenceData.startTimestamp, presenceData.endTimestamp] = [
+				startTimestamp,
+				endTimestamp,
+			];
 
 			if (video.paused) {
 				delete presenceData.startTimestamp;
@@ -87,7 +90,7 @@ presence.on("UpdateData", async () => {
 				];
 			}
 
-			presenceData.smallImageKey = video.paused ? "pause" : "play";
+			presenceData.smallImageKey = video.paused ? Assets.Pause : Assets.Play;
 			presenceData.smallImageText = video.paused
 				? (await strings).pause
 				: (await strings).play;

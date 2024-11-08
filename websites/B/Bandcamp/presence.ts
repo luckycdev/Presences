@@ -2,6 +2,7 @@ const presence = new Presence({
 		clientId: "640561280800915456",
 	}),
 	browsingTimestamp = Math.floor(Date.now() / 1000);
+
 let min: number,
 	sec: number,
 	time: number,
@@ -11,7 +12,8 @@ let min: number,
 
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-			largeImageKey: "bc",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/B/Bandcamp/assets/logo.png",
 			startTimestamp: browsingTimestamp,
 		},
 		cover = await presence.getSetting<boolean>("cover");
@@ -86,9 +88,11 @@ presence.on("UpdateData", async () => {
 				time,
 				time2
 			);
-			presenceData.startTimestamp = startTimestamp;
-			presenceData.endTimestamp = endTimestamp;
-			presenceData.smallImageKey = "play";
+			[presenceData.startTimestamp, presenceData.endTimestamp] = [
+				startTimestamp,
+				endTimestamp,
+			];
+			presenceData.smallImageKey = Assets.Play;
 			presenceData.smallImageText = "Playing";
 
 			if (cover) {
@@ -122,7 +126,7 @@ presence.on("UpdateData", async () => {
 			presenceData.state = document.querySelector(
 				"#content > div:nth-child(2) > h2"
 			).textContent;
-			presenceData.smallImageKey = "reading";
+			presenceData.smallImageKey = Assets.Reading;
 		} else {
 			presenceData.details = "Bandcamp Daily";
 			presenceData.state = "Browsing...";
@@ -170,10 +174,9 @@ presence.on("UpdateData", async () => {
 		min2 = min2 * 60;
 		time2 = min2 + sec2;
 
-		const [startTimestamp, endTimestamp] = presence.getTimestamps(time, time2);
-		presenceData.startTimestamp = startTimestamp;
-		presenceData.endTimestamp = endTimestamp;
-		presenceData.smallImageKey = "play";
+		[presenceData.startTimestamp, presenceData.endTimestamp] =
+			presence.getTimestamps(Math.floor(time), Math.floor(time2));
+		presenceData.smallImageKey = Assets.Play;
 		presenceData.smallImageText = "Playing";
 		if (cover) {
 			presenceData.largeImageKey =
@@ -239,10 +242,9 @@ presence.on("UpdateData", async () => {
 		min2 = min2 * 60;
 		time2 = min2 + sec2;
 
-		const [startTimestamp, endTimestamp] = presence.getTimestamps(time, time2);
-		presenceData.startTimestamp = startTimestamp;
-		presenceData.endTimestamp = endTimestamp;
-		presenceData.smallImageKey = "play";
+		[presenceData.startTimestamp, presenceData.endTimestamp] =
+			presence.getTimestamps(Math.floor(time), Math.floor(time2));
+		presenceData.smallImageKey = Assets.Play;
 		presenceData.smallImageText = "Playing";
 		if (cover) {
 			presenceData.largeImageKey =

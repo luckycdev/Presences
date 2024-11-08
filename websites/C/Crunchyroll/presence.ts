@@ -2,6 +2,12 @@ const presence = new Presence({
 	clientId: "608065709741965327",
 });
 
+const enum Assets {
+	Logo = "https://cdn.rcd.gg/PreMiD/websites/C/Crunchyroll/assets/logo.png",
+
+	OpenBook = "https://cdn.rcd.gg/PreMiD/websites/C/Crunchyroll/assets/0.png",
+}
+
 async function getStrings() {
 	return presence.getStrings(
 		{
@@ -49,14 +55,6 @@ interface iFrameData {
 	};
 }
 
-enum Assets {
-	Logo = "https://i.imgur.com/yeWzAvq.png",
-	OpenBook = "https://i.imgur.com/vUGLDRM.png",
-	Pause = "https://i.imgur.com/0A75vqT.png",
-	Play = "https://i.imgur.com/Dj5dekr.png",
-	Search = "https://i.imgur.com/C3CetGw.png",
-}
-
 presence.on("iFrameData", (data: iFrameData) => {
 	playback = data.iFrameVideoData !== null ? true : false;
 
@@ -73,6 +71,7 @@ presence.on("iFrameData", (data: iFrameData) => {
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
 			largeImageKey: Assets.Logo,
+			type: ActivityType.Watching,
 		},
 		{ href, pathname } = window.location,
 		[newLang, showCover] = await Promise.all([
@@ -135,10 +134,8 @@ presence.on("UpdateData", async () => {
 			document.querySelector<HTMLHeadingElement>("a > h4").textContent;
 		presenceData.smallImageKey = paused ? Assets.Pause : Assets.Play;
 		presenceData.smallImageText = paused ? strings.pause : strings.play;
-		[, presenceData.endTimestamp] = presence.getTimestamps(
-			Math.floor(currentTime),
-			Math.floor(duration)
-		);
+		[presenceData.startTimestamp, presenceData.endTimestamp] =
+			presence.getTimestamps(Math.floor(currentTime), Math.floor(duration));
 
 		presenceData.details = videoTitle ?? "Title not found...";
 		presenceData.state =

@@ -35,7 +35,8 @@ presence.on("iFrameData", (data: IFrameData) => {
 
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-			largeImageKey: "lr",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/L/ListenOnRepeat/assets/logo.png",
 		},
 		[sGlobalRepeat, sFormatRepeat, sFormatGlobalRepeat] = await Promise.all([
 			presence.getSetting<boolean>("sGlobalRepeat"),
@@ -69,7 +70,7 @@ presence.on("UpdateData", async () => {
 			Math.floor(currentTime),
 			Math.floor(duration)
 		);
-		presenceData.smallImageKey = paused ? "pause" : "repeat";
+		presenceData.smallImageKey = paused ? Assets.Pause : Assets.Repeat;
 		presenceData.smallImageText = paused
 			? (await strings).pause
 			: (await strings).play;
@@ -102,7 +103,7 @@ presence.on("UpdateData", async () => {
 		presenceData.startTimestamp = browsingTimestamp;
 		presenceData.details = "Loading video...";
 		[presenceData.state] = document.title.split(" - Listen On Repeat");
-		presenceData.smallImageKey = "reading";
+		presenceData.smallImageKey = Assets.Reading;
 	}
 
 	if (presenceData.details) presence.setActivity(presenceData);

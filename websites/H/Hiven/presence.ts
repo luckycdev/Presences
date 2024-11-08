@@ -4,7 +4,7 @@ const presence: Presence = new Presence({
 
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-		largeImageKey: "lg",
+		largeImageKey: "https://cdn.rcd.gg/PreMiD/websites/H/Hiven/assets/logo.jpg",
 	};
 
 	// Presence for Hiven's static landing page

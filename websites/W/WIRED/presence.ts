@@ -12,7 +12,8 @@ presence.on("UpdateData", async () => {
 
 	const { title } = document,
 		presenceData: PresenceData = {
-			largeImageKey: "wired",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/W/WIRED/assets/logo.png",
 			startTimestamp: elapsed,
 		};
 

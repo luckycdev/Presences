@@ -6,7 +6,8 @@ const presence = new Presence({
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
 			state: "All shots",
-			largeImageKey: "dribbble",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/D/Dribbble/assets/logo.png",
 			startTimestamp: browsingTimestamp,
 		},
 		shotsTypes = (type: string) => {

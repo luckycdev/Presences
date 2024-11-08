@@ -7,7 +7,8 @@ const presence: Presence = new Presence({
 		live: "general.live",
 	}),
 	presenceData: PresenceData = {
-		largeImageKey: "listen_moe_lg",
+		largeImageKey:
+			"https://cdn.rcd.gg/PreMiD/websites/L/LISTEN.moe/assets/logo.jpg",
 	},
 	audio: HTMLAudioElement = document.querySelector("audio");
 let path: string,
@@ -64,7 +65,7 @@ presence.on("UpdateData", async () => {
 	if (playback) {
 		presenceData.details = getTrack();
 		presenceData.state = getArtists();
-		presenceData.smallImageKey = "live";
+		presenceData.smallImageKey = Assets.Live;
 		presenceData.smallImageText = (await strings).live;
 		presenceData.startTimestamp = startTimestamp;
 	} else if (path.includes("music")) {
@@ -73,7 +74,7 @@ presence.on("UpdateData", async () => {
 
 		presenceData.details = "Searching for a music";
 		presenceData.state = track;
-		presenceData.smallImageKey = "search";
+		presenceData.smallImageKey = Assets.Search;
 		presenceData.smallImageText = "Searching";
 		presenceData.startTimestamp = startTimestamp;
 	} else if (path.includes("u")) {

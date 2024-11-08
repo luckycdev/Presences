@@ -4,13 +4,15 @@ const presence = new Presence({
 
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-		largeImageKey: "logo",
+		largeImageKey:
+			"https://cdn.rcd.gg/PreMiD/websites/M/MixMods/assets/logo.png",
 	};
 
 	if (document.location.pathname === "/") {
 		presenceData.details = "Na página inicial...";
 
-		presenceData.smallImageKey = "logo";
+		presenceData.smallImageKey =
+			"https://cdn.rcd.gg/PreMiD/websites/M/MixMods/assets/logo.png";
 		presenceData.smallImageText = "www.mixmods.com.br";
 	} else if (document.location.pathname.match("/search/label")) {
 		presenceData.details = "Visualizando categoria:";
@@ -49,7 +51,6 @@ presence.on("UpdateData", async () => {
 			".post-title.entry-title"
 		)[0].textContent;
 
-		presenceData.smallImageKey = "user";
 		presenceData.smallImageText = `Postado por Junior_Djjr em ${
 			document.querySelector("[itemprop=datePublished]").textContent
 		}`;

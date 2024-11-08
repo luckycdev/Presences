@@ -6,11 +6,13 @@ const presence = new Presence({
 
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-			largeImageKey: "neovel_logo",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/N/Neovel/assets/logo.jpg",
 			startTimestamp: browsingTimestamp,
 		},
 		presenceDataSlide: PresenceData = {
-			largeImageKey: "neovel_logo",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/N/Neovel/assets/logo.jpg",
 			startTimestamp: browsingTimestamp,
 		},
 		pathnameArray = document.location.pathname.split("/"),
@@ -183,7 +185,7 @@ presence.on("UpdateData", async () => {
 	}
 	if (!showCover) {
 		presenceData.largeImageKey = presenceDataSlide.largeImageKey =
-			"neovel_logo";
+			"https://cdn.rcd.gg/PreMiD/websites/N/Neovel/assets/logo.jpg";
 	}
 
 	if (slideshow.getSlides().length > 0) presence.setActivity(slideshow);

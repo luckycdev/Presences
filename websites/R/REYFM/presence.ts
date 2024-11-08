@@ -77,6 +77,18 @@ setInterval(() => {
 	newStats();
 }, 10_000);
 
+const enum Assets {
+	WhiteBackSmall = "https://cdn.rcd.gg/PreMiD/websites/R/REYFM/assets/0.png",
+	BlackBackSmall = "https://cdn.rcd.gg/PreMiD/websites/R/REYFM/assets/1.png",
+	ColorBackSmall = "https://cdn.rcd.gg/PreMiD/websites/R/REYFM/assets/2.png",
+	ColorBack = "https://cdn.rcd.gg/PreMiD/websites/R/REYFM/assets/3.png",
+	BlackBack = "https://cdn.rcd.gg/PreMiD/websites/R/REYFM/assets/4.png",
+	WhiteBack = "https://cdn.rcd.gg/PreMiD/websites/R/REYFM/assets/5.png",
+	Black = "https://cdn.rcd.gg/PreMiD/websites/R/REYFM/assets/6.png",
+	White = "https://cdn.rcd.gg/PreMiD/websites/R/REYFM/assets/7.png",
+	Logo = "https://cdn.rcd.gg/PreMiD/websites/R/REYFM/assets/8.png",
+}
+
 presence.on("UpdateData", async () => {
 	const [info, elapsed, format1, format2, format3, buttons, logo] =
 			await Promise.all([
@@ -89,33 +101,33 @@ presence.on("UpdateData", async () => {
 				presence.getSetting<number>("logo"),
 			]),
 		logoArr = [
-			"reywhitebacksmall",
-			"reyblackbacksmall",
-			"reycolorbacksmall",
-			"reywhiteback",
-			"reyblackback",
-			"reycolorback",
-			"reywhite",
-			"reyblack",
-			"rey",
+			Assets.WhiteBackSmall,
+			Assets.BlackBackSmall,
+			Assets.ColorBackSmall,
+			Assets.WhiteBack,
+			Assets.BlackBack,
+			Assets.ColorBack,
+			Assets.White,
+			Assets.Black,
+			Assets.Logo,
 		],
 		presenceData: PresenceData = {
-			largeImageKey: logoArr[logo] || "reywhitebacksmall",
-			smallImageKey: "reading",
+			largeImageKey: logoArr[logo] || Assets.WhiteBackSmall,
+			smallImageKey: Assets.Reading,
 		};
 
 	let showFormat3 = false;
 
 	if (info) {
-		if (document.location.hostname === "status.reyfm.de")
+		if (document.location.hostname === "status.rey.fm")
 			presenceData.details = "Viewing status page";
-		else if (document.location.hostname === "www.reyfm.de") {
+		else if (document.location.hostname === "rey.fm") {
 			if (document.location.pathname.includes("/bots")) {
 				presenceData.details = "Viewing bots";
 				presenceData.buttons = [
 					{
 						label: "View Bots",
-						url: "https://www.reyfm.de/bots",
+						url: "https://rey.fm/bots",
 					},
 				];
 			} else if (document.location.pathname.includes("/discord-bot")) {
@@ -123,7 +135,7 @@ presence.on("UpdateData", async () => {
 				presenceData.buttons = [
 					{
 						label: "View Bot",
-						url: "https://www.reyfm.de/discord-bot",
+						url: "https://rey.fm/discord-bot",
 					},
 				];
 			} else if (document.location.pathname.includes("/partner"))
@@ -146,7 +158,7 @@ presence.on("UpdateData", async () => {
 	if (elapsed) presenceData.startTimestamp = browsingTimestamp;
 
 	if (
-		document.location.hostname === "www.reyfm.de" &&
+		document.location.hostname === "rey.fm" &&
 		document.location.pathname === "/"
 	) {
 		if (
@@ -165,7 +177,7 @@ presence.on("UpdateData", async () => {
 					const channel = channels.find(channel => channel.id === channelID);
 					({ track, artist, cover } = channel);
 
-					presenceData.smallImageKey = "play";
+					presenceData.smallImageKey = Assets.Play;
 					presenceData.smallImageText = format3
 						.replace("%listeners%", `${channel.listeners}`)
 						.replace("%totalListeners%", `${totalListeners}`);
@@ -173,7 +185,10 @@ presence.on("UpdateData", async () => {
 					presenceData.endTimestamp = Date.parse(channel.timeEnd);
 					showFormat3 = true;
 					presenceData.buttons = [
-						{ label: "Listen along!", url: `https://reyfm.de/${channel.name}` },
+						{
+							label: "Listen along!",
+							url: `https://rey.fm/station/${channel.name}`,
+						},
 					];
 				} else {
 					artist = document.querySelector(
@@ -187,7 +202,7 @@ presence.on("UpdateData", async () => {
 							"#player > div.wrapper > div.cover > img#player-coverart"
 						)
 						.getAttribute("src");
-					presenceData.smallImageKey = "play";
+					presenceData.smallImageKey = Assets.Play;
 					presenceData.smallImageText = "Loading statistics...";
 				}
 			} else {
@@ -202,7 +217,7 @@ presence.on("UpdateData", async () => {
 						"#player > div.wrapper > div.cover > img#player-coverart"
 					)
 					.getAttribute("src");
-				presenceData.smallImageKey = "pause";
+				presenceData.smallImageKey = Assets.Pause;
 				presenceData.smallImageText = `Total Listeners: ${totalListeners}`;
 				delete presenceData.startTimestamp;
 			}
@@ -216,7 +231,7 @@ presence.on("UpdateData", async () => {
 			presenceData.largeImageKey = cover;
 		}
 	} else if (
-		document.location.hostname === "www.reyfm.de" &&
+		document.location.hostname === "rey.fm" &&
 		document.querySelector("#channel-player") !== null
 	) {
 		const channel = channels.find(
@@ -231,8 +246,8 @@ presence.on("UpdateData", async () => {
 				.src.includes("play.png");
 
 		paused
-			? (presenceData.smallImageKey = "pause")
-			: (presenceData.smallImageKey = "play");
+			? (presenceData.smallImageKey = Assets.Pause)
+			: (presenceData.smallImageKey = Assets.Play);
 
 		presenceData.details = format1
 			.replace("%title%", channel.track)

@@ -20,9 +20,7 @@ interface LiveChannelNextData {
 	props: {
 		pageProps: {
 			channelSlug: string;
-			channelsMetaData: {
-				channels: ChannelMetadata[];
-			};
+			channels: ChannelMetadata[];
 		};
 	};
 }
@@ -41,22 +39,21 @@ interface CategoriesNextData {
 interface ProgrammeNextData {
 	props: {
 		pageProps: {
-			title: {
-				CTAText?: string;
-				episodeNumber?: number;
-				programmeTitle: string;
-				seriesNumber?: number;
-				titleType: string;
+			programme: {
+				heroCtaLabel?: string;
+				title: string;
+			};
+			episode: {
+				productionType: string;
+				episode: number;
+				series: number;
 			};
 		};
 	};
 }
 
-enum Assets {
-	Logo = "https://i.imgur.com/XisKvdg.png",
-	Live = "https://i.imgur.com/WTcQZS7.png",
-	Paused = "https://i.imgur.com/T6jkHHy.png",
-	Playing = "https://i.imgur.com/1CbifM8.png",
+const enum Assets {
+	Logo = "https://cdn.rcd.gg/PreMiD/websites/I/ITVX/assets/logo.png",
 }
 
 const presence = new Presence({
@@ -91,10 +88,9 @@ presence.on("UpdateData", async () => {
 			case "/watch": {
 				const nextData = fetchNextData<LiveChannelNextData>(),
 					// When you first go to watch a channel, the slug is null and the default channel is ITV1
-					currentChannelMetadata =
-						nextData.props.pageProps.channelsMetaData.channels.find(
-							x => x.slug === (nextData.props.pageProps.channelSlug || "itv")
-						);
+					currentChannelMetadata = nextData.props.pageProps.channels.find(
+						x => x.slug === (nextData.props.pageProps.channelSlug || "itv")
+					);
 
 				// At the moment, it doesn't seem the title of the current programme changes when it transitions from one programme
 				// to the next. Use the channel slot data start and end times to determine which title to show.
@@ -150,13 +146,15 @@ presence.on("UpdateData", async () => {
 					delete presenceData.startTimestamp;
 
 					const nextData = fetchNextData<ProgrammeNextData>();
-					presenceData.details = `Watching ${nextData.props.pageProps.title.programmeTitle}`;
+					presenceData.details = `Watching ${nextData.props.pageProps.programme.title}`;
 
 					if (
-						nextData.props.pageProps.title.CTAText &&
-						nextData.props.pageProps.title.titleType !== "FILM"
-					)
-						presenceData.state = nextData.props.pageProps.title.CTAText;
+						nextData.props.pageProps.programme.heroCtaLabel &&
+						nextData.props.pageProps.episode.productionType !== "FILM"
+					) {
+						presenceData.state =
+							nextData.props.pageProps.programme.heroCtaLabel;
+					}
 
 					const [video] = document.querySelectorAll("video");
 
@@ -167,10 +165,10 @@ presence.on("UpdateData", async () => {
 								Math.floor(video.duration)
 							);
 
-						presenceData.smallImageKey = Assets.Playing;
+						presenceData.smallImageKey = Assets.Play;
 						presenceData.smallImageText = "Playing";
 					} else {
-						presenceData.smallImageKey = Assets.Paused;
+						presenceData.smallImageKey = Assets.Pause;
 						presenceData.smallImageText = "Paused";
 					}
 				}

@@ -5,7 +5,7 @@ const presence = new Presence({
 
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-		largeImageKey: "lg",
+		largeImageKey: "https://cdn.rcd.gg/PreMiD/websites/G/Gitea/assets/logo.png",
 		startTimestamp: browsingTimestamp,
 	};
 	switch (document.location.pathname) {

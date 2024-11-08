@@ -18,7 +18,8 @@ const presence = new Presence({
 
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-		largeImageKey: "axn-logo",
+		largeImageKey:
+			"https://cdn.rcd.gg/PreMiD/websites/A/AnimeXNovel/assets/logo.png",
 	};
 
 	presenceData.startTimestamp = browsingTimestamp;

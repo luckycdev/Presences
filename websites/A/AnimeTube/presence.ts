@@ -14,7 +14,8 @@ presence.on("iFrameData", (data: typeof videoData) => {
 
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-		largeImageKey: "animetube",
+		largeImageKey:
+			"https://cdn.rcd.gg/PreMiD/websites/A/AnimeTube/assets/logo.png",
 	};
 
 	if (document.location.pathname === "/") {
@@ -56,13 +57,13 @@ presence.on("UpdateData", async () => {
 		presenceData.state = titleSplit[3];
 
 		if (videoData) {
-			presenceData.smallImageKey = videoData.paused ? "pause" : "play";
+			presenceData.smallImageKey = videoData.paused
+				? Assets.Pause
+				: Assets.Play;
 			presenceData.smallImageText = videoData.paused ? "Pausiert" : "Spielt";
 
-			[, presenceData.endTimestamp] = presence.getTimestamps(
-				videoData.currentTime,
-				videoData.duration
-			);
+			[presenceData.startTimestamp, presenceData.endTimestamp] =
+				presence.getTimestamps(videoData.currentTime, videoData.duration);
 
 			if (videoData.paused) delete presenceData.endTimestamp;
 		}

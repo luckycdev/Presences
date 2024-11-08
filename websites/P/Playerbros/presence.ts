@@ -41,10 +41,11 @@ presence.on("UpdateData", async () => {
 		date.textContent !== ""
 	) {
 		presence.setActivity({
-			largeImageKey: "pb-logo",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/P/Playerbros/assets/logo.png",
 			details: postTitle.textContent || "Belirsiz",
 			state: `Yazar: ${author.textContent} (${date.textContent})`,
-			smallImageKey: "reading",
+			smallImageKey: Assets.Reading,
 			smallImageText: "Bir gönderi okuyor...",
 			startTimestamp: Math.floor(Date.now() / 1000),
 		});
@@ -54,7 +55,8 @@ presence.on("UpdateData", async () => {
 		_author.textContent !== ""
 	) {
 		presence.setActivity({
-			largeImageKey: "pb-logo",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/P/Playerbros/assets/logo.png",
 			details: "Bir yazara göz atıyor:",
 			state: _author.textContent,
 			startTimestamp: Math.floor(Date.now() / 1000),
@@ -65,7 +67,8 @@ presence.on("UpdateData", async () => {
 		);
 
 		presence.setActivity({
-			largeImageKey: "pb-logo",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/P/Playerbros/assets/logo.png",
 			details: "Bir etikete göz atıyor:",
 			state:
 				tag && tag.textContent !== ""
@@ -81,7 +84,8 @@ presence.on("UpdateData", async () => {
 		);
 
 		presence.setActivity({
-			largeImageKey: "pb-logo",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/P/Playerbros/assets/logo.png",
 			details: "Bir şey arıyor:",
 			state:
 				searchingFor && searchingFor.textContent !== ""
@@ -92,19 +96,21 @@ presence.on("UpdateData", async () => {
 								""
 							)
 					: null || "Belirsiz",
-			smallImageKey: "search",
+			smallImageKey: Assets.Search,
 			startTimestamp: Math.floor(Date.now() / 1000),
 		});
 	} else if (pages[page] || pages[page.slice(0, -1)]) {
 		presence.setActivity({
-			largeImageKey: "pb-logo",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/P/Playerbros/assets/logo.png",
 			details: "Bir sayfaya göz atıyor:",
 			state: pages[page] || pages[page.slice(0, -1)],
 			startTimestamp: Math.floor(Date.now() / 1000),
 		});
 	} else {
 		presence.setActivity({
-			largeImageKey: "pb-logo",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/P/Playerbros/assets/logo.png",
 			details: "Bir sayfaya göz atıyor:",
 			state: "Ana Sayfa",
 			startTimestamp: Math.floor(Date.now() / 1000),

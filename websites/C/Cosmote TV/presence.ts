@@ -20,7 +20,8 @@ let channel: string,
 
 presence.on("UpdateData", async () => {
 	let presenceData: PresenceData = {
-		largeImageKey: "tv",
+		largeImageKey:
+			"https://cdn.rcd.gg/PreMiD/websites/C/Cosmote%20TV/assets/logo.png",
 	};
 
 	const pages: Record<string, PresenceData> = {
@@ -31,7 +32,7 @@ presence.on("UpdateData", async () => {
 				details: "Searching",
 				state:
 					document.querySelector<HTMLInputElement>("#searchFieldInput")?.value,
-				smallImageKey: "search",
+				smallImageKey: Assets.Search,
 				smallImageText: "Searching",
 			},
 			loginSplash: {
@@ -51,6 +52,9 @@ presence.on("UpdateData", async () => {
 			},
 			livetv: {
 				details: "Browsing Live TV",
+			},
+			inbox: {
+				details: "Viewing Inbox",
 			},
 			"livetv/replaytv": {
 				details: "Browsing Replay TV",
@@ -103,7 +107,7 @@ presence.on("UpdateData", async () => {
 			)
 		) {
 			presenceData.details = document.querySelector<HTMLSpanElement>(
-				".meta-title[ng-bind='details.title']"
+				".meta-title[ng-bind~='details.title']"
 			)?.textContent;
 			presenceData.state = document.querySelector<HTMLSpanElement>(
 				".meta-title[ng-bind='details.channel.title']"
@@ -123,7 +127,7 @@ presence.on("UpdateData", async () => {
 
 				presenceData.startTimestamp = channelTimestamp;
 
-				presenceData.smallImageKey = paused ? "pause" : "live";
+				presenceData.smallImageKey = paused ? Assets.Pause : Assets.Live;
 				presenceData.smallImageText = paused ? strings.pause : strings.live;
 			} else {
 				// Replay / Timeshift
@@ -138,14 +142,14 @@ presence.on("UpdateData", async () => {
 						)
 					);
 
-				presenceData.smallImageKey = paused ? "pause" : "play";
+				presenceData.smallImageKey = paused ? Assets.Pause : Assets.Play;
 				presenceData.smallImageText = paused ? strings.pause : strings.play;
 			}
 			channel = presenceData.state;
 		} else {
 			// On Demand
 			presenceData.details = document.querySelector<HTMLSpanElement>(
-				".meta-title[ng-bind='details.title']"
+				".meta-title[ng-bind~='details.title']"
 			).textContent;
 			// Series
 			if (
@@ -189,11 +193,10 @@ presence.on("UpdateData", async () => {
 				}
 			}
 
-			presenceData.endTimestamp = presence
-				.getTimestamps(Math.floor(currentTime), Math.floor(duration))
-				.pop();
+			[presenceData.startTimestamp, presenceData.endTimestamp] =
+				presence.getTimestamps(Math.floor(currentTime), Math.floor(duration));
 
-			presenceData.smallImageKey = paused ? "pause" : "play";
+			presenceData.smallImageKey = paused ? Assets.Pause : Assets.Play;
 			presenceData.smallImageText = paused ? strings.pause : strings.play;
 		}
 

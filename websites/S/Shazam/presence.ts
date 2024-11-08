@@ -48,7 +48,8 @@ presence.on("UpdateData", async () => {
 		songPlaying = song ? !song.paused : false;
 
 	let presenceData: PresenceData = {
-		largeImageKey: "shazam",
+		largeImageKey:
+			"https://cdn.rcd.gg/PreMiD/websites/S/Shazam/assets/logo.png",
 		startTimestamp: elapsed,
 	};
 
@@ -63,15 +64,11 @@ presence.on("UpdateData", async () => {
 	if (showSong && songPlaying) {
 		presenceData.details = getElement(".track .heading");
 		presenceData.state = getElement(".track .subheading");
-		presenceData.smallImageKey = "play";
+		presenceData.smallImageKey = Assets.Play;
 		presenceData.smallImageText = (await strings).play;
 
-		const [startTimestamp, endTimestamp] = presence.getTimestamps(
-			song.currentTime,
-			song.duration
-		);
-		presenceData.startTimestamp = startTimestamp;
-		presenceData.endTimestamp = endTimestamp;
+		[presenceData.startTimestamp, presenceData.endTimestamp] =
+			presence.getTimestampsfromMedia(song);
 	}
 
 	if (!songPlaying) {
@@ -96,8 +93,8 @@ presence.on("UpdateData", async () => {
 	}
 
 	if (presenceData.details) {
-		if (presenceData.details.match("(Browsing|Viewing)")) {
-			presenceData.smallImageKey = "reading";
+		if ((presenceData.details as string).match("(Browsing|Viewing)")) {
+			presenceData.smallImageKey = Assets.Reading;
 			presenceData.smallImageText = (await strings).browse;
 		}
 		if (!showTimestamps) {

@@ -17,9 +17,13 @@ async function getStrings() {
 let strings: Awaited<ReturnType<typeof getStrings>> = null,
 	oldLang: string = null;
 
+const enum Assets {
+	Logo = "https://cdn.rcd.gg/PreMiD/websites/Q/Qobuz/assets/logo.png",
+}
+
 presence.on("UpdateData", async () => {
 	if (!document.querySelector("#root"))
-		return presence.setActivity({ largeImageKey: "logo" });
+		return presence.setActivity({ largeImageKey: Assets.Logo });
 
 	const [newLang, timestamps, cover] = await Promise.all([
 		presence.getSetting<string>("lang").catch(() => "en"),
@@ -39,7 +43,7 @@ presence.on("UpdateData", async () => {
 							'div[class="player__track-cover"] img'
 						)
 						.src.replaceAll("230", "600")
-				: "logo",
+				: Assets.Logo,
 		},
 		songTitle = document.querySelector<HTMLAnchorElement>(
 			'a[class="player__track-name"]'
@@ -47,18 +51,16 @@ presence.on("UpdateData", async () => {
 		fromPlaylist = !!document.querySelectorAll(
 			'div[class="player__track-album"] a'
 		)[2],
-		currentTimeSec =
-			presence.timestampFromFormat(
-				document.querySelector<HTMLElement>(
-					'span[class="player__track-time-text"]'
-				).textContent
-			) * 1000,
-		endTimeSec =
-			presence.timestampFromFormat(
-				document.querySelectorAll<HTMLElement>(
-					'span[class="player__track-time-text"]'
-				)[1].textContent
-			) * 1000,
+		currentTimeSec = presence.timestampFromFormat(
+			document.querySelector<HTMLElement>(
+				'span[class="player__track-time-text"]'
+			).textContent
+		),
+		endTimeSec = presence.timestampFromFormat(
+			document.querySelectorAll<HTMLElement>(
+				'span[class="player__track-time-text"]'
+			)[1].textContent
+		),
 		paused = !!document.querySelector(
 			'span[class="player__action-play pct pct-player-play "] '
 		),
@@ -83,8 +85,9 @@ presence.on("UpdateData", async () => {
 		playliststring;
 
 	if (currentTimeSec > 0 || !paused) {
-		presenceData.endTimestamp = Date.now() + (endTimeSec - currentTimeSec);
-		presenceData.smallImageKey = paused ? "pause" : "play";
+		[presenceData.startTimestamp, presenceData.endTimestamp] =
+			presence.getTimestamps(currentTimeSec, endTimeSec);
+		presenceData.smallImageKey = paused ? Assets.Pause : Assets.Play;
 		presenceData.smallImageText = paused ? strings.pause : strings.play;
 	}
 
@@ -95,9 +98,9 @@ presence.on("UpdateData", async () => {
 
 	if (obj.repeatType !== "deactivated" && !paused) {
 		presenceData.smallImageKey =
-			obj.repeatType === "loopQueue" ? "repeat" : "repeat-one";
+			obj.repeatType === "loopQueue" ? Assets.Repeat : Assets.RepeatOne;
 		presenceData.smallImageText =
-			obj.repeatType === "loopQueue" ? "Repeat" : "Repeat Once";
+			obj.repeatType === "loopQueue" ? Assets.Repeat : Assets.RepeatOne;
 	}
 
 	presenceData.buttons = [

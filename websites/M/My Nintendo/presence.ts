@@ -18,13 +18,12 @@ let strings: Awaited<ReturnType<typeof getStrings>>,
 presence.on("UpdateData", async () => {
 	const path = window.location.pathname.split("/").slice(1),
 		presenceData: PresenceData = {
-			largeImageKey: "logo_big",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/M/My%20Nintendo/assets/logo.png",
 		},
 		newLang = await presence.getSetting<string>("lang").catch(() => "en");
-	if (oldLang !== newLang || !strings) {
-		oldLang = newLang;
-		strings = await getStrings();
-	}
+	oldLang = newLang;
+	if (!strings || oldLang !== newLang) strings = await getStrings();
 
 	switch (path[0]) {
 		// Reward Categories
@@ -33,7 +32,7 @@ presence.on("UpdateData", async () => {
 				document.querySelector<HTMLHeadingElement>("h1")?.textContent ??
 				document.title;
 			presenceData.smallImageText = strings.browsing;
-			presenceData.smallImageKey = "reading";
+			presenceData.smallImageKey = Assets.Reading;
 
 			if (path.length > 1) {
 				presenceData.state = document.querySelector<HTMLHeadingElement>(
@@ -47,7 +46,7 @@ presence.on("UpdateData", async () => {
 				document.querySelector<HTMLHeadingElement>("h1")?.textContent ??
 				document.title;
 			presenceData.smallImageText = strings.browsing;
-			presenceData.smallImageKey = "reading";
+			presenceData.smallImageKey = Assets.Reading;
 
 			if (path.length > 1) {
 				presenceData.state = document.querySelector<HTMLHeadingElement>(
@@ -61,7 +60,7 @@ presence.on("UpdateData", async () => {
 				document.querySelector<HTMLHeadingElement>("h1")?.textContent ??
 				document.title;
 
-			presenceData.smallImageKey = strings.reading;
+			presenceData.smallImageKey = Assets.Reading;
 			presenceData.smallImageText = "reading";
 			break;
 		// Points
@@ -79,7 +78,7 @@ presence.on("UpdateData", async () => {
 				document.querySelector<HTMLHeadingElement>("h1")?.textContent ??
 				document.title;
 			presenceData.smallImageText = strings.reading;
-			presenceData.smallImageKey = "reading";
+			presenceData.smallImageKey = Assets.Reading;
 
 			if (path.length > 1) {
 				presenceData.state =
@@ -106,7 +105,7 @@ presence.on("UpdateData", async () => {
 				document.querySelector<HTMLHeadingElement>("h1")?.textContent ??
 				document.title;
 
-			presenceData.smallImageKey = strings.reading;
+			presenceData.smallImageKey = Assets.Reading;
 			presenceData.smallImageText = "reading";
 			break;
 		// Startpage, Unknown

@@ -17,7 +17,8 @@ const stripPlatziProfileFlags = (url: string) => {
 
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-			largeImageKey: "lg-dark",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/P/Platzi/assets/logo.jpg",
 		},
 		{ pathname } = document.location,
 		pathNameSplit = pathname.split("/").filter(Boolean);
@@ -207,8 +208,10 @@ presence.on("UpdateData", async () => {
 			document
 				.querySelector<HTMLElement>(".VideoPlayer > div")
 				.className.includes("vjs-playing")
-		)
-			[, presenceData.endTimestamp] = presence.getTimestampsfromMedia(video);
+		) {
+			[presenceData.startTimestamp, presenceData.endTimestamp] =
+				presence.getTimestampsfromMedia(video);
+		}
 	} else if (pathname.includes("/cursos/")) {
 		//NEW UI, SAME PRESENCE /CLASES/
 		if (pathNameSplit.length >= 2) {

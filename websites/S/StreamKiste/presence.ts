@@ -58,16 +58,14 @@ const pages: PageContext[] = [
 					".single-content.movie .title>h1"
 				)?.textContent;
 				if (frame) {
-					const [startTimestamp, endTimestamp] = context.getTimestamps(
-						frame.currentTime,
-						frame.duration
-					);
 					data.details = strings.playing;
 					data.smallImageKey = frame.paused ? images.PAUSE : images.PLAY;
 					data.smallImageText = `${strings.playing} ${data.state}`;
 					if (!frame.paused) {
-						data.startTimestamp = startTimestamp;
-						data.endTimestamp = endTimestamp;
+						[data.startTimestamp, data.endTimestamp] = context.getTimestamps(
+							frame.currentTime,
+							frame.duration
+						);
 					} else {
 						if (data.startTimestamp) delete data.startTimestamp;
 						if (data.endTimestamp) delete data.endTimestamp;
@@ -133,16 +131,19 @@ let lastPageIndex: number,
 	currentLang: string,
 	localizedStrings: { [key: string]: string },
 	frameData: VideoContext;
+
 const IMAGES = {
-	LOGO: "logox1024",
-	PLAY: "playx1024",
-	PAUSE: "pausex1024",
-	BROWSE: "browsex1024",
-	SEARCH: "searchx1024",
+	LOGO: "https://cdn.rcd.gg/PreMiD/websites/S/StreamKiste/assets/0.png",
+	PLAY: Assets.Play,
+	PAUSE: Assets.Pause,
+	BROWSE: "https://cdn.rcd.gg/PreMiD/websites/S/StreamKiste/assets/1.png",
+	SEARCH: Assets.Search,
 };
+
 presence.on("iFrameData", (data: VideoContext) => {
 	frameData = data;
 });
+
 presence.on("UpdateData", async () => {
 	const newLang = await presence.getSetting<string>("lang").catch(() => "en");
 	if (newLang !== currentLang) {

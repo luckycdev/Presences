@@ -5,7 +5,7 @@ const presence = new Presence({
 
 presence.on("UpdateData", () => {
 	const presenceData: PresenceData = {
-		largeImageKey: "canva",
+		largeImageKey: "https://cdn.rcd.gg/PreMiD/websites/C/Canva/assets/logo.png",
 		startTimestamp: browsingTimestamp,
 	};
 
@@ -87,7 +87,8 @@ presence.on("UpdateData", () => {
 	else if (document.location.pathname.startsWith("/design/")) {
 		if (document.location.pathname.endsWith("/edit")) {
 			presenceData.details = "Editing the design:";
-			presenceData.smallImageKey = "brush";
+			presenceData.smallImageKey =
+				"https://cdn.rcd.gg/PreMiD/websites/C/Canva/assets/0.png";
 			presenceData.smallImageText = "Editing";
 			presenceData.state = document.querySelector("head > title").textContent;
 		} else if (document.location.pathname.endsWith("/view")) {

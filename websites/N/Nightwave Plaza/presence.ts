@@ -3,7 +3,10 @@ const presence = new Presence({
 });
 
 presence.on("UpdateData", async () => {
-	const presenceData: PresenceData = { largeImageKey: "icon" },
+	const presenceData: PresenceData = {
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/N/Nightwave%20Plaza/assets/logo.png",
+		},
 		playerTitle: HTMLDivElement = document.querySelector("div.player-title"),
 		playerArtist: HTMLDivElement = document.querySelector("div.player-artist"),
 		playerTime: HTMLDivElement = document.querySelector("div.player-time"),
@@ -39,12 +42,12 @@ presence.on("UpdateData", async () => {
 		if (playBackStatus) {
 			switch (playBackStatus.textContent) {
 				case "Play": {
-					presenceData.smallImageKey = "play";
+					presenceData.smallImageKey = Assets.Play;
 					if (listeners) presenceData.smallImageText = listeners.textContent;
 					break;
 				}
 				case "Stop": {
-					presenceData.smallImageKey = "pause";
+					presenceData.smallImageKey = Assets.Pause;
 					if (listeners) presenceData.smallImageText = listeners.textContent;
 					break;
 				}
@@ -58,10 +61,8 @@ presence.on("UpdateData", async () => {
 				.split("/")
 				.map(time => presence.timestampFromFormat(time));
 
-			[, presenceData.endTimestamp] = presence.getTimestamps(
-				currentTime,
-				duration
-			);
+			[presenceData.startTimestamp, presenceData.endTimestamp] =
+				presence.getTimestamps(currentTime, duration);
 		}
 	}
 

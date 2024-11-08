@@ -2,6 +2,10 @@ const presence = new Presence({
 	clientId: "630570838084812801",
 });
 
+const enum Assets {
+	Logo = "https://cdn.rcd.gg/PreMiD/websites/W/wikiHow/assets/logo.png",
+}
+
 presence.on("UpdateData", async () => {
 	const path = document.location.pathname,
 		topic = document.querySelector("#section_0"),
@@ -22,8 +26,8 @@ presence.on("UpdateData", async () => {
 					? ` (${date.textContent.replace("Updated: ", "")})`
 					: ""
 			} `,
-			largeImageKey: "banner",
-			smallImageKey: "logo",
+			largeImageKey: Assets.Logo,
+			smallImageKey: Assets.Logo,
 			smallImageText: decodeURIComponent(document.location.href),
 			startTimestamp: Math.floor(Date.now() / 1000),
 		});
@@ -33,8 +37,9 @@ presence.on("UpdateData", async () => {
 		return presence.setActivity({
 			details: "Viewing a category:",
 			state: category.textContent,
-			largeImageKey: "banner",
-			smallImageKey: "logo",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/W/wikiHow/assets/logo.png",
+			smallImageKey: Assets.Logo,
 			smallImageText: decodeURIComponent(document.location.href),
 			startTimestamp: Math.floor(Date.now() / 1000),
 		});
@@ -49,8 +54,9 @@ presence.on("UpdateData", async () => {
 		return presence.setActivity({
 			details: "Editing/Writing How to",
 			state: `Topic: ${newTopic ?? "Unknown."} `,
-			largeImageKey: "banner",
-			smallImageKey: "logo",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/W/wikiHow/assets/logo.png",
+			smallImageKey: Assets.Logo,
 			smallImageText: decodeURIComponent(document.location.href),
 			startTimestamp: Math.floor(Date.now() / 1000),
 		});
@@ -65,8 +71,9 @@ presence.on("UpdateData", async () => {
 		return presence.setActivity({
 			details: "Searching for:",
 			state: `${searching[0].toUpperCase() + searching.slice(1).toLowerCase()}`,
-			largeImageKey: "banner",
-			smallImageKey: "logo",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/W/wikiHow/assets/logo.png",
+			smallImageKey: Assets.Logo,
 			smallImageText: "Searching...",
 			startTimestamp: Math.floor(Date.now() / 1000),
 		});
@@ -75,8 +82,9 @@ presence.on("UpdateData", async () => {
 	return presence.setActivity({
 		details: "Viewing a page:",
 		state: "Homepage",
-		largeImageKey: "banner",
-		smallImageKey: "logo",
+		largeImageKey:
+			"https://cdn.rcd.gg/PreMiD/websites/W/wikiHow/assets/logo.png",
+		smallImageKey: Assets.Logo,
 		startTimestamp: Math.floor(Date.now() / 1000),
 	});
 });

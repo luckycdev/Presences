@@ -43,7 +43,8 @@ const emanate = new Emanate({
 
 emanate.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-			largeImageKey: "logo",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/E/Emanate/assets/logo.png",
 			startTimestamp: emanate.startTime,
 		},
 		pages = {
@@ -92,12 +93,10 @@ emanate.on("UpdateData", async () => {
 				.replace("%title%", songData.title)
 				.replace("%author%", songData.author);
 
-			[, presenceData.endTimestamp] = emanate.getTimestamps(
-				songData.currentTime,
-				songData.duration
-			);
+			[presenceData.startTimestamp, presenceData.endTimestamp] =
+				emanate.getTimestamps(songData.currentTime, songData.duration);
 
-			presenceData.smallImageKey = songData.paused ? "pause" : "play";
+			presenceData.smallImageKey = songData.paused ? Assets.Pause : Assets.Play;
 			presenceData.smallImageText = songData.paused ? "Paused" : "Playing";
 
 			presenceData.buttons = [

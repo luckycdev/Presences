@@ -9,8 +9,10 @@ presence.on("UpdateData", async () => {
 	const privacy: boolean = await presence.getSetting<boolean>("privacy"),
 		showTimestamp: boolean = await presence.getSetting<boolean>("timestamp"),
 		presenceData: PresenceData = {
-			largeImageKey: "logo",
-			smallImageKey: "small",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/G/GeForce%20NOW/assets/logo.png",
+			smallImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/G/GeForce%20NOW/assets/0.png",
 			startTimestamp: browsingTimestamp,
 		};
 

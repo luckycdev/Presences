@@ -42,7 +42,8 @@ presence.on("UpdateData", async () => {
 			presence.getSetting<boolean>("buttons"),
 		]),
 		presenceData: PresenceData = {
-			largeImageKey: "site",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/A/Anime-D/assets/logo.jpg",
 			startTimestamp: browsingTimestamp,
 		};
 
@@ -103,15 +104,16 @@ presence.on("UpdateData", async () => {
 			presenceData.details = info;
 			presenceData.state = episode;
 		}
-		presenceData.smallImageKey = video.paused ? "pause" : "playing";
+		presenceData.smallImageKey = video.paused ? Assets.Pause : Assets.Play;
 		presenceData.smallImageText = video.paused
 			? (await strings).pause
 			: (await strings).play;
 		if (!video.paused) {
-			[, presenceData.endTimestamp] = presence.getTimestamps(
-				Math.floor(video.current),
-				Math.floor(video.duration)
-			);
+			[presenceData.startTimestamp, presenceData.endTimestamp] =
+				presence.getTimestamps(
+					Math.floor(video.current),
+					Math.floor(video.duration)
+				);
 		}
 		if (buttons) {
 			presenceData.buttons = [

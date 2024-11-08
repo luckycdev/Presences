@@ -32,7 +32,8 @@ presence.on(
 
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-		largeImageKey: "icon",
+		largeImageKey:
+			"https://cdn.rcd.gg/PreMiD/websites/A/Anime-Sugoi/assets/logo.png",
 	};
 
 	// Presence
@@ -81,7 +82,7 @@ presence.on("UpdateData", async () => {
 				presenceData.details = episode;
 			}
 
-			presenceData.smallImageKey = video.paused ? "pause" : "playing";
+			presenceData.smallImageKey = video.paused ? Assets.Play : Assets.Pause;
 			presenceData.smallImageText = video.paused
 				? (await strings).pause
 				: (await strings).play;

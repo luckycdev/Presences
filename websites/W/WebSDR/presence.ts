@@ -31,8 +31,8 @@ function updateMode(): void {
 
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-		largeImageKey: "favicon",
-		//smallImageKey: "key",
+		largeImageKey:
+			"https://cdn.rcd.gg/PreMiD/websites/W/WebSDR/assets/logo.png",
 		smallImageText: "University of Twente SDR",
 		startTimestamp: browsingTimestamp,
 	};

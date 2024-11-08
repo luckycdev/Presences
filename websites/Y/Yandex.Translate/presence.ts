@@ -7,7 +7,8 @@ let from: string, to: string, typet: string;
 
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-		largeImageKey: "yt",
+		largeImageKey:
+			"https://cdn.rcd.gg/PreMiD/websites/Y/Yandex.Translate/assets/logo.png",
 	};
 
 	switch (document.location.pathname) {

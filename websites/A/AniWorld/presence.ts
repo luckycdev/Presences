@@ -47,7 +47,8 @@ presence.on(
 presence.on("UpdateData", async () => {
 	const page = document.location.pathname,
 		presenceData: PresenceData = {
-			largeImageKey: "aniworld-logo",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/A/AniWorld/assets/logo.png",
 			startTimestamp: Math.floor(Date.now() / 1000),
 		};
 	if (page === "/") presenceData.details = "Betrachtet die Startseite";
@@ -83,12 +84,10 @@ presence.on("UpdateData", async () => {
 			}
 			if (played) {
 				if (!paused) {
-					[, presenceData.endTimestamp] = presence.getTimestamps(
-						currentTime,
-						timeEnd
-					);
+					[presenceData.startTimestamp, presenceData.endTimestamp] =
+						presence.getTimestamps(currentTime, timeEnd);
 				}
-				presenceData.smallImageKey = paused ? "pause" : "play";
+				presenceData.smallImageKey = paused ? Assets.Pause : Assets.Play;
 				presenceData.smallImageText = paused ? "Pausiert" : "Wiedergabe";
 			}
 		}
@@ -184,7 +183,8 @@ presence.on("UpdateData", async () => {
 								presenceData.state = `${
 									document.querySelector<HTMLHeadingElement>("h1").textContent
 								}`;
-								presenceData.smallImageKey = "user";
+								presenceData.smallImageKey =
+									"https://cdn.rcd.gg/PreMiD/websites/A/AniWorld/assets/0.png";
 								presenceData.smallImageText = `${
 									document.querySelector<HTMLDivElement>(
 										"#userDetails > div > div > div:nth-child(3) > div"

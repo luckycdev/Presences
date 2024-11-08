@@ -47,7 +47,8 @@ presence.on("iFrameData", async (msg: Data | null) => {
 presence.on("UpdateData", async () => {
 	const path = document.location.pathname,
 		presenceData: PresenceData = {
-			largeImageKey: "blutv",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/B/BluTV/assets/logo.png",
 		};
 
 	if (!path.includes("izle")) {
@@ -68,7 +69,7 @@ presence.on("UpdateData", async () => {
 		}
 
 		if (video) {
-			presenceData.smallImageKey = video.paused ? "pause" : "play";
+			presenceData.smallImageKey = video.paused ? Assets.Pause : Assets.Play;
 			presenceData.smallImageText = video.paused
 				? (await strings).paused
 				: (await strings).playing;
@@ -82,8 +83,10 @@ presence.on("UpdateData", async () => {
 				!video.paused &&
 				!document.location.pathname.startsWith("/canli-yayin")
 			) {
-				presenceData.startTimestamp = startTimestamp;
-				presenceData.endTimestamp = endTimestamp;
+				[presenceData.startTimestamp, presenceData.endTimestamp] = [
+					startTimestamp,
+					endTimestamp,
+				];
 			}
 		}
 	} else {

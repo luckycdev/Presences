@@ -2,6 +2,7 @@ const presence = new Presence({
 	clientId: "614386371532161054",
 	injectOnComplete: true,
 });
+
 async function getStrings() {
 	return presence.getStrings(
 		{
@@ -83,7 +84,8 @@ presence.on("UpdateData", async () => {
 	]);
 
 	let presenceData: PresenceData = {
-			largeImageKey: "vlive2",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/V/V%20LIVE/assets/logo.png",
 			startTimestamp: elapsed,
 		},
 		searchPageValue: string;
@@ -113,86 +115,86 @@ presence.on("UpdateData", async () => {
 			"/home/new/": {
 				details: strings.browseThrough,
 				state: strings.newVid,
-				smallImageKey: "reading",
+				smallImageKey: Assets.Reading,
 			},
 			"/home/chart/": {
 				details: strings.browseThrough,
 				state: strings.charts,
-				smallImageKey: "reading",
+				smallImageKey: Assets.Reading,
 			},
 			"/home/my/": {
 				details: strings.recentUploads.includes("{0}")
 					? strings.recentUploads.split("{0}")[0]
 					: strings.recentUploads,
 				state: strings.recentUploads.split("{0}")[1],
-				smallImageKey: "reading",
+				smallImageKey: Assets.Reading,
 			},
 			"/my/": {
 				details: strings.viewTheir,
 				state: strings.profile,
-				smallImageKey: "reading",
+				smallImageKey: Assets.Reading,
 			},
 			"/my/profile/": {
 				details: strings.profileEdit.includes("{0}")
 					? strings.profileEdit.split("{0}")[0]
 					: strings.profileEdit,
 				state: strings.profileEdit.split("{0}")[1],
-				smallImageKey: "search",
+				smallImageKey: Assets.Search,
 			},
 			"/my/watched/": {
 				details: strings.viewTheir,
 				state: strings.watched,
-				smallImageKey: "reading",
+				smallImageKey: Assets.Reading,
 			},
 			"/my/purchased/": {
 				details: strings.viewTheir,
 				state: strings.purchases,
-				smallImageKey: "reading",
+				smallImageKey: Assets.Reading,
 			},
 			"/my/coin/": {
 				details: strings.viewTheir,
 				state: strings.coins,
-				smallImageKey: "reading",
+				smallImageKey: Assets.Reading,
 			},
 			"/my/devices/": {
 				details: strings.viewTheir,
 				state: strings.devices,
-				smallImageKey: "reading",
+				smallImageKey: Assets.Reading,
 			},
 			"/my/channels/": {
 				details: strings.viewTheir,
 				state: strings.followed,
-				smallImageKey: "reading",
+				smallImageKey: Assets.Reading,
 			},
 			"/upcoming/": {
 				details: strings.browseThrough,
 				state: strings.upcoming,
-				smallImageKey: "reading",
+				smallImageKey: Assets.Reading,
 			},
 			"/channels/": {
 				details: strings.browseThrough,
 				state: strings.channelList,
-				smallImageKey: "reading",
+				smallImageKey: Assets.Reading,
 			},
 			"/channel/(\\w*\\d*)/": {
 				details: strings.channelHome,
 				state: strings.ofChannel.replace("{0}", channelPageChannelName),
-				smallImageKey: "reading",
+				smallImageKey: Assets.Reading,
 			},
 			"/channel/(\\w*\\d*)/schedule/": {
 				details: strings.channelSchedule,
 				state: strings.ofChannel.replace("{0}", channelPageChannelName),
-				smallImageKey: "reading",
+				smallImageKey: Assets.Reading,
 			},
 			"/channel/(\\w*\\d*)/my/": {
 				details: strings.channelMy,
 				state: strings.ofChannel.replace("{0}", channelPageChannelName),
-				smallImageKey: "reading",
+				smallImageKey: Assets.Reading,
 			},
 			"/channel/(\\w*\\d*)/store/": {
 				details: strings.channelStore,
 				state: strings.ofChannel.replace("{0}", channelPageChannelName),
-				smallImageKey: "reading",
+				smallImageKey: Assets.Reading,
 			},
 			"/channel/(\\w*\\d*)/board/": {
 				details: strings.channelBoard.replace(
@@ -201,17 +203,17 @@ presence.on("UpdateData", async () => {
 						?.textContent ?? "ERROR: NOT FOUND!"
 				),
 				state: strings.ofChannel.replace("{0}", channelPageChannelName),
-				smallImageKey: "reading",
+				smallImageKey: Assets.Reading,
 			},
 			"/events/": {
 				details: strings.browseThrough,
 				state: strings.events,
-				smallImageKey: "reading",
+				smallImageKey: Assets.Reading,
 			},
 			"/vstore/": {
 				details: strings.browseThrough,
 				state: strings.store,
-				smallImageKey: "reading",
+				smallImageKey: Assets.Reading,
 			},
 			"/product/(\\w*\\d*)/": {
 				details: strings.product.replace(
@@ -220,20 +222,20 @@ presence.on("UpdateData", async () => {
 				),
 				state:
 					document.querySelector("h3.tit")?.textContent ?? "ERROR: NOT FOUND!",
-				smallImageKey: "reading",
+				smallImageKey: Assets.Reading,
 			},
 			"/search/": {
 				details: privacy ? strings.searchSomething : strings.searchFor,
 				state: searchPageValue,
-				smallImageKey: "search",
+				smallImageKey: Assets.Search,
 			},
 			"/policies/": {
 				details: strings.policies,
-				smallImageKey: "reading",
+				smallImageKey: Assets.Reading,
 			},
 			"/about/": {
 				details: `${strings.readingAbout} V LIVE`,
-				smallImageKey: "reading",
+				smallImageKey: Assets.Reading,
 			},
 		};
 
@@ -243,7 +245,7 @@ presence.on("UpdateData", async () => {
 
 		if (privacy) {
 			presenceData.details = strings.browse;
-			presenceData.smallImageKey = "reading";
+			presenceData.smallImageKey = Assets.Reading;
 			delete presenceData.state;
 		}
 	}
@@ -274,7 +276,9 @@ presence.on("UpdateData", async () => {
 								)
 						);
 					}
-					presenceData.smallImageKey = video.paused ? "pause" : "live";
+					presenceData.smallImageKey = video.paused
+						? Assets.Pause
+						: Assets.Live;
 					presenceData.smallImageText = video.paused
 						? strings.pause
 						: strings.live;
@@ -294,7 +298,7 @@ presence.on("UpdateData", async () => {
 					delete presenceData.state;
 				} else if (showBrowsing && !showLive) {
 					presenceData.details = strings.browse;
-					presenceData.smallImageKey = "reading";
+					presenceData.smallImageKey = Assets.Reading;
 					delete presenceData.state;
 				}
 			} else {
@@ -302,7 +306,9 @@ presence.on("UpdateData", async () => {
 				if (showVideo) {
 					[presenceData.startTimestamp, presenceData.endTimestamp] =
 						presence.getTimestampsfromMedia(video);
-					presenceData.smallImageKey = video.paused ? "pause" : "play";
+					presenceData.smallImageKey = video.paused
+						? Assets.Pause
+						: Assets.Play;
 					presenceData.smallImageText = video.paused
 						? strings.pause
 						: strings.play;
@@ -325,7 +331,7 @@ presence.on("UpdateData", async () => {
 					delete presenceData.state;
 				} else if (showBrowsing && !showVideo) {
 					presenceData.details = strings.browse;
-					presenceData.smallImageKey = "reading";
+					presenceData.smallImageKey = Assets.Reading;
 					delete presenceData.state;
 				}
 			}
@@ -344,7 +350,7 @@ presence.on("UpdateData", async () => {
 					presenceData.state = streamState
 						.replace("%title%", title)
 						.replace("%streamer%", channelPageChannelName);
-					presenceData.smallImageKey = "premiere-live";
+					presenceData.smallImageKey = Assets.PremiereLive;
 					presenceData.smallImageText = strings.waitingLiveThe;
 				}
 
@@ -355,7 +361,7 @@ presence.on("UpdateData", async () => {
 					delete presenceData.smallImageText;
 				} else if (showBrowsing && !showLive) {
 					presenceData.details = strings.browse;
-					presenceData.smallImageKey = "reading";
+					presenceData.smallImageKey = Assets.Reading;
 					delete presenceData.state;
 					delete presenceData.smallImageText;
 				}
@@ -368,7 +374,7 @@ presence.on("UpdateData", async () => {
 					presenceData.state = vidState
 						.replace("%title%", title)
 						.replace("%uploader%", channelPageChannelName);
-					presenceData.smallImageKey = "premiere";
+					presenceData.smallImageKey = Assets.Premiere;
 					presenceData.smallImageText = strings.waitingVidThe;
 				}
 
@@ -379,7 +385,7 @@ presence.on("UpdateData", async () => {
 					delete presenceData.smallImageText;
 				} else if (showBrowsing && !showVideo) {
 					presenceData.details = strings.browse;
-					presenceData.smallImageKey = "reading";
+					presenceData.smallImageKey = Assets.Reading;
 					delete presenceData.state;
 					delete presenceData.smallImageText;
 				}
@@ -408,7 +414,7 @@ presence.on("UpdateData", async () => {
 			if (showVideo) {
 				[presenceData.startTimestamp, presenceData.endTimestamp] =
 					presence.getTimestampsfromMedia(video);
-				presenceData.smallImageKey = video.paused ? "pause" : "play";
+				presenceData.smallImageKey = video.paused ? Assets.Pause : Assets.Play;
 				presenceData.smallImageText = video.paused
 					? strings.pause
 					: strings.play;
@@ -437,7 +443,7 @@ presence.on("UpdateData", async () => {
 			//* Normal text post
 			presenceData.details = `${strings.readingPost} (${postPoster.textContent})`;
 			presenceData.state = postTitle.textContent;
-			presenceData.smallImageKey = "reading";
+			presenceData.smallImageKey = Assets.Reading;
 		}
 	}
 
@@ -450,8 +456,9 @@ presence.on("UpdateData", async () => {
 		presence.setActivity(presenceData);
 
 		if (
-			presenceData.details.includes("ERROR: NOT FOUND!") ||
-			(presenceData.state && presenceData.state.includes("ERROR: NOT FOUND!"))
+			(presenceData.details as string).includes("ERROR: NOT FOUND!") ||
+			(presenceData.state &&
+				(presenceData.state as string).includes("ERROR: NOT FOUND!"))
 		) {
 			presence.error(
 				`Unable to find an element...\nPlease contact Bas950#0950 in Discord (https://discord.premid.app/).\nPath: ${path}`

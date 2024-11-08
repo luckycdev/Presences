@@ -6,7 +6,8 @@ const presence = new Presence({
 
 presence.on("UpdateData", async () => {
 	let presenceData: PresenceData = {
-		largeImageKey: "lg",
+		largeImageKey:
+			"https://cdn.rcd.gg/PreMiD/websites/G/GitHub/assets/logo.png",
 	};
 	const pages: Record<string, PresenceData> = {
 			login: {
@@ -72,11 +73,12 @@ presence.on("UpdateData", async () => {
 				const searchParam = new URLSearchParams(search).get("tab"),
 					profileName = document
 						.querySelector("span.p-nickname")
-						.textContent.trim();
+						?.textContent.split("·")[0]
+						.trim();
 				presenceData.buttons = [{ label: "View Profile", url: href }];
 				if (cover) {
 					presenceData.largeImageKey = `${
-						document.querySelector<HTMLImageElement>("img.avatar").src
+						document.querySelector<HTMLImageElement>("img.avatar-user").src
 					}.png`;
 				}
 				if (searchParam)
@@ -98,7 +100,7 @@ presence.on("UpdateData", async () => {
 					presenceData.largeImageKey = `https://avatars.githubusercontent.com/u/${
 						document.querySelector<HTMLMetaElement>(
 							'meta[name~="octolytics-dimension-user_id"]'
-						).content
+						)?.content
 					}`;
 				}
 
@@ -122,10 +124,18 @@ presence.on("UpdateData", async () => {
 						delete presenceData.buttons;
 						break;
 					}
+					const pathFolder = document
+							.querySelector("#repos-header-breadcrumb-wide > ol")
+							?.textContent.trim()
+							.split("/")
+							.slice(1)
+							.join("/"),
+						fileName = document.querySelector("#file-name-id-wide").textContent;
 					presenceData.details = `Browsing repository ${repository.owner}/${repository.name}`;
-					presenceData.state = `Viewing file ${document
-						.querySelector("h2#blob-path > strong")
-						.textContent.trim()} at ${repository.target}`;
+					presenceData.state = `Viewing file ${(pathFolder
+						? `${pathFolder}/${fileName}`
+						: fileName
+					)?.trim()} at ${repository.target}`;
 				} else if (pathname.includes("/issues")) {
 					if (pathname.includes("/issues/")) {
 						if (pathname.includes("new")) {
@@ -145,11 +155,13 @@ presence.on("UpdateData", async () => {
 							}
 							presenceData.details = `Looking at issue #${repository.id}`;
 							presenceData.state = `${
-								document.querySelectorAll<HTMLAnchorElement>("a.author")[0]
-									.textContent
+								document
+									.querySelector<HTMLAnchorElement>("a.author")
+									?.textContent?.trim() ??
+								document.querySelector('[href="#top"]')?.textContent?.trim()
 							} - ${
 								document.querySelector<HTMLHeadingElement>("h1.gh-header-title")
-									.textContent
+									?.textContent
 							}`;
 							presenceData.buttons = [{ label: "View Issue", url: href }];
 						}
@@ -181,12 +193,12 @@ presence.on("UpdateData", async () => {
 					}
 					presenceData.details = `Looking at pull request #${repository.id}`;
 					presenceData.state = `${
-						document.querySelectorAll<HTMLAnchorElement>(
-							"a.author.Link--primary"
-						)[0].textContent
+						document.querySelector<HTMLAnchorElement>("a.author.Link--primary")
+							?.textContent ??
+						document.querySelector('[class*="author Link"]')?.textContent
 					} - ${
 						document.querySelector<HTMLHeadingElement>("h1.gh-header-title")
-							.textContent
+							?.textContent
 					}`;
 					presenceData.buttons = [{ label: "View Pull Request", url: href }];
 				} else if (pathname.endsWith("/discussions")) {
@@ -208,10 +220,10 @@ presence.on("UpdateData", async () => {
 					presenceData.details = `Looking at discussion #${repository.id}`;
 					presenceData.state = `${
 						document.querySelectorAll<HTMLAnchorElement>("a.author")[0]
-							.textContent
+							?.textContent
 					} - ${
 						document.querySelector<HTMLHeadingElement>("h1.gh-header-title")
-							.textContent
+							?.textContent
 					}`;
 					presenceData.buttons = [{ label: "View Discussion", url: href }];
 				} else if (
@@ -235,7 +247,7 @@ presence.on("UpdateData", async () => {
 
 					presenceData.state = document.querySelector<HTMLAnchorElement>(
 						"nav a.js-selected-navigation-item.selected.menu-item"
-					).textContent;
+					)?.textContent;
 				} else {
 					if (privacy) {
 						presenceData.details = "Browsing a repository";
@@ -247,30 +259,6 @@ presence.on("UpdateData", async () => {
 					presenceData.state = `${repository.owner}/${repository.name}`;
 				}
 				break;
-			case !!document.querySelector<HTMLHeadingElement>(
-				"#js-pjax-container > div > header > div.container-xl.pt-4.pt-lg-0.p-responsive.clearfix > div > div.flex-1 > h1"
-			):
-				if (privacy) {
-					presenceData.details = "Viewing an organization";
-					delete presenceData.state;
-					delete presenceData.buttons;
-					break;
-				}
-				presenceData.details = "Viewing an organization";
-				presenceData.state =
-					document.querySelector<HTMLHeadingElement>("h1").textContent;
-				if (cover) {
-					presenceData.largeImageKey = `${
-						document.querySelector<HTMLImageElement>("div > img").src
-					}`;
-				}
-				break;
-			case pathname.includes("/features"):
-				presenceData.details = "Browsing features";
-				if (pathname.includes("copilot"))
-					presenceData.state = "Looking at Github Copilot";
-
-				break;
 			case pathname.includes("/orgs/"):
 				if (privacy) {
 					presenceData.details = "Viewing the people in an organization";
@@ -281,12 +269,39 @@ presence.on("UpdateData", async () => {
 				presenceData.details = `Viewing ${pathname.split("/")[2]}'s ${
 					pathname.split("/")[3]
 				}`;
+
+				break;
+			case !!document.querySelector<HTMLMetaElement>(
+				'meta[name="hovercard-subject-tag"]'
+			):
+				presenceData.details = "Viewing an organization";
+
+				if (privacy) {
+					delete presenceData.state;
+					delete presenceData.buttons;
+					break;
+				}
+
+				presenceData.state = document.title;
 				if (cover) {
 					presenceData.largeImageKey = `${
-						document.querySelector<HTMLImageElement>("h1 > a > img").src
+						document.querySelector<HTMLMetaElement>(
+							'meta[property~="og:image"]'
+						)?.content ??
+						document.querySelector<HTMLImageElement>(
+							"img[itemprop='image'].avatar"
+						)?.src ??
+						presenceData.largeImageKey
 					}`;
 				}
 				break;
+			case pathname.includes("/features"):
+				presenceData.details = "Browsing features";
+				if (pathname.includes("copilot"))
+					presenceData.state = "Looking at Github Copilot";
+
+				break;
+
 			case pathname === "/" || !pathname:
 				presenceData.details = "Viewing the home page";
 				break;
@@ -309,7 +324,7 @@ presence.on("UpdateData", async () => {
 				const searchParam = new URLSearchParams(search).get("tab"),
 					profileName = document
 						.querySelector("span.p-nickname")
-						.textContent.trim();
+						?.textContent.trim();
 				presenceData.buttons = [{ label: "View Profile", url: href }];
 				if (cover) {
 					presenceData.largeImageKey = `${

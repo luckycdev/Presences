@@ -4,7 +4,7 @@ const presence = new Presence({
 
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-		largeImageKey: "taco",
+		largeImageKey: "https://cdn.rcd.gg/PreMiD/websites/T/Taco/assets/logo.png",
 	};
 	switch (location.pathname.split("/")[1]) {
 		case "guide":

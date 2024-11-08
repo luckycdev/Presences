@@ -10,7 +10,8 @@ presence.on("UpdateData", async () => {
 		]),
 		presenceData: PresenceData = {
 			details: "Other",
-			largeImageKey: "logo",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/S/Snapchat/assets/logo.png",
 			startTimestamp: browsingTimestamp,
 		},
 		activeChat = document.querySelector<HTMLDivElement>(
@@ -33,7 +34,8 @@ presence.on("UpdateData", async () => {
 
 		if (showActiveChatAvatar && avatar) {
 			presenceData.largeImageKey = avatar;
-			presenceData.smallImageKey = "logo";
+			presenceData.smallImageKey =
+				"https://cdn.rcd.gg/PreMiD/websites/S/Snapchat/assets/logo.png";
 		}
 	}
 

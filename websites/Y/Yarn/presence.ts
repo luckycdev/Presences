@@ -22,7 +22,8 @@ function parseQueryString(queryString?: string): {
 
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-			largeImageKey: "logo",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/Y/Yarn/assets/logo.png",
 		},
 		route = document.location.pathname.split("/");
 
@@ -34,7 +35,7 @@ presence.on("UpdateData", async () => {
 			  })`
 			: "Navigate...";
 		presenceData.smallImageKey = parseQueryString(document.location.hash).q
-			? "search"
+			? Assets.Search
 			: null;
 		presenceData.smallImageText = "Searching...";
 	} else if (document.location.pathname.includes("/package/")) {

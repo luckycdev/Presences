@@ -4,7 +4,8 @@ const presence = new Presence({
 
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-			largeImageKey: "logo",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/F/FR-Minecraft/assets/logo.png",
 		},
 		browsingTimestamp = Math.floor(Date.now() / 1000),
 		privacy = await presence.getSetting<boolean>("privacy"),
@@ -13,7 +14,8 @@ presence.on("UpdateData", async () => {
 	presenceData.startTimestamp = browsingTimestamp;
 	if (privacy) presenceData.details = "Browsing";
 	else if (window.location.pathname.startsWith("/forum")) {
-		presenceData.smallImageKey = "forum";
+		presenceData.smallImageKey =
+			"https://cdn.rcd.gg/PreMiD/websites/F/FR-Minecraft/assets/0.png";
 		if (
 			window.location.pathname.startsWith("/forum/forum-") ||
 			window.location.pathname.startsWith("/forum/topic-") ||

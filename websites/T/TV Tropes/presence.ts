@@ -8,7 +8,8 @@ presence.on("UpdateData", () => {
 	const [, pathCheck, mainPath, namespace] =
 			window.location.pathname.split("/"),
 		presenceData: PresenceData = {
-			largeImageKey: "logo",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/T/TV%20Tropes/assets/logo.png",
 			startTimestamp,
 		};
 

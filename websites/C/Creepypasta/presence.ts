@@ -9,7 +9,8 @@ presence.on("UpdateData", async () => {
 			presence.getSetting<boolean>("buttons"),
 		]),
 		presenceData: PresenceData = {
-			largeImageKey: "logo",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/C/Creepypasta/assets/logo.png",
 			startTimestamp: browsingStamp,
 		},
 		orderBy = document.getElementsByName("_orderby")[0] as HTMLSelectElement;

@@ -1,7 +1,16 @@
 let elapsed = Math.floor(Date.now() / 1000),
 	prevUrl = document.location.href;
 
-const presence = new Presence({
+const assets = {
+		zdf: "https://cdn.rcd.gg/PreMiD/websites/Z/ZDFmediathek/assets/0.png",
+		"3sat": "https://cdn.rcd.gg/PreMiD/websites/Z/ZDFmediathek/assets/1.png",
+		phoenix: "https://cdn.rcd.gg/PreMiD/websites/Z/ZDFmediathek/assets/2.png",
+		arte: "https://cdn.rcd.gg/PreMiD/websites/Z/ZDFmediathek/assets/3.png",
+		zdfinfo: "https://cdn.rcd.gg/PreMiD/websites/Z/ZDFmediathek/assets/4.png",
+		zdfneo: "https://cdn.rcd.gg/PreMiD/websites/Z/ZDFmediathek/assets/5.png",
+		kika: "https://cdn.rcd.gg/PreMiD/websites/Z/ZDFmediathek/assets/6.png",
+	},
+	presence = new Presence({
 		clientId: "854999470357217290",
 	}),
 	// TODO: Add multiLang
@@ -16,10 +25,11 @@ const presence = new Presence({
 
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-			largeImageKey: "zdf",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/Z/ZDFmediathek/assets/logo.png",
 		},
 		video = document.querySelector<HTMLVideoElement>(
-			"div.zdfplayer-video_wrapper video"
+			"div.zdfplayer-video-container video"
 		);
 
 	if (document.location.href !== prevUrl) {
@@ -28,39 +38,44 @@ presence.on("UpdateData", async () => {
 	}
 
 	if (video) {
+		presenceData.type = ActivityType.Watching;
 		if (location.pathname.startsWith("/live-tv")) {
 			// Livestream
 			const mediathekLivechannel = document
-					.querySelector<HTMLHeadingElement>(
-						"div.item.livetv-item.js-livetv-scroller-cell.m-active-done.m-activated-done.m-activated.m-active h2[class='visuallyhidden']"
-					)
-					.textContent.replace(/ {2}/g, " ")
-					.replaceAll(" im Livestream", "")
-					.replaceAll(" Livestream", ""),
-				videoInfoResults = document.querySelectorAll(".zdfplayer-teaser-title");
-
-			let videoInfoTag = null;
-			for (const videoInfoResult of videoInfoResults) {
-				if (
-					videoInfoResult.textContent
-						.toLowerCase()
-						.includes(` ${mediathekLivechannel.toLowerCase()} `) ||
-					videoInfoResult.textContent
-						.toLowerCase()
-						.includes(`>${mediathekLivechannel.toLowerCase()}<`)
-				) {
-					videoInfoTag = videoInfoResult.textContent;
+				.querySelector<HTMLHeadingElement>(
+					"div.m-active h2[class='visuallyhidden']"
+				)
+				.textContent.replace(/ {2}/g, " ")
+				.replaceAll(" im Livestream", "")
+				.replaceAll(" Livestream", "");
+			let livename = mediathekLivechannel;
+			switch (livename) {
+				case "phoenix":
+					livename = "PHOENIX";
 					break;
-				}
+				case "KiKA":
+					livename = "KI\\.KA";
+					break;
+				default:
 			}
-
-			presenceData.largeImageKey = mediathekLivechannel.toLowerCase();
-			presenceData.smallImageKey = "live";
+			const channel = document.querySelector<HTMLHeadingElement>(
+					`section.timeline-${livename} ul li.m-live h4 a span`
+				),
+				videoInfoTag = document
+					.querySelector<HTMLHeadingElement>(
+						`section.timeline-${livename} ul li.m-live h4 a`
+					)
+					.getAttribute("aria-label")
+					.replace(mediathekLivechannel, "");
+			let channelname = "";
+			if (channel.textContent && channel.textContent !== ":")
+				channelname = channel.textContent.replace(":", " -");
+			presenceData.largeImageKey =
+				assets[mediathekLivechannel.toLowerCase() as keyof typeof assets];
+			presenceData.smallImageKey = Assets.Live;
 			presenceData.smallImageText = "Live";
-			presenceData.details = `${mediathekLivechannel} Live`;
-			presenceData.state = videoInfoTag
-				.substring(videoInfoTag.lastIndexOf(">") + 1, videoInfoTag.length - 1)
-				.trim();
+			presenceData.details = videoInfoTag;
+			presenceData.state = `${channelname}${mediathekLivechannel} Live`;
 			presenceData.startTimestamp = elapsed;
 			presenceData.buttons = [
 				{ label: (await strings).buttonWatchStream, url: prevUrl },
@@ -68,53 +83,44 @@ presence.on("UpdateData", async () => {
 
 			if (
 				document.querySelector<HTMLVideoElement>(
-					"div.item.livetv-item.js-livetv-scroller-cell.m-activated-done.m-activated.m-active.m-active-done div figure div video"
+					"div.m-active div figure div div video"
 				).paused
 			) {
-				presenceData.smallImageKey = "pause";
+				presenceData.smallImageKey = Assets.Pause;
 				presenceData.smallImageText = (await strings).pause;
-				presenceData.startTimestamp = 0;
-				presenceData.endTimestamp = 0;
+				delete presenceData.startTimestamp;
+				delete presenceData.endTimestamp;
 			}
 		} else {
 			// Video-on-demand
-			presenceData.largeImageKey = "zdf";
-			presenceData.smallImageKey = "play";
+			presenceData.largeImageKey =
+				"https://cdn.rcd.gg/PreMiD/websites/Z/ZDFmediathek/assets/logo.png";
+			presenceData.smallImageKey = Assets.Play;
 			presenceData.smallImageText = (await strings).play;
 
-			const videoInfoTag = document.querySelector(
-					".zdfplayer-teaser-title"
-				).textContent,
-				showTitleTag = videoInfoTag.substring(
-					videoInfoTag.indexOf(">") + 1,
-					videoInfoTag.lastIndexOf("<")
+			presenceData.state = document.querySelector(
+				"ol li:nth-last-child(2) a"
+			).textContent;
+			presenceData.details = document.querySelector(
+				"ol li:nth-last-child(1) span"
+			).textContent;
+			[presenceData.startTimestamp, presenceData.endTimestamp] =
+				presence.getTimestamps(
+					Math.floor(video.currentTime),
+					Math.floor(video.duration)
 				);
-
-			presenceData.state = videoInfoTag
-				.substring(videoInfoTag.lastIndexOf(">") + 1, videoInfoTag.length - 1)
-				.trim();
-			presenceData.details = showTitleTag.includes("|")
-				? showTitleTag.substring(
-						showTitleTag.indexOf("|") + 1,
-						showTitleTag.length
-				  )
-				: showTitleTag;
-			[, presenceData.endTimestamp] = presence.getTimestamps(
-				Math.floor(video.currentTime),
-				Math.floor(video.duration)
-			);
 			presenceData.buttons = [
 				{ label: (await strings).buttonWatchVideo, url: prevUrl },
 			];
 			if (video.paused) {
-				presenceData.smallImageKey = "pause";
+				presenceData.smallImageKey = Assets.Pause;
 				presenceData.smallImageText = (await strings).pause;
 				delete presenceData.startTimestamp;
 				delete presenceData.endTimestamp;
 			}
 		}
 	} else {
-		presenceData.smallImageKey = "reading";
+		presenceData.smallImageKey = Assets.Reading;
 		presenceData.smallImageText = (await strings).browsingThrough;
 		presenceData.details = (await strings).browsing;
 		presenceData.startTimestamp = elapsed;

@@ -32,7 +32,8 @@ presence.on("UpdateData", async () => {
 		]),
 		presenceData: PresenceData = {
 			details: "Где-то на сайте",
-			largeImageKey: "animego_logo",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/A/AnimeGO/assets/logo.jpg",
 			smallImageText: "AnimeGO",
 		},
 		typeContent = document
@@ -83,7 +84,8 @@ presence.on("UpdateData", async () => {
 			presenceData.state = titleContent;
 			if (logo) {
 				presenceData.largeImageKey = image;
-				presenceData.smallImageKey = "animego_logo";
+				presenceData.smallImageKey =
+					"https://cdn.rcd.gg/PreMiD/websites/A/AnimeGO/assets/logo.jpg";
 			}
 			if (buttons) {
 				presenceData.buttons = [
@@ -108,7 +110,7 @@ presence.on("UpdateData", async () => {
 				}`;
 			presenceData.details = `Смотрит ${privacy ? typeCurrent : titleContent}`;
 			presenceData.state = privacy ? "" : serie;
-			presenceData.smallImageKey = video.paused ? "pause" : "play";
+			presenceData.smallImageKey = video.paused ? Assets.Pause : Assets.Play;
 			presenceData.smallImageText = video.paused ? strings.pause : strings.play;
 			if (time) {
 				if (video.paused) {

@@ -9,7 +9,8 @@ const presence = new Presence({
 presence.on("UpdateData", async () => {
 	data.privacyMode = await presence.getSetting<boolean>("privacy");
 	data.presenceData = {
-		largeImageKey: "logo",
+		largeImageKey:
+			"https://cdn.rcd.gg/PreMiD/websites/S/Sickipedia/assets/logo.jpg",
 	};
 
 	if (matchPage("/")) updateData("Viewing page:", "Homepage", false);

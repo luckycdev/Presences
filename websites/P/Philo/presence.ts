@@ -11,7 +11,8 @@ let elapsed: number, oldUrl: string;
 
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-			largeImageKey: "philo",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/P/Philo/assets/logo.png",
 		},
 		{ href, pathname: path } = window.location;
 
@@ -23,11 +24,7 @@ presence.on("UpdateData", async () => {
 	const video: HTMLVideoElement = document.querySelector("#player video");
 
 	if (video) {
-		const [startTimestamp, endTimestamp] = presence.getTimestamps(
-				Math.floor(video.currentTime),
-				Math.floor(video.duration)
-			),
-			seriesEp = document.querySelector(".season-episode-format"),
+		const seriesEp = document.querySelector(".season-episode-format"),
 			live = document.querySelector(".flag.flag-live"),
 			state = seriesEp
 				? `${seriesEp.textContent} ${
@@ -45,17 +42,19 @@ presence.on("UpdateData", async () => {
 		)?.textContent),
 			(presenceData.state = state);
 		presenceData.smallImageKey = live
-			? "live"
+			? Assets.Live
 			: video.paused
-			? "pause"
-			: "play";
+			? Assets.Pause
+			: Assets.Play;
 		presenceData.smallImageText = live
 			? (await strings).live
 			: video.paused
 			? (await strings).pause
 			: (await strings).play;
-		presenceData.startTimestamp = live ? elapsed : startTimestamp;
-		presenceData.endTimestamp = endTimestamp;
+		if (!live) {
+			[presenceData.startTimestamp, presenceData.endTimestamp] =
+				presence.getTimestampsfromMedia(video);
+		} else presenceData.startTimestamp = elapsed;
 
 		if (live) delete presenceData.endTimestamp;
 

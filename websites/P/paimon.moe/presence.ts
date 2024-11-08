@@ -51,7 +51,8 @@ const presence = new Presence({
 
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-			largeImageKey: "logo",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/P/paimon.moe/assets/logo.png",
 			startTimestamp: timer,
 		},
 		// {hostname} = document.location,
@@ -218,7 +219,7 @@ presence.on("UpdateData", async () => {
 		pathname.includes("/privacy-policy/")
 	) {
 		presenceData.details = "Reading the Privacy Policy";
-		presenceData.smallImageKey = "smoll";
+		presenceData.smallImageKey = Assets.Reading;
 		presenceData.smallImageText = "Reading";
 	}
 

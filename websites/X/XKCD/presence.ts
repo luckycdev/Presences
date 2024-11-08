@@ -5,7 +5,7 @@ const presence = new Presence({
 
 presence.on("UpdateData", () => {
 	const presenceData: PresenceData = {
-		largeImageKey: "logo",
+		largeImageKey: "https://cdn.rcd.gg/PreMiD/websites/X/XKCD/assets/logo.png",
 		startTimestamp: browsingTimestamp,
 	};
 
@@ -23,7 +23,8 @@ presence.on("UpdateData", () => {
 
 		presenceData.smallImageText = text;
 		presenceData.details = `Reading #${comicNumber}`;
-		presenceData.smallImageKey = "help";
+		presenceData.smallImageKey =
+			"https://cdn.rcd.gg/PreMiD/websites/X/XKCD/assets/0.png";
 		presenceData.buttons = [
 			{
 				url: `https://xkcd.com/${comicNumber}`,

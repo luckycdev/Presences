@@ -5,7 +5,8 @@ const presence = new Presence({
 
 presence.on("UpdateData", () => {
 	const presenceData: PresenceData = {
-		largeImageKey: "hf",
+		largeImageKey:
+			"https://cdn.rcd.gg/PreMiD/websites/H/Hacktoberfest/assets/logo.png",
 		startTimestamp: browsingTimestamp,
 	};
 

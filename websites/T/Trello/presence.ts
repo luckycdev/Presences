@@ -7,7 +7,8 @@ let board: HTMLElement, profile: string;
 
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-			largeImageKey: "trello",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/T/Trello/assets/logo.png",
 		},
 		displayPrivateBoards = await presence.getSetting<boolean>(
 			"displayPrivateBoards"
@@ -20,52 +21,48 @@ presence.on("UpdateData", async () => {
 			if (document.location.pathname.includes("/b/")) {
 				if (
 					document.querySelector(
-						".board-header-btn.board-header-btn-org-name.js-open-org-menu"
+						'[data-testid="workspace-navigation-nav"] a > p'
 					)
 				) {
 					if (
-						document
-							.querySelector("#permission-level > span.board-header-btn-icon")
-							.classList.contains("icon-private") &&
+						document.querySelector(
+							'.board-main-content [data-testid="PrivateIcon"]'
+						) &&
 						!displayPrivateBoards
 					)
 						presenceData.details = "Viewing private board";
 					else {
-						presenceData.details = `Viewing board: ${
+						presenceData.details = `Viewing board: ${(presenceData.state =
 							document.querySelector(
-								".js-board-editing-target.board-header-btn-text"
+								'[data-testid="board-name-display"]'
+							).textContent)}`;
+						presenceData.state = `In workspace: ${
+							document.querySelector(
+								'[data-testid="workspace-navigation-nav"] a > p'
 							).textContent
 						}`;
-						presenceData.state = `By team: ${document
-							.querySelector(
-								".board-header-btn.board-header-btn-org-name.js-open-org-menu"
-							)
-							.textContent.replace(
-								document.querySelector(".org-label").textContent,
-								""
-							)}`;
 					}
 				} else {
 					presenceData.details = "Viewing board:";
 					if (
-						document
-							.querySelector("#permission-level > span.board-header-btn-icon")
-							.classList.contains("icon-private") &&
+						document.querySelector(
+							'.board-main-content [data-testid="PrivateIcon"]'
+						) &&
 						!displayPrivateBoards
 					)
 						presenceData.details = "Viewing private board";
 					else {
 						presenceData.state = document.querySelector(
-							".js-board-editing-target.board-header-btn-text"
+							'[data-testid="board-name-display"]'
 						).textContent;
 					}
 				}
-				presenceData.smallImageKey = "reading";
+				presenceData.smallImageKey = Assets.Reading;
 			} else if (document.location.pathname.includes("/c/")) {
 				if (
-					document
-						.querySelector("#permission-level > span.board-header-btn-icon")
-						.classList.contains("icon-private") &&
+					document.querySelector(
+						'.board-main-content [data-testid="PrivateIcon"]'
+					) &&
 					!displayPrivateBoards
 				) {
 					presenceData.details = "Viewing private card";
@@ -75,32 +72,35 @@ presence.on("UpdateData", async () => {
 						document.querySelector(".window-title").textContent
 					}`;
 					presenceData.state = `Board: ${
-						document.querySelector(
-							".js-board-editing-target.board-header-btn-text"
-						).textContent
+						document.querySelector('[data-testid="board-name-display"]')
+							.textContent
 					}`;
-					presenceData.smallImageKey = "reading";
+					presenceData.smallImageKey = Assets.Reading;
 				}
 			} else if (document.location.pathname.includes("/activity")) {
-				[, profile] = document.location.pathname.split("/", 3);
+				[profile] = document.location.pathname.split("/", 3).slice(2);
 				presenceData.details = `Viewing @${profile}'s`;
 				presenceData.state = "recent activites";
 			} else if (document.location.pathname.includes("/cards")) {
-				[, profile] = document.location.pathname.split("/", 3);
+				[profile] = document.location.pathname.split("/", 3).slice(2);
 				presenceData.details = `Viewing @${profile}'s`;
 				presenceData.state = "recent cards";
 			} else if (document.location.pathname.includes("/boards")) {
-				[, profile] = document.location.pathname.split("/", 3);
+				[profile] = document.location.pathname.split("/", 3).slice(2);
 				presenceData.details = `Viewing @${profile}'s boards`;
 			} else if (document.location.pathname.includes("/home")) {
-				[, profile] = document.location.pathname.split("/", 3);
-				presenceData.details = `Viewing Team: ${profile}`;
+				presenceData.details = `Viewing Workspace: ${
+					document.querySelector(".all-boards  h2").textContent
+				}`;
 			} else if (
 				document.location.pathname.includes("/account") ||
 				document.location.pathname.includes("/billing")
 			)
 				presenceData.details = "Changing account settings";
-			else if (document.location.pathname.includes("/shortcuts"))
+			else if (document.location.pathname.includes("/u/")) {
+				[profile] = document.location.pathname.split("/", 3).slice(2);
+				presenceData.details = `Viewing @${profile}'s profile`;
+			} else if (document.location.pathname.includes("/shortcuts"))
 				presenceData.details = "Viewing shortcut settings";
 			else if (document.location.pathname.includes("/tour"))
 				presenceData.details = "Viewing Trello's Tour";
@@ -111,31 +111,7 @@ presence.on("UpdateData", async () => {
 			else if (document.location.pathname.includes("/about")) {
 				presenceData.details = "Viewing Trello's";
 				presenceData.state = "About page";
-			} else if (document.location.pathname.includes("/")) {
-				profile = document.querySelector(
-					"#content > div > div.tabbed-pane-header > div > div > div > div._2MiqoEbHZgSlXq > span._32mB-ZO8fxjtUy"
-				).textContent;
-				if (profile) presenceData.details = "Viewing own profile page";
-				else presenceData.details = "Viewing home page";
-			}
-
-			break;
-		}
-		case "help.trello.com": {
-			if (document.location.pathname.includes("/article/")) {
-				board = document.querySelector("#fullArticle > h1");
-				presenceData.details = "Help Center, article:";
-				presenceData.state = board.textContent;
-				presenceData.smallImageKey = "reading";
-			} else if (document.location.pathname.includes("/category/")) {
-				board = document.querySelector("#categoryHead > h1");
-				presenceData.details = "Help Center, category:";
-				presenceData.state = board.textContent;
-				presenceData.smallImageKey = "reading";
-			} else {
-				presenceData.details = "Viewing Trello's";
-				presenceData.state = "Help Center";
-			}
+			} else presenceData.details = "Viewing home page";
 
 			break;
 		}
@@ -156,13 +132,13 @@ presence.on("UpdateData", async () => {
 				profile = document.querySelector<HTMLInputElement>("#gsc-i-id1").value;
 				presenceData.details = "Blog, searching for:";
 				presenceData.state = profile;
-				presenceData.smallImageKey = "search";
+				presenceData.smallImageKey = Assets.Search;
 			} else if (document.location.pathname.includes("/")) {
 				board = document.querySelector("#hs_cos_wrapper_name");
 				if (board) {
 					presenceData.details = "Blog, article:";
 					presenceData.state = board.textContent;
-					presenceData.smallImageKey = "reading";
+					presenceData.smallImageKey = Assets.Reading;
 				} else {
 					presenceData.details = "Viewing Trello's";
 					presenceData.state = "Blog page";
@@ -176,10 +152,10 @@ presence.on("UpdateData", async () => {
 				[, profile] = document.URL.split("#", 2);
 				presenceData.details = "Developers, API Docs:";
 				presenceData.state = profile;
-				presenceData.smallImageKey = "reading";
+				presenceData.smallImageKey = Assets.Reading;
 			} else if (document.location.pathname.includes("/docs")) {
 				presenceData.details = "Developers, Reading guide";
-				presenceData.smallImageKey = "reading";
+				presenceData.smallImageKey = Assets.Reading;
 			}
 
 			break;

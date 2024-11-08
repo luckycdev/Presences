@@ -6,7 +6,8 @@ const presence = new Presence({
 presence.on("UpdateData", async () => {
 	const { pathname } = document.location,
 		presenceData: PresenceData = {
-			largeImageKey: "logo",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/D/Doordash/assets/logo.png",
 			startTimestamp: browsingTimestamp,
 		},
 		[hideSearch, hideFood] = await Promise.all([
@@ -30,7 +31,8 @@ presence.on("UpdateData", async () => {
 				.getAttribute("src")
 		) {
 			presenceData.largeImageKey = image;
-			presenceData.smallImageKey = "logo";
+			presenceData.smallImageKey =
+				"https://cdn.rcd.gg/PreMiD/websites/D/Doordash/assets/logo.png";
 			presenceData.details = `Viewing the menu of ${name}`;
 		} else {
 			if (!hideFood) {

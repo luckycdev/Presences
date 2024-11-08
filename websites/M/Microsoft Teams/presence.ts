@@ -5,7 +5,8 @@ const presence = new Presence({
 
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-		largeImageKey: "icon",
+		largeImageKey:
+			"https://cdn.rcd.gg/PreMiD/websites/M/Microsoft%20Teams/assets/logo.png",
 		startTimestamp: browsingTimestamp,
 	};
 
@@ -84,8 +85,8 @@ presence.on("UpdateData", async () => {
 				.querySelector("#video-button")
 				.getAttribute("aria-label")
 				.endsWith("off")
-				? "vcall"
-				: "call";
+				? Assets.VideoCall
+				: Assets.Call;
 		} else presenceData.details = "Joining a meeting...";
 	} else presenceData.details = await presence.getSetting<string>("noMessage");
 

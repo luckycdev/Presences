@@ -5,7 +5,8 @@ const presence = new Presence({
 
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-			largeImageKey: "anitube_logo_",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/A/AniTube.in/assets/logo.png",
 			startTimestamp: browsingTimestamp,
 		},
 		search: HTMLInputElement = document.querySelector(
@@ -90,7 +91,7 @@ presence.on("UpdateData", async () => {
 						},
 					];
 					if (!videoElement.paused) {
-						[, presenceData.endTimestamp] =
+						[presenceData.startTimestamp, presenceData.endTimestamp] =
 							presence.getTimestampsfromMedia(videoElement);
 					}
 				} else if (pathname === "/contato.php")

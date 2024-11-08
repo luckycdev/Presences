@@ -2,6 +2,7 @@ const presence = new Presence({
 		clientId: "639616115873546261",
 	}),
 	browsingTimestamp = Math.floor(Date.now() / 1000);
+
 let user: HTMLElement,
 	title: HTMLElement,
 	replace: HTMLElement,
@@ -9,7 +10,8 @@ let user: HTMLElement,
 
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-		largeImageKey: "rock",
+		largeImageKey:
+			"https://cdn.rcd.gg/PreMiD/websites/R/ROCKRADIO.COM/assets/logo.png",
 	};
 
 	if (document.location.hostname === "www.rockradio.com") {
@@ -35,8 +37,8 @@ presence.on("UpdateData", async () => {
 			playing =
 				document.querySelector("#play-button > div > a").className ===
 				"ico icon-pause"
-					? "play"
-					: "pause";
+					? Assets.Play
+					: Assets.Pause;
 			presenceData.smallImageKey = playing;
 		} else if (document.querySelector("#channel-title")) {
 			title = document.querySelector("#channel-title");

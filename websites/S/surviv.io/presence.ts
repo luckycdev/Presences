@@ -10,11 +10,17 @@ let gametypequery: string,
 	alivecount: string,
 	place: string;
 
-const browsingTimestamp = Math.floor(Date.now() / 1000);
+const browsingTimestamp = Math.floor(Date.now() / 1000),
+	assets = {
+		squad: "https://cdn.rcd.gg/PreMiD/websites/S/surviv.io/assets/0.png",
+		duo: "https://cdn.rcd.gg/PreMiD/websites/S/surviv.io/assets/1.png",
+		solo: "https://cdn.rcd.gg/PreMiD/websites/S/surviv.io/assets/2.png",
+	};
 
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-			largeImageKey: "logo",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/S/surviv.io/assets/logo.png",
 		},
 		broadcasttc = await presence.getSetting<boolean>("broadcasttc"),
 		active =
@@ -43,7 +49,8 @@ presence.on("UpdateData", async () => {
 						url: document.baseURI,
 					},
 				];
-				presenceData.smallImageKey = gametype.toLowerCase();
+				presenceData.smallImageKey =
+					assets[gametype.toLowerCase() as keyof typeof assets];
 				presenceData.smallImageText =
 					document.querySelector("#team-code").textContent;
 			}

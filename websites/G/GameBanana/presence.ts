@@ -3,7 +3,8 @@ const presence = new Presence({ clientId: "958520351158050887" }),
 
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-			largeImageKey: "gblogo",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/G/GameBanana/assets/logo.png",
 			startTimestamp: browsingTimestamp,
 		},
 		sections = [
@@ -85,7 +86,7 @@ presence.on("UpdateData", async () => {
 			else if (document.location.pathname === "/games/add")
 				presenceData.details = "Adding a game";
 			else if (header.textContent.includes(" : ")) {
-				presenceData.details = `Viewing 
+				presenceData.details = `Viewing
 							${
 								header.textContent
 									.toLowerCase()
@@ -108,7 +109,7 @@ presence.on("UpdateData", async () => {
 			)
 				presenceData.details = "Adding a submission";
 			else {
-				presenceData.details = `Adding a 
+				presenceData.details = `Adding a
 							${document
 								.querySelector<HTMLMetaElement>(
 									'meta[property="gb:model_name"]'
@@ -170,7 +171,7 @@ presence.on("UpdateData", async () => {
 						.split("- A")[0]
 						.split(" : ")[1];
 					if (document.location.pathname.includes("/edit")) {
-						presenceData.details = `Editing a 
+						presenceData.details = `Editing a
 							${document
 								.querySelector<HTMLMetaElement>(
 									'meta[property="gb:model_name"]'
@@ -187,7 +188,7 @@ presence.on("UpdateData", async () => {
 						)
 							presenceData.state = "(Private)";
 					} else if (document.location.pathname.includes("/trash")) {
-						presenceData.details = `Trashing a 
+						presenceData.details = `Trashing a
 							${document
 								.querySelector<HTMLMetaElement>(
 									'meta[property="gb:model_name"]'
@@ -201,7 +202,7 @@ presence.on("UpdateData", async () => {
 							.toLowerCase()
 							.replace("license", "the license")
 							.replace("withhold", "the withhold page")
-							.replace("team", "the team")} for a 
+							.replace("team", "the team")} for a
 							${document
 								.querySelector<HTMLMetaElement>(
 									'meta[property="gb:model_name"]'
@@ -218,7 +219,7 @@ presence.on("UpdateData", async () => {
 							).content
 						)
 					) {
-						presenceData.details = `Viewing a 
+						presenceData.details = `Viewing a
 							${document
 								.querySelector<HTMLMetaElement>(
 									'meta[property="gb:model_name"]'
@@ -226,13 +227,13 @@ presence.on("UpdateData", async () => {
 								.content.toLowerCase()
 								.replace("statusupdate", "status update")}:`;
 					} else {
-						presenceData.details = `Viewing a 
+						presenceData.details = `Viewing a
 								${document
 									.querySelector<HTMLMetaElement>(
 										'meta[property="gb:model_name"]'
 									)
 									.content.toLowerCase()
-									.replace("wip", "WiP")} for 
+									.replace("wip", "WiP")} for
 								${
 									document.querySelector<HTMLMetaElement>(
 										'meta[property="gb:game_abbreviation"]'
@@ -244,7 +245,7 @@ presence.on("UpdateData", async () => {
 				if (document.querySelector("#PrivateAccessNoticeModule"))
 					presenceData.state = "(Private)";
 			} else {
-				presenceData.details = `Browsing 
+				presenceData.details = `Browsing
 					${document
 						.querySelector<HTMLMetaElement>('meta[property="gb:plural_title"]')
 						.content.toLowerCase()
@@ -296,7 +297,7 @@ presence.on("UpdateData", async () => {
 				)
 					presenceData.details = "Viewing the submitters leaderboard";
 			} else if (document.location.pathname.includes("/settings")) {
-				presenceData.details = `Changing 
+				presenceData.details = `Changing
 							${
 								header.textContent
 									.toLowerCase()
@@ -334,12 +335,12 @@ presence.on("UpdateData", async () => {
 	}
 
 	if (presenceData.details) {
-		presenceData.details = presenceData.details
+		presenceData.details = (presenceData.details as string)
 			.replaceAll("\n", "")
 			.replaceAll("	", "");
 	}
 	if (presenceData.state) {
-		presenceData.state = presenceData.state
+		presenceData.state = (presenceData.state as string)
 			.replaceAll("\n", "")
 			.replaceAll("	", "");
 	}

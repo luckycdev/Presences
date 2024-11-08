@@ -7,7 +7,7 @@ let title = "Loading SimulatorHits",
 	presenter = "AutoDJ";
 
 function getSongData(): void {
-	fetch("https://api.simulatorhits.dev/now-playing?override").then(response => {
+	fetch("https://api.simulatorhits.com/now-playing?override").then(response => {
 		if (response.status === 200) {
 			response.json().then(data => {
 				({ title, artist } = data.song);
@@ -24,9 +24,10 @@ const currentTime = Math.floor(Date.now() / 1000);
 
 presence.on("UpdateData", () => {
 	const presenceData: PresenceData = {
-		largeImageKey: "logo",
+		largeImageKey:
+			"https://cdn.rcd.gg/PreMiD/websites/S/SimulatorHits/assets/logo.png",
 		smallImageText: `Current Presenter: ${presenter}`,
-		smallImageKey: "play",
+		smallImageKey: Assets.Play,
 		startTimestamp: currentTime,
 	};
 
@@ -34,31 +35,31 @@ presence.on("UpdateData", () => {
 		switch (document.location.pathname) {
 			case "/schedule": {
 				presenceData.details = "Viewing Schedule";
-				presenceData.smallImageKey = "reading";
+				presenceData.smallImageKey = Assets.Reading;
 
 				break;
 			}
 			case "/news": {
 				presenceData.details = "Reading News";
-				presenceData.smallImageKey = "reading";
+				presenceData.smallImageKey = Assets.Reading;
 
 				break;
 			}
 			case "/about/meet-the-team": {
 				presenceData.details = "Viewing Staff Team";
-				presenceData.smallImageKey = "reading";
+				presenceData.smallImageKey = Assets.Reading;
 
 				break;
 			}
 			case "/request": {
 				presenceData.details = "Making a Request";
-				presenceData.smallImageKey = "writing";
+				presenceData.smallImageKey = Assets.Writing;
 
 				break;
 			}
 			case "/streamers": {
 				presenceData.details = "Viewing Streamers";
-				presenceData.smallImageKey = "reading";
+				presenceData.smallImageKey = Assets.Reading;
 
 				break;
 			}

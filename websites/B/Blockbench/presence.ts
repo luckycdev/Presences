@@ -13,10 +13,20 @@ const presence = new Presence({
 	},
 	browsingTimestamp = Math.round(Date.now() / 1000);
 
+const enum Assets {
+	Logo = "https://cdn.rcd.gg/PreMiD/websites/B/Blockbench/assets/logo.png",
+	Generic = "https://cdn.rcd.gg/PreMiD/websites/B/Blockbench/assets/0.png",
+	BlockItem = "https://cdn.rcd.gg/PreMiD/websites/B/Blockbench/assets/1.png",
+	Bedrock = "https://cdn.rcd.gg/PreMiD/websites/B/Blockbench/assets/2.png",
+	Modded = "https://cdn.rcd.gg/PreMiD/websites/B/Blockbench/assets/3.png",
+	Optifine = "https://cdn.rcd.gg/PreMiD/websites/B/Blockbench/assets/4.png",
+	Skin = "https://cdn.rcd.gg/PreMiD/websites/B/Blockbench/assets/5.png",
+}
+
 presence.on("UpdateData", async () => {
 	const page = location.pathname,
 		presenceData: PresenceData = {
-			largeImageKey: "blockbench-logo",
+			largeImageKey: Assets.Logo,
 			startTimestamp: browsingTimestamp,
 		},
 		pluginHeader = document.querySelector(
@@ -30,22 +40,22 @@ presence.on("UpdateData", async () => {
 
 		switch (modelType?.toLowerCase()) {
 			case "generic model":
-				presenceData.smallImageKey = "generic";
+				presenceData.smallImageKey = Assets.Generic;
 				break;
 			case "java block/item":
-				presenceData.smallImageKey = "block-item";
+				presenceData.smallImageKey = Assets.BlockItem;
 				break;
 			case "bedrock model":
-				presenceData.smallImageKey = "bedrock";
+				presenceData.smallImageKey = Assets.Bedrock;
 				break;
 			case "modded entity":
-				presenceData.smallImageKey = "modded";
+				presenceData.smallImageKey = Assets.Modded;
 				break;
 			case "optifine entity":
-				presenceData.smallImageKey = "optifine";
+				presenceData.smallImageKey = Assets.Optifine;
 				break;
 			case "minecraft skin":
-				presenceData.smallImageKey = "skin";
+				presenceData.smallImageKey = Assets.Skin;
 				break;
 			default:
 				break;
@@ -79,7 +89,7 @@ presence.on("UpdateData", async () => {
 		presenceData.buttons = [{ label: "View Plugin", url: location.href }];
 	} else if (page.includes("/wiki")) {
 		presenceData.details = "Blockbench Wiki";
-		presenceData.smallImageKey = "reading";
+		presenceData.smallImageKey = Assets.Reading;
 		presenceData.smallImageText = "Reading";
 		presenceData.state =
 			document.querySelector(

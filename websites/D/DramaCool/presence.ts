@@ -37,14 +37,15 @@ presence.on("iFrameData", (data: Data) => {
 
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
-			largeImageKey: "dramacool_logo_b",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/D/DramaCool/assets/logo.png",
 			details: "Browsing",
 			smallImageText: "Browsing",
-			smallImageKey: "reading",
+			smallImageKey: Assets.Reading,
 			startTimestamp: startsTime,
+			type: ActivityType.Watching,
 		},
-		[covers, buttons, newLang] = await Promise.all([
-			presence.getSetting<boolean>("covers"),
+		[buttons, newLang] = await Promise.all([
 			presence.getSetting<boolean>("buttons"),
 			presence.getSetting<string>("lang").catch(() => "en"),
 		]),
@@ -71,7 +72,7 @@ presence.on("UpdateData", async () => {
 		presenceData.details = strings.searchFor;
 		presenceData.state = search.includes("movies") ? "Movies" : "Stars";
 
-		presenceData.smallImageKey = "search";
+		presenceData.smallImageKey = Assets.Search;
 		presenceData.smallImageText = strings.searching;
 	} else if (pathname.match("/([a-z0-9-]+)-episode-([0-9]+)")) {
 		ShowData.title =
@@ -89,7 +90,7 @@ presence.on("UpdateData", async () => {
 				""
 			);
 
-			presenceData.smallImageKey = ShowData.paused ? "pause" : "play";
+			presenceData.smallImageKey = ShowData.paused ? Assets.Pause : Assets.Play;
 			presenceData.smallImageText = ShowData.paused
 				? strings.paused
 				: strings.play;
@@ -107,17 +108,9 @@ presence.on("UpdateData", async () => {
 				},
 				{
 					label: strings.viewSeriesButton,
-					url: document
-						.querySelector('[class="Category"]')
-						.firstElementChild.firstElementChild.getAttribute("href"),
+					url: document.querySelector<HTMLAnchorElement>(".category a").href,
 				},
 			];
-
-			if (covers) {
-				presenceData.largeImageKey =
-					document.querySelector<HTMLMetaElement>('meta[property="og:image"]')
-						?.content ?? "dramacool_logo_b";
-			}
 
 			if (ShowData.paused) {
 				delete presenceData.startTimestamp;
@@ -136,6 +129,18 @@ presence.on("UpdateData", async () => {
 				},
 			];
 		}
+	} else if (pathname.includes("movie-watch")) {
+		presenceData.details =
+			document.querySelector("div.category a")?.textContent;
+		presenceData.state = "Movie";
+
+		presenceData.smallImageKey = ShowData.paused ? Assets.Pause : Assets.Play;
+		presenceData.smallImageText = ShowData.paused
+			? strings.paused
+			: strings.play;
+
+		[presenceData.startTimestamp, presenceData.endTimestamp] =
+			presence.getTimestamps(ShowData.currentTime, ShowData.duration);
 	} else if (pathname.includes("/calendar")) {
 		presenceData.details = strings.viewPage;
 

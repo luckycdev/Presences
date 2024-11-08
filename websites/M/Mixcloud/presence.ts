@@ -49,14 +49,15 @@ presence.on("UpdateData", async () => {
 		const presenceData: PresenceData = {
 			details: title,
 			state: author,
-			largeImageKey: "mixcloud",
-			smallImageKey: isPlaying ? "play" : "pause",
+			largeImageKey:
+				"https://cdn.rcd.gg/PreMiD/websites/M/Mixcloud/assets/logo.png",
+			smallImageKey: isPlaying ? Assets.Play : Assets.Pause,
 			smallImageText: isPlaying ? (await strings).play : (await strings).pause,
 			buttons: [{ label: openUrlText, url }],
 		};
 
 		if (liveIsPlaying) {
-			presenceData.smallImageKey = "live";
+			presenceData.smallImageKey = Assets.Live;
 			presenceData.smallImageText = (await strings).live;
 		}
 

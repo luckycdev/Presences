@@ -1,6 +1,7 @@
 const presence = new Presence({
 	clientId: "704585837949747330",
 });
+
 presence.on("UpdateData", async () => {
 	const presenceData: PresenceData = {
 			startTimestamp: Math.floor(Date.now() / 1000),
@@ -30,7 +31,7 @@ presence.on("UpdateData", async () => {
 				"body > div.wrap > div.body-wrap > div > div.c-search-header__wrapper > div > div > form > label > input"
 			);
 			presenceData.details = "Pesquisando por:";
-			presenceData.smallImageKey = "search";
+			presenceData.smallImageKey = Assets.Search;
 			presenceData.smallImageText = "Em pesquisa";
 			presenceData.state = PesquisaTexto.value;
 		} else presenceData.state = "Página inicial";
@@ -162,19 +163,23 @@ presence.on("UpdateData", async () => {
 	if (
 		window.getComputedStyle(bodyWrap).getPropertyValue("background-color") ===
 		"rgb(38, 38, 38)"
-	)
-		presenceData.largeImageKey = "logo2";
-	else if (
+	) {
+		presenceData.largeImageKey =
+			"https://cdn.rcd.gg/PreMiD/websites/N/Neox%20Scanlator/assets/0.png";
+	} else if (
 		window.getComputedStyle(bodyWrap).getPropertyValue("background-color") !==
 		"rgb(38, 38, 38)"
-	)
-		presenceData.largeImageKey = "logo";
+	) {
+		presenceData.largeImageKey =
+			"https://cdn.rcd.gg/PreMiD/websites/N/Neox%20Scanlator/assets/logo.png";
+	}
 
 	const UsuarioTexto = document.querySelector<HTMLElement>(
 		"body > div.wrap > div > header > div.c-sub-header-nav.with-border.hide-sticky-menu > div > div > div.c-modal_item > div > span"
 	);
 	if (UsuarioTexto && PesquisaTexto === null) {
-		presenceData.smallImageKey = "user";
+		presenceData.smallImageKey =
+			"https://cdn.rcd.gg/PreMiD/websites/N/Neox%20Scanlator/assets/1.png";
 		presenceData.smallImageText = UsuarioTexto.textContent.slice(
 			UsuarioTexto.textContent.search(",") + 1
 		);
